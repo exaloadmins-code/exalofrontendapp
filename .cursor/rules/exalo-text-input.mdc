@@ -1,0 +1,16 @@
+---
+description: Permanent Exalo shared textbox / focus contract
+alwaysApply: true
+---
+
+# Exalo text input rule
+
+New text-entry controls in `exalofrontendapp` **must** use `ExaloTextInput` / `TextInputField` from `src/components/ui/TextInputField.tsx` unless Lovable requires a materially different control.
+
+- Exalo text inputs have **one visual control boundary**. Match Lovable: the `TextInput` itself owns border, radius, background and focus treatment; a leading icon (if any) is absolutely positioned over left padding. Never wrap a bordered outer View around a second bordered/outlined inner `TextInput`.
+- Do **not** style raw `TextInput` borders/focus outlines in feature screens when the shared component can match Lovable.
+- Focus chrome belongs on the **complete outer control** (icon + field), never only the inner `TextInput`.
+- New visual variants require Lovable justification first — no speculative variants.
+- No new input/form/icon packages without the third-party **manual approval gate**.
+
+Details: `docs/EXALO_INPUT_DESIGN_SYSTEM.md`.

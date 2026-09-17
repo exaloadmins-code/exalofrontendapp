@@ -1,0 +1,23 @@
+---
+description: Product owner owns Git commits and pushes
+alwaysApply: true
+---
+
+# Exalo Git ownership
+
+Cursor/AI may inspect and **stage** Git changes when the product owner explicitly asks for staging/checkpoint preparation.
+
+Cursor/AI must **never**:
+
+- `git commit`
+- `git push`
+- create tags
+- amend / rebase / merge
+- `reset --hard`
+- force push
+- rewrite history
+- auto-create a checkpoint commit
+
+After staging (when requested), **STOP**. The product owner reviews the staged diff, then commits and pushes manually.
+
+This applies to all Exalo frontend milestones unless the product owner explicitly overrides it in writing.

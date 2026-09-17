@@ -1,0 +1,15 @@
+---
+description: Permanent Exalo select/dropdown contract
+alwaysApply: true
+---
+
+# Exalo select rule
+
+Use `ExaloSelect` (`src/components/ui/ExaloSelect.tsx`) for predefined-option selection.
+
+- Do **not** build feature-specific dropdowns when `ExaloSelect` can satisfy the requirement.
+- Do **not** replace `ExaloTextInput` with a select for free-form text.
+- Searchable selects: `searchable` + filter via shared `ExaloTextInput` (preserve single-boundary focus).
+- Chevron: Text/system glyph only — no Lucide or new icon packages.
+
+Details: `docs/EXALO_SELECT_DESIGN_SYSTEM.md`.
