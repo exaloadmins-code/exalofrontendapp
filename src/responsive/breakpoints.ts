@@ -15,6 +15,12 @@ export const HOME_ARTBOARD = {
   height: 1264,
 } as const;
 
+/** Lovable Journey artboard intrinsic size (TP-070 journey-bg.png). Same 843×1264. */
+export const JOURNEY_ARTBOARD = {
+  width: 843,
+  height: 1264,
+} as const;
+
 export type DeviceClass = 'phone' | 'tablet' | 'other';
 export type Orientation = 'portrait' | 'landscape';
 

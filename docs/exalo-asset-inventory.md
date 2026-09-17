@@ -40,6 +40,15 @@ Transparency notes:
 | --- | --- | --- | --- | --- | --- |
 | `background planets.png` | 1024×1536 | No (RGB) | No | Full-screen portrait space scene: stars, purple + blue ringed planets, side clouds, ground plane. Home / Maths path / Train Mode environment. | `assets/backgrounds/background planets.png` |
 
+### Lovable Journey artboard (M2)
+
+| Filename | Dimensions | Project location | Notes |
+| --- | --- | --- | --- |
+| `journey-bg.png` | 843×1264 | `assets/journey/journey-bg.png` | TP-070 source (baked header). Retained unchanged for provenance. **USE APPROVED** / **LICENSE REVIEW REQUIRED**. |
+| `journey-bg-clean.png` | 843×1264 | `assets/journey/journey-bg-clean.png` | TP-071 **DERIVATIVE OF TP-070** — baked “Maths” / “Choose your path” removed. **Runtime Journey artboard.** **USE APPROVED** (derivative) / **LICENSE REVIEW REQUIRED**. Not Exalo-original. |
+
+M2 PRODUCT-OWNER VISUAL REVIEW: **APPROVED** (Maths + English). Native device matrix: **NOT YET DEVICE-VERIFIED**. M3: NOT STARTED.
+
 ---
 
 ## Planets
@@ -226,16 +235,13 @@ Confidence: **Confirmed** = visual match to a source file · **Candidate** = clo
 | Profile avatar in pill | **Confirmed pool:** `avatar-1.png` … `avatar-6.png` |
 | EXALO Score rays/sparkles | **Missing** as separate assets (logo contains similar rays) |
 
-### G. Maths Choose Your Path
+### G. Maths Choose Your Path (Journey)
 
 | Element | Mapping |
 | --- | --- |
-| Background / planets / clouds | **Confirmed:** `background planets.png`, `planet purple.png`, `planet blue.png` |
-| Red Test rocket | **Missing** |
-| Orange Focus rocket | **Candidate:** `rocket.png` / `rocket_main.png` / `rocket-only.png` (orange family; not path-card sized variants) |
-| Silver Train rocket | **Missing** |
-| Test / Focus / Train mode icons (target, book, crosshair) | **Missing** (nearest book-only: `book.png`) |
-| Bottom nav | **Confirmed:** `home_icon.png`, `parents_icon.png` |
+| Full Journey artboard (Test / Focus / Train) | **M2 runtime:** `assets/journey/journey-bg-clean.png` (TP-071, derivative of TP-070). Source with baked header retained as `journey-bg.png` (TP-070). |
+| Background / planets / clouds (pack reconstruction) | Pack candidates only; superseded for Journey by TP-070 artboard |
+| Bottom nav | Baked into TP-070; hotspots match Lovable Journey.tsx |
 
 ### H. Maths Train Mode
 

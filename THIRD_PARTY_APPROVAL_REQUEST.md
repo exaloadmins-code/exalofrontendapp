@@ -1,11 +1,40 @@
 # EXALO THIRD-PARTY / OPEN-SOURCE APPROVAL REQUEST
 
 **Project:** `C:\projects\exalofrontendapp`  
-**Milestone:** Onboarding parity implementation  
-**Last updated:** 2026-09-16  
+**Milestone:** M2 Journey (+ retained M1 onboarding decisions)  
+**Last updated:** 2026-09-17  
 
 Existing Lovable usage does **not** constitute approval for exalofrontendapp.  
 Manual product-owner approval ≠ open-source license ≠ ownership.
+
+---
+
+## M2 JOURNEY DECISIONS (2026-09-17)
+
+| ID | Item | Decision | Notes |
+| --- | --- | --- | --- |
+| **TP-070** | `journey-bg.png` | **USE APPROVED** | Journey artboard family source (baked header). LICENSE REVIEW REQUIRED remains open. |
+| **TP-071** | `journey-bg-clean.png` | **USE APPROVED** (derivative of TP-070) | Narrowly scoped header-text removal for subject-neutral runtime. **Not** a new design; inherits TP-070 license status → LICENSE REVIEW REQUIRED. No separate approval request required beyond recording the derivative. |
+
+### M2 visual / device closure
+
+| Item | Status |
+| --- | --- |
+| PRODUCT-OWNER VISUAL REVIEW | **APPROVED** (Maths + English Journey) |
+| iOS portrait | NOT YET DEVICE-VERIFIED |
+| iOS landscape | NOT YET DEVICE-VERIFIED |
+| Android portrait | NOT YET DEVICE-VERIFIED |
+| Android landscape | NOT YET DEVICE-VERIFIED |
+| Backend / DB / question-bank | NONE |
+| M3 | NOT STARTED |
+
+USE APPROVAL ≠ LICENSE CLEARANCE for TP-070 / TP-071.
+
+---
+
+## NEW APPROVAL REQUESTS
+
+**NONE** outstanding for this pass.
 
 ---
 
@@ -45,13 +74,6 @@ Manual product-owner approval ≠ open-source license ≠ ownership.
 
 ## IMPLEMENTATION STATUS
 
-Five-step onboarding implemented using **only** approved / system materials listed above.  
-Rejected TP-067 / TP-068 / TP-069 are **not** referenced in runtime asset registry.
-
----
-
-## NEW APPROVAL REQUESTS
-
-**NONE** for this implementation pass.
-
-If a future screen needs unapproved material: assign a new TP ID, document here, and **STOP**.
+- M1 onboarding uses approved / system materials only; rejected TP-067/068/069 remain unused.  
+- M2 Journey runtime uses **TP-071** clean derivative; **TP-070** original retained for provenance.  
+- License clearance for TP-070 / TP-071 remains **LICENSE REVIEW REQUIRED**.

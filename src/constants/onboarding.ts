@@ -41,3 +41,16 @@ export const ONBOARDING_AVATARS = [
 ] as const;
 
 export type OnboardingAvatarId = (typeof ONBOARDING_AVATARS)[number]['id'];
+
+/**
+ * Maps persisted `avatarId` (onboarding / profile) to an approved AvatarAssets source.
+ * Returns null when missing or unknown — callers may show the intentional letter fallback.
+ */
+export function resolveAvatarSource(avatarId: string | null | undefined) {
+  const id = avatarId?.trim();
+  if (!id) {
+    return null;
+  }
+  const match = ONBOARDING_AVATARS.find((item) => item.id === id);
+  return match?.source ?? null;
+}

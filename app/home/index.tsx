@@ -1,6 +1,14 @@
 import { Href, useRouter } from 'expo-router';
 import { useCallback, useMemo, useState } from 'react';
-import { LayoutChangeEvent, Pressable, StyleSheet, Text, useWindowDimensions, View } from 'react-native';
+import {
+  Image,
+  LayoutChangeEvent,
+  Pressable,
+  StyleSheet,
+  Text,
+  useWindowDimensions,
+  View,
+} from 'react-native';
 import {
   HOME_HOTSPOTS,
   HOME_OVERLAYS,
@@ -9,6 +17,7 @@ import {
   percentRectToLayout,
 } from '@/artboard';
 import { HomeAssets } from '@/constants/assets';
+import { resolveAvatarSource } from '@/constants/onboarding';
 import { Routes } from '@/constants/routes';
 import { useAppContext } from '@/providers';
 import { HOME_ARTBOARD } from '@/responsive';
@@ -36,6 +45,7 @@ export default function HomeScreen() {
   const [surface, setSurface] = useState<SurfaceBox | null>(null);
 
   const name = profile.displayName?.trim() || 'Explorer';
+  const avatarSource = resolveAvatarSource(profile.avatarId);
   const streakCount = profile.streak;
   const badgesUnlocked = profile.badgeCount;
 
@@ -140,7 +150,16 @@ export default function HomeScreen() {
               ]}
             >
               <View style={styles.avatarCircle}>
-                <Text style={styles.avatarLetter}>{name.charAt(0).toUpperCase()}</Text>
+                {avatarSource ? (
+                  <Image
+                    source={avatarSource}
+                    style={styles.avatarImage}
+                    resizeMode="cover"
+                    accessibilityLabel={`${name} avatar`}
+                  />
+                ) : (
+                  <Text style={styles.avatarLetter}>{name.charAt(0).toUpperCase()}</Text>
+                )}
               </View>
               <Text style={styles.profileName} numberOfLines={1}>
                 {name}
@@ -214,6 +233,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     overflow: 'hidden',
+  },
+  avatarImage: {
+    width: '100%',
+    height: '100%',
   },
   avatarLetter: {
     fontFamily: fonts.display,

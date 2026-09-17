@@ -9,9 +9,21 @@ type PlaceholderProps = {
   subtitle?: string;
 };
 
+/**
+ * M3+ destination placeholder — keeps Journey / Home navigation live.
+ * Prefer router.back() when the user arrived from Journey; otherwise Home.
+ */
 export function ComingSoonPlaceholder({ title, subtitle }: PlaceholderProps) {
   const router = useRouter();
   const layout = useDeviceLayout();
+
+  const goBack = () => {
+    if (router.canGoBack()) {
+      router.back();
+      return;
+    }
+    router.replace(Routes.Home as Href);
+  };
 
   return (
     <View
@@ -32,11 +44,11 @@ export function ComingSoonPlaceholder({ title, subtitle }: PlaceholderProps) {
       </Text>
       <Pressable
         accessibilityRole="button"
-        accessibilityLabel="Back to Home"
-        onPress={() => router.replace(Routes.Home as Href)}
+        accessibilityLabel="Go back"
+        onPress={goBack}
         style={styles.button}
       >
-        <Text style={styles.buttonLabel}>Back to Home</Text>
+        <Text style={styles.buttonLabel}>Go back</Text>
       </Pressable>
     </View>
   );

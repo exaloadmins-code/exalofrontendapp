@@ -6,3 +6,9 @@ export type { ArtboardRect, PercentRect, LayoutBox, ArtboardFitMode } from './ar
 export { ResponsiveArtboard } from './ResponsiveArtboard';
 export type { HotspotDef } from './ResponsiveArtboard';
 export { HOME_HOTSPOTS, HOME_OVERLAYS } from './homeHotspots';
+export {
+  JOURNEY_HOTSPOTS,
+  JOURNEY_OVERLAYS,
+  JOURNEY_HEADER_ROW,
+  resolveJourneyRoute,
+} from './journeyHotspots';

@@ -20,6 +20,19 @@ export const HomeAssets = {
   artboardV2: require('../../assets/home/exalo-home-v2.png'),
 } as const;
 
+/**
+ * TP-070 — Journey artboard source (843×1264), USE APPROVED / LICENSE REVIEW REQUIRED.
+ * Runtime uses TP-071 clean derivative (baked header removed). Original kept for provenance.
+ */
+export const JourneyAssets = {
+  /** @deprecated Prefer `artboardClean` for Journey runtime. Kept for provenance comparison. */
+  artboardSource: require('../../assets/journey/journey-bg.png'),
+  /** TP-071 — derived from TP-070; baked “Maths” / “Choose your path” removed. */
+  artboardClean: require('../../assets/journey/journey-bg-clean.png'),
+  /** Active Journey artboard (subject-neutral). */
+  artboard: require('../../assets/journey/journey-bg-clean.png'),
+} as const;
+
 export const PlanetAssets = {
   blue: require('../../assets/planets/planet blue.png'),
   purple: require('../../assets/planets/planet purple.png'),
@@ -118,6 +131,7 @@ export const assets = {
   branding: BrandingAssets,
   backgrounds: BackgroundAssets,
   home: HomeAssets,
+  journey: JourneyAssets,
   planets: PlanetAssets,
   rockets: RocketAssets,
   astronauts: AstronautAssets,
