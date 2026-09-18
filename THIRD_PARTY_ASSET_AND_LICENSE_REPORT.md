@@ -3,7 +3,7 @@
 **Project:** `C:\projects\exalofrontendapp`  
 **Companion:** `THIRD_PARTY_APPROVAL_REQUEST.md`  
 **Nature:** PERMANENT CUMULATIVE governance register (not milestone-only)  
-**Last updated:** 2026-09-17 (M2 Journey — PRODUCT-OWNER VISUAL REVIEW APPROVED; TP-070/TP-071 LICENSE REVIEW REQUIRED)
+**Last updated:** 2026-09-18 (M8 Score; M8 Badges; M8A Home profile-chip narrow composition deferred)
 
 > Manual product-owner **APPROVAL** authorizes specified product use only.  
 > It does **not** establish Exalo ownership, open-source license, or completed legal terms review.
@@ -23,6 +23,13 @@
 | 2026-09-17 | **M2 Journey:** TP-070 `journey-bg.png` identified as required Lovable Journey artboard (843×1264). Copied to `assets/journey/`. Product-owner **USE APPROVED**. LICENSE REVIEW REQUIRED. |
 | 2026-09-17 | **M2 Journey header:** TP-071 `journey-bg-clean.png` derived from TP-070 — baked “Maths” / “Choose your path” removed; local star-field reconstructed from TP-070 only. Runtime uses TP-071. LICENSE REVIEW REQUIRED (inherits TP-070). No new packages. |
 | 2026-09-17 | **M2 Journey closure:** PRODUCT-OWNER VISUAL REVIEW **APPROVED** (Maths + English). Native device matrix remains **NOT YET DEVICE-VERIFIED** (iOS/Android × portrait/landscape). M3 not started. TP-070/TP-071 license status unchanged. |
+| 2026-09-17 | **M8A Streak:** Native composable Streak screen at `/streak`. No new packages. Lucide (TP-004) not used — emoji/Text substitutes. No new visual assets/fonts. Local AsyncStorage streak engine (Lovable `lib/streak.ts` parity). Insights average/most-active/consistency remain TEMPORARY_UI_DEMO. Backend has no streak calendar API. TP-070/TP-071 unchanged. |
+| 2026-09-17 | **M8A hero/icon parity gate:** Exact hero LinearGradient needs **TP-072** `expo-linear-gradient` (APPROVAL REQUIRED). Lucide icons need **TP-004 reopen** for Streak (APPROVAL REQUIRED). Interim hero uses View-layer washes only; Lucide still not installed/used. |
+| 2026-09-17 | **M8A PO decision:** TP-072 **USE APPROVED**; TP-004 **REOPEN APPROVED** / **USE APPROVED** (Streak + shared UI where Lovable uses Lucide). Installed `expo-linear-gradient@57.0.2` (MIT), `lucide-react-native@1.47.0` (ISC), `react-native-svg@15.15.4` (MIT). Runtime Streak uses LinearGradient + Lucide; genuine Lovable emoji preserved. |
+| 2026-09-17 | **M8A Lucide Metro fix:** `lucide-react-native@1.47.0` failed Metro/web (`exports` → `dist/esm/lucide-react-native.mjs`). Pinned **`lucide-react-native@0.575.0`** (ISC; `.js` ESM exports). `react-native-svg@15.15.4` unchanged. Web export PASS. |
+| 2026-09-18 | **M8A Shields + sticky CTA:** Shields stat uses Lucide `Shield` (production adaptation; Lovable source remains emoji). Sticky CTA = Lovable `bottom-20` (80px) + `insets.bottom`. |
+| 2026-09-18 | **M8 Badges:** `/badges` Achievements screen (Lovable `StreakBadges.tsx`). No new packages/assets. Reuses TP-072 + TP-004. Badge icons = genuine Lovable emoji. Static Lovable badge catalog. **Deferred:** M8A Home profile-chip narrow composition (320×568) — not final; do not regress 768×1024. |
+| 2026-09-18 | **M8 Score:** `/score` Exalo Score screen (Lovable `Score.tsx`). No new packages/assets. Reuses TP-072 + TP-004 (`Target`/`Zap`/`Repeat`/`Mountain`). Static Lovable demo 62/100 + breakdown. Backend analytics not wired. Home Score hotspot unchanged (already `/score`). |
 
 ---
 
@@ -235,6 +242,9 @@ Declared in `package.json` (inspect `node_modules/<pkg>/package.json` / LICENSE 
 | react-native-gesture-handler | ~2.32.0 | Gestures | runtime | MIT | Existing |
 | react-dom | 19.2.3 | Web | runtime | MIT | Existing |
 | react-native-web | ^0.21.2 | Web | runtime | MIT | Existing |
+| expo-linear-gradient | ~57.0.2 (57.0.2) | Linear gradients (M8A Streak hero/CTA) | runtime | **MIT** (`node_modules/expo-linear-gradient/package.json`) | **TP-072 USE APPROVED** |
+| lucide-react-native | **0.575.0** (exact) | Lucide icons (M8A Streak / Lovable-parity UI) | runtime | **ISC** (`node_modules/lucide-react-native/package.json`) | **TP-004 REOPEN / USE APPROVED** (scoped). Replaced broken `1.47.0` Metro/web `.mjs` export. |
+| react-native-svg | 15.15.4 | SVG peer for lucide-react-native | runtime | **MIT** (`node_modules/react-native-svg/package.json`) | Companion to TP-004 |
 | typescript | ~6.0.3 | Types | dev | Apache-2.0 | Existing |
 | @types/react | ~19.2.2 | Types | dev | MIT | Existing |
 
@@ -269,10 +279,18 @@ Approved items remain **THIRD-PARTY — LICENSE UNKNOWN** under product-owner us
 
 | Item | Status |
 | --- | --- |
-| Lucide (TP-004) | REJECTED |
+| Lucide via `lucide-react-native` (TP-004) | **REOPEN APPROVED / USE APPROVED** — M8A Streak + shared UI where Lovable uses Lucide. Installed **0.575.0** (ISC). Peer: `react-native-svg@15.15.4` MIT. (`1.47.0` unsuitable for Metro/web due to `.mjs` package exports.) **Shields stat adaptation:** Lovable source = emoji `🛡`; Expo = Lucide `Shield` 24 / stroke 2.25 / `#F8FAFC` for deterministic contrast on navy cards (not a claim that Lovable uses Lucide for this glyph). |
 | Onboarding progress rocket image (TP-067) | REJECTED — Text 🚀 used |
 | Envelope PNG (TP-069) | REJECTED — Text ✉ used |
-| Search / check / chevron | System/Text glyphs |
+| Search / check / chevron (non-Lucide contexts) | System/Text glyphs where Lucide not applicable |
+
+---
+
+## F2. GRADIENTS (SOFTWARE)
+
+| Item | Status |
+| --- | --- |
+| `expo-linear-gradient` (TP-072) | **USE APPROVED** — M8A Streak hero/CTA (and production frontend). License MIT (package.json). |
 
 ---
 
@@ -334,7 +352,7 @@ TP-058, TP-059, TP-060, TP-025…TP-030 — provenance unknown beyond Lovable re
 | TP / item | Status | Notes |
 | --- | --- | --- |
 | TP-002 | REJECTED | — |
-| TP-004 Lucide | REJECTED | Text/system substitutes |
+| TP-004 Lucide | Was REJECTED; **2026-09-17 REOPEN APPROVED** for Streak / Lovable-Lucide UI scope | `lucide-react-native` + `react-native-svg` |
 | TP-005 / TP-007 packs | REJECTED AS BUNDLE | — |
 | TP-006 generated pack | DEFERRED as pack | Split decisions below |
 | **TP-067** `progress_rocket.png` | **REJECTED** | Removed from `NavigationAssets`; Text 🚀 in ProgressBar |

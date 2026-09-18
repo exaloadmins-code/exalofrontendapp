@@ -1,11 +1,25 @@
 # EXALO THIRD-PARTY / OPEN-SOURCE APPROVAL REQUEST
 
 **Project:** `C:\projects\exalofrontendapp`  
-**Milestone:** M2 Journey (+ retained M1 onboarding decisions)  
+**Milestone:** M8A Streak (+ retained M2 Journey / M1 onboarding decisions)
 **Last updated:** 2026-09-17  
 
 Existing Lovable usage does **not** constitute approval for exalofrontendapp.  
 Manual product-owner approval ≠ open-source license ≠ ownership.
+
+---
+
+## M8A STREAK — GOVERNANCE (2026-09-17)
+
+| Item | Status |
+| --- | --- |
+| TP-072 `expo-linear-gradient` | **USE APPROVED** — installed `~57.0.2` (57.0.2); license MIT (package.json) |
+| TP-004 Lucide | **REOPEN APPROVED** / **USE APPROVED** for M8A Streak (+ shared UI where Lovable uses Lucide) |
+| Installed Lucide stack | `lucide-react-native` **0.575.0** (exact; ISC); peer `react-native-svg` `15.15.4` (MIT, Expo SDK 57) |
+| Note | `1.47.0` rejected by Metro/web: `exports["."].react-native` → missing/unresolvable `dist/esm/*.mjs`. Pinned to Metro-compatible `0.575.0` (`.js` ESM exports). |
+| New fonts / raster assets | **NONE** |
+| License clearance | Product-use approval ≠ license clearance — keep **LICENSE REVIEW REQUIRED** where applicable for cumulative OSS review unless evidence fully closes the item |
+| TP-070 / TP-071 | **Unchanged** — USE APPROVED / LICENSE REVIEW REQUIRED; TP-071 DERIVATIVE OF TP-070 |
 
 ---
 
@@ -34,7 +48,12 @@ USE APPROVAL ≠ LICENSE CLEARANCE for TP-070 / TP-071.
 
 ## NEW APPROVAL REQUESTS
 
-**NONE** outstanding for this pass.
+**NONE** outstanding — prior M8A requests decided:
+
+| ID | Item | Product-owner decision | License note |
+| --- | --- | --- | --- |
+| **TP-072** | `expo-linear-gradient` ~57.0.2 | **USE APPROVED** | MIT (package `license` field). Cumulative OSS register updated; product-use ≠ automatic legal clearance beyond recorded MIT evidence. |
+| **TP-004** | `lucide-react-native` **0.575.0** (+ `react-native-svg` 15.15.4) | **REOPEN APPROVED** / **USE APPROVED** for M8A Streak iconography and shared Exalo UI where Lovable uses Lucide | Lucide ISC; `react-native-svg` MIT (package `license` fields). **0.575.0** selected after `1.47.0` Metro/web export failure (`.mjs` export target). |
 
 ---
 
@@ -64,7 +83,7 @@ USE APPROVAL ≠ LICENSE CLEARANCE for TP-070 / TP-071.
 | TP-001 | CONDITIONALLY APPROVED — Fredoka + `expo-font` |
 | TP-002 | REJECTED |
 | TP-003 | APPROVED — Home artboard only |
-| TP-004 | REJECTED — Lucide; use system/native/Text |
+| TP-004 | Was REJECTED; **2026-09-17 REOPEN / USE APPROVED** for Streak + Lovable-Lucide UI (`lucide-react-native`) |
 | TP-005 | REJECTED AS BUNDLE |
 | TP-006 | DEFERRED (generated onboarding pack) — individual TP-067…069 decided above |
 | TP-007 | REJECTED AS BUNDLE |

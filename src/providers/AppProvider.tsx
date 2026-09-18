@@ -1,6 +1,6 @@
 import { ReactNode, createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
 import { ActivityIndicator, Platform, StyleSheet, Text, View } from 'react-native';
-import { Href, useRootNavigationState, useRouter } from 'expo-router';
+import { Href, usePathname, useRootNavigationState, useRouter } from 'expo-router';
 import * as Linking from 'expo-linking';
 import { AssetProvider } from './AssetProvider';
 import { ThemeProvider } from './ThemeProvider';
@@ -86,6 +86,7 @@ async function shouldResetOnboardingDev(): Promise<boolean> {
  */
 export function AppProvider({ children }: AppProviderProps) {
   const router = useRouter();
+  const pathname = usePathname();
   const navigationState = useRootNavigationState();
   const [phase, setPhase] = useState<AppBootstrapPhase>('idle');
   const [error, setError] = useState<string | null>(null);
@@ -178,8 +179,20 @@ export function AppProvider({ children }: AppProviderProps) {
       return;
     }
     initialNavAppliedRef.current = true;
+
+    /**
+     * Preserve deep links / refresh on feature screens (M8 `/badges`, `/streak`,
+     * journey, etc.). Only force bootstrap navigation from `/`, or when
+     * onboarding is still incomplete (must land on the correct step).
+     */
+    const needsOnboarding = initialRoute.href.startsWith('/onboarding');
+    const onRoot = !pathname || pathname === '/';
+    if (!needsOnboarding && !onRoot) {
+      return;
+    }
+
     router.replace(initialRoute.href as Href);
-  }, [navigationState?.key, isReady, initialRoute, phase, router]);
+  }, [navigationState?.key, isReady, initialRoute, phase, router, pathname]);
 
   const setOnboardingState = useCallback(async (next: OnboardingState) => {
     setOnboarding(next);

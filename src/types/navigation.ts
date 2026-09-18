@@ -15,7 +15,11 @@ export type OnboardingState = {
 export type UserProfile = {
   displayName: string | null;
   email: string | null;
-  yearGroup: OnboardingState['yearGroup'];
+  /**
+   * Year label shown on Profile. Onboarding writes Year 4/5/6;
+   * Profile edit allows free text (Lovable ProfileMenu parity).
+   */
+  yearGroup: string | null;
   schoolName: string | null;
   avatarId: string | null;
   streak: number;

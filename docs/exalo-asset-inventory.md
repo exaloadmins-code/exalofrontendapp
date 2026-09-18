@@ -49,6 +49,41 @@ Transparency notes:
 
 M2 PRODUCT-OWNER VISUAL REVIEW: **APPROVED** (Maths + English). Native device matrix: **NOT YET DEVICE-VERIFIED**. M3: NOT STARTED.
 
+### M8A Streak (2026-09-17)
+
+- No new Streak-specific raster assets.
+- **TP-072** `expo-linear-gradient@57.0.2` (MIT) — USE APPROVED — hero / CTA gradients.
+- **TP-004** `lucide-react-native@0.575.0` (ISC) + `react-native-svg@15.15.4` (MIT) — REOPEN / USE APPROVED for Lovable Lucide icon locations; genuine Lovable emoji (🔥✨⭐🚀) preserved in hero/title/Current/Best stats. **Shields stat:** Lovable source uses emoji `🛡`; Expo production adaptation uses Lucide `Shield` (size 24, stroke 2.25, color Lovable `--foreground` `#F8FAFC`) because platform emoji contrast on navy cards is non-deterministic / barely visible. (`1.47.0` replaced — Metro/web could not resolve `.mjs` exports.)
+- Background remains theme `colors.background` (no new background TP).
+- Content width: Lovable `max-w-md` 448px + px-5 / sticky px-4.
+
+### M8 Badges / Achievements (2026-09-18)
+
+- Route `/badges` — Lovable `StreakBadges.tsx` + `lib/badges.ts` static catalog.
+- No new packages. Reuses TP-072 LinearGradient + TP-004 Lucide (`Sparkles`, `Lock`, `Hourglass`, `Award`, `ArrowLeft`, `ChevronDown`).
+- Badge artwork icons are **genuine Lovable emoji** (not Lucide substitutes).
+- No new raster assets.
+- Data: LOCAL STATIC PRODUCT SHELL (Lovable demo statuses/progress) — not backend.
+
+### M8 Score (2026-09-18)
+
+- Route `/score` — Lovable `Score.tsx` + PageShell.
+- No new packages. Reuses TP-072 LinearGradient (primary→secondary hero) + TP-004 Lucide (`Target`, `Zap`, `Repeat`, `Mountain`, `ArrowLeft`, `ChevronDown`).
+- Title emoji `🚀` + rising copy rocket preserved as genuine emoji.
+- Data: LOCAL STATIC PRODUCT SHELL — Lovable hardcoded 62/100 + breakdown values. Backend `GET /analytics/dashboard` not wired.
+- Home Score hotspot already routes to `/score` — unchanged.
+
+### M8A known responsive issue — Home profile chip (DEFERRED)
+
+At very narrow phone widths, notably 320×568, the dynamic profile chip requires
+responsive adaptation around the baked EXALO logo. The current implementation
+keeps the chip contained and the display name readable without the previous
+severe truncation, but the narrow-screen logo/profile composition is not
+considered final. Revisit during final responsive/native-device polish.
+Do not regress the approved 768×1024 appearance.
+
+**Do not attempt another Home profile-chip fix during Badges / other M8 screens.**
+
 ---
 
 ## Planets
