@@ -36,6 +36,24 @@ export function getTrainSelection(): TrainSelectionSnapshot | null {
   return lastSelection;
 }
 
+/**
+ * Update difficulty for the active Train subject while preserving topic fields
+ * when the subject matches. Used so Back from gameplay restores the pill.
+ */
+export function setTrainDifficulty(
+  subject: JourneySubject,
+  difficulty: TrainDifficulty,
+): TrainSelectionSnapshot {
+  const prev = lastSelection;
+  const sameSubject = prev?.subject === subject;
+  return setTrainSelection({
+    subject,
+    topicSlug: sameSubject && prev ? prev.topicSlug : '',
+    topicLabel: sameSubject && prev ? prev.topicLabel : '',
+    difficulty,
+  });
+}
+
 export function clearTrainSelection(): void {
   lastSelection = null;
 }

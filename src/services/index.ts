@@ -24,6 +24,28 @@ export type { ProfilePrefs } from './profilePrefs';
 export {
   setTrainSelection,
   getTrainSelection,
+  setTrainDifficulty,
   clearTrainSelection,
 } from './trainSelection';
 export type { TrainSelectionSnapshot } from './trainSelection';
+export {
+  loadTrainQuestions,
+  TRAIN_QUESTIONS_PER_RUN,
+  getTrainOptions,
+  OPTION_LETTERS,
+} from './trainQuestions';
+export type {
+  LoadTrainQuestionsParams,
+  LoadTrainQuestionsResult,
+  OptionLetter,
+  TrainAnswerRecord,
+  TrainBankDifficulty,
+  TrainQuestionRow,
+  TrainSubjectType,
+} from './trainQuestions';
+export {
+  setTrainResult,
+  getTrainResult,
+  clearTrainResult,
+} from './trainResults';
+export type { TrainResultSnapshot } from './trainResults';

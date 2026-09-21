@@ -1,5 +1,5 @@
 import { Href, useLocalSearchParams, useRouter } from 'expo-router';
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import {
   Image,
   LayoutChangeEvent,
@@ -40,7 +40,11 @@ import {
 } from '@/constants/train';
 import { useAppContext } from '@/providers';
 import { TRAIN_ARTBOARD } from '@/responsive';
-import { setTrainSelection } from '@/services/trainSelection';
+import {
+  getTrainSelection,
+  setTrainDifficulty,
+  setTrainSelection,
+} from '@/services/trainSelection';
 import { colors, fonts } from '@/theme';
 
 type SurfaceBox = { width: number; height: number };
@@ -59,8 +63,31 @@ export default function TrainSelectionScreen() {
   const { profile } = useAppContext();
   const { width: windowWidth, height: windowHeight } = useWindowDimensions();
   const [surface, setSurface] = useState<SurfaceBox | null>(null);
-  const [selectedDifficulty, setSelectedDifficulty] =
-    useState<TrainDifficulty>(TRAIN_DIFFICULTY_DEFAULT);
+  const [selectedDifficulty, setSelectedDifficulty] = useState<TrainDifficulty>(
+    () => {
+      if (!subject) {
+        return TRAIN_DIFFICULTY_DEFAULT;
+      }
+      const snap = getTrainSelection();
+      if (snap?.subject === subject) {
+        return snap.difficulty;
+      }
+      return TRAIN_DIFFICULTY_DEFAULT;
+    },
+  );
+
+  // Remount / subject switch: restore difficulty from M3 handoff when subject matches.
+  useEffect(() => {
+    if (!subject) {
+      return;
+    }
+    const snap = getTrainSelection();
+    if (snap?.subject === subject) {
+      setSelectedDifficulty(snap.difficulty);
+      return;
+    }
+    setSelectedDifficulty(TRAIN_DIFFICULTY_DEFAULT);
+  }, [subject]);
 
   const name = profile.displayName?.trim() || 'Explorer';
   const avatarSource = resolveAvatarSource(profile.avatarId);
@@ -139,9 +166,14 @@ export default function TrainSelectionScreen() {
       label: h.label,
       percent: h.percent,
       minTouch,
-      onPress: () => setSelectedDifficulty(h.id),
+      onPress: () => {
+        setSelectedDifficulty(h.id);
+        if (subject) {
+          setTrainDifficulty(subject, h.id);
+        }
+      },
     }));
-  }, [artboard]);
+  }, [artboard, subject]);
 
   const topicHotspots = useMemo(() => {
     if (!subject) {

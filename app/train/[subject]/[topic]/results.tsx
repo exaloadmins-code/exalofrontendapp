@@ -1,23 +1,27 @@
 import { Href, useLocalSearchParams, useRouter } from 'expo-router';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { normalizeJourneySubject, journeySubjectLabel } from '@/constants/journey';
 import { Routes } from '@/constants/routes';
 import {
   normalizeTrainDifficulty,
   trainTopicLabel,
 } from '@/constants/train';
-import { getTrainSelection } from '@/services/trainSelection';
+import { TRAIN_GAMEPLAY as T } from '@/constants/trainGameplay';
+import { getTrainResult } from '@/services/trainResults';
 import { useDeviceLayout } from '@/responsive';
 import { colors, fonts, spacing } from '@/theme';
 
 /**
- * M3 milestone boundary — Lovable would open TrainGameplay here
- * (`/train/:subject/:topic?difficulty=`). Gameplay is out of scope for M3.
+ * M4 → M5 boundary placeholder.
  *
- * No `/train/start`, no fake session IDs, no question bank.
+ * Lovable embeds a full Results UI inside QuizPlayer when finished.
+ * M5 owns Results — this screen only proves the handoff and preserves local
+ * answer data via `getTrainResult()`. Do not expand into full M5 here.
  */
-export default function TrainGameplayBoundaryScreen() {
+export default function TrainResultsBoundaryScreen() {
   const router = useRouter();
+  const insets = useSafeAreaInsets();
   const layout = useDeviceLayout();
   const params = useLocalSearchParams<{
     subject: string;
@@ -28,17 +32,18 @@ export default function TrainGameplayBoundaryScreen() {
   const subject = normalizeJourneySubject(params.subject);
   const topicSlug = Array.isArray(params.topic) ? params.topic[0] : params.topic;
   const difficulty = normalizeTrainDifficulty(params.difficulty);
-  const snapshot = getTrainSelection();
+  const result = getTrainResult();
 
   const topicLabel =
+    result?.topicLabel ??
     (subject && topicSlug ? trainTopicLabel(subject, topicSlug) : undefined) ??
-    snapshot?.topicLabel ??
     topicSlug ??
     'Topic';
-
   const subjectLabel = subject ? journeySubjectLabel(subject) : 'Subject';
+  const totalCorrect = result?.totalCorrect ?? 0;
+  const totalQuestions = result?.totalQuestions ?? 0;
 
-  const goBackToSelection = () => {
+  const backToSelection = () => {
     if (subject) {
       router.replace(`/train/${subject}` as Href);
       return;
@@ -55,23 +60,27 @@ export default function TrainGameplayBoundaryScreen() {
       style={[
         styles.root,
         {
-          paddingTop: layout.safeAreaInsets.top + spacing.lg,
-          paddingBottom: layout.safeAreaInsets.bottom + spacing.lg,
+          paddingTop: Math.max(insets.top, layout.safeAreaInsets.top) + spacing.lg,
+          paddingBottom: Math.max(insets.bottom, layout.safeAreaInsets.bottom) + spacing.lg,
           paddingHorizontal: spacing.lg,
         },
       ]}
     >
       <Text style={styles.brand}>EXALO</Text>
-      <Text style={styles.title}>Train gameplay next</Text>
+      <Text style={styles.title}>Train results next</Text>
       <Text style={styles.body}>
-        M3 Train Selection is complete. You chose {subjectLabel} · {topicLabel} ·{' '}
-        {difficulty.toUpperCase()}. Gameplay (M4) is not implemented yet — no
-        questions were loaded and no training session was started.
+        M4 Train Gameplay is complete. You finished {subjectLabel} · {topicLabel} ·{' '}
+        {difficulty.toUpperCase()}
+        {totalQuestions > 0
+          ? ` — ${totalCorrect} / ${totalQuestions} correct locally.`
+          : '.'}{' '}
+        Results (M5) is not implemented yet. Answer data is held in temporary
+        frontend memory only — no backend session was created.
       </Text>
       <Pressable
         accessibilityRole="button"
         accessibilityLabel="Back to Train selection"
-        onPress={goBackToSelection}
+        onPress={backToSelection}
         style={styles.button}
       >
         <Text style={styles.buttonLabel}>Back to Train selection</Text>
@@ -83,7 +92,7 @@ export default function TrainGameplayBoundaryScreen() {
 const styles = StyleSheet.create({
   root: {
     flex: 1,
-    backgroundColor: colors.backgroundDeep,
+    backgroundColor: T.background,
     justifyContent: 'center',
     gap: spacing.md,
   },
@@ -110,7 +119,7 @@ const styles = StyleSheet.create({
   button: {
     marginTop: spacing.md,
     alignSelf: 'flex-start',
-    backgroundColor: colors.purple,
+    backgroundColor: T.cta,
     paddingHorizontal: spacing.xl,
     paddingVertical: spacing.md,
     borderRadius: 16,

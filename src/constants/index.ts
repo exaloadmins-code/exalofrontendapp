@@ -108,5 +108,9 @@ export {
   PARENTS_EXALO_SCORE,
 } from './parents';
 export type { ParentsAccent } from './parents';
+export {
+  TRAIN_GAMEPLAY,
+  TRAIN_GAMEPLAY_COPY,
+} from './trainGameplay';
 export { Routes, IMPLEMENTED_ROUTES } from './routes';
 export type { RoutePath } from './routes';
