@@ -15,6 +15,8 @@ export const Routes = {
   JourneyEnglish: '/journey/english',
   TrainMaths: '/train/maths',
   TrainEnglish: '/train/english',
+  /** M3 boundary — topic route exists as gameplay placeholder only. */
+  TrainTopic: '/train/[subject]/[topic]',
   FocusMaths: '/focus/maths',
   FocusEnglish: '/focus/english',
   TestMaths: '/test/maths',

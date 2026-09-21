@@ -3,7 +3,7 @@
 **Project:** `C:\projects\exalofrontendapp`  
 **Companion:** `THIRD_PARTY_APPROVAL_REQUEST.md`  
 **Nature:** PERMANENT CUMULATIVE governance register (not milestone-only)  
-**Last updated:** 2026-09-18 (M8 Score; M8 Badges; M8A Home profile-chip narrow composition deferred)
+**Last updated:** 2026-09-21 (M3 Train Selection; TP-073 / TP-074)
 
 > Manual product-owner **APPROVAL** authorizes specified product use only.  
 > It does **not** establish Exalo ownership, open-source license, or completed legal terms review.
@@ -30,6 +30,26 @@
 | 2026-09-18 | **M8A Shields + sticky CTA:** Shields stat uses Lucide `Shield` (production adaptation; Lovable source remains emoji). Sticky CTA = Lovable `bottom-20` (80px) + `insets.bottom`. |
 | 2026-09-18 | **M8 Badges:** `/badges` Achievements screen (Lovable `StreakBadges.tsx`). No new packages/assets. Reuses TP-072 + TP-004. Badge icons = genuine Lovable emoji. Static Lovable badge catalog. **Deferred:** M8A Home profile-chip narrow composition (320×568) — not final; do not regress 768×1024. |
 | 2026-09-18 | **M8 Score:** `/score` Exalo Score screen (Lovable `Score.tsx`). No new packages/assets. Reuses TP-072 + TP-004 (`Target`/`Zap`/`Repeat`/`Mountain`). Static Lovable demo 62/100 + breakdown. Backend analytics not wired. Home Score hotspot unchanged (already `/score`). |
+| 2026-09-21 | **M3 Train Selection:** `/train/:subject` Lovable `TrainMode` parity. Copied TP-073 `maths-train-mode.png` + TP-074 `english-train-mode.png` from Lovable. Local TEMPORARY catalogue in `src/constants/train.ts`. Topic CTA → M3 boundary placeholder (no gameplay, no `/train/start`). No new packages. LICENSE REVIEW REQUIRED. Redmi PhoneViewport letterboxing parked untouched. |
+
+---
+
+## M3 TRAIN SELECTION — GOVERNANCE NOTE
+
+NEWLY DISCOVERED THIRD-PARTY ITEMS: **TP-073** `maths-train-mode.png`, **TP-074** `english-train-mode.png`  
+NEW PACKAGES: NONE  
+NEW OPEN-SOURCE VISUAL ASSETS: NONE  
+REJECTED ASSETS REUSED: NONE  
+
+**PRODUCT-OWNER VISUAL REVIEW:** PENDING (this milestone)  
+**Native device verification:** NOT YET DEVICE-VERIFIED (iOS/Android × portrait/landscape)  
+
+**Backend / DB / `/train/start` / question-bank:** NONE (explicitly parked)  
+**M4 Train Gameplay:** NOT STARTED — topic route is an M3 boundary placeholder only  
+
+TP-073 / TP-074: introduced under the M3 milestone brief (Lovable Train Selection parity). **LICENSE REVIEW REQUIRED.** Formal product-owner **USE APPROVED** confirmation awaits visual review of this milestone.
+
+CUMULATIVE THIRD-PARTY / OPEN-SOURCE REGISTER: UPDATED — see TP-073 / TP-074 below and sections G / H / J.
 
 ---
 
@@ -49,7 +69,7 @@ REJECTED ASSETS REUSED: NONE (TP-067/068/069 remain unused)
 - Android landscape — NOT YET DEVICE-VERIFIED  
 
 **Backend / DB / question-bank:** NONE  
-**M3:** NOT STARTED  
+**M3:** STARTED / implemented (Train Selection) — see M3 governance note above  
 
 TP-070 / TP-071: **USE APPROVED** does **not** clear license — both remain **LICENSE REVIEW REQUIRED**.  
 TP-071 remains a **DERIVATIVE OF TP-070** (not Exalo-original).
@@ -203,6 +223,34 @@ REVIEWED — NO NEW MATERIAL INTRODUCED BY HOME LANDSCAPE CORRECTION.
 | Open-source? | **No** |
 | Derivation tooling | Local script `scripts/derive_journey_bg_clean.py` (Pillow); not a new visual dependency |
 
+### TP-073 — `maths-train-mode.png` (Maths Train Selection artboard)
+
+| Field | Value |
+| --- | --- |
+| Filename | `maths-train-mode.png` |
+| Source | `C:\projects\exalo\src\assets\maths-train-mode.png` |
+| Destination | `assets/train/maths-train-mode.png` |
+| Screens | Train Selection `/train/maths` (M3) |
+| Intrinsic size | 843×1264 |
+| Provenance | XMP `trainedAlgorithmicMedia` + C2PA / SynthID / Google Generative AI signals (same class as TP-003 / TP-070) |
+| Classification | **THIRD-PARTY — LICENSE UNKNOWN** |
+| License | UNKNOWN — **LICENSE REVIEW REQUIRED** |
+| Manual use status | Introduced for M3 Train Selection parity per milestone brief; **formal USE APPROVED pending PO visual review** |
+
+### TP-074 — `english-train-mode.png` (English Train Selection artboard)
+
+| Field | Value |
+| --- | --- |
+| Filename | `english-train-mode.png` |
+| Source | `C:\projects\exalo\src\assets\english-train-mode.png` |
+| Destination | `assets/train/english-train-mode.png` |
+| Screens | Train Selection `/train/english` (M3) |
+| Intrinsic size | 843×1264 |
+| Provenance | XMP `trainedAlgorithmicMedia` + C2PA / SynthID / Google Generative AI signals (same class as TP-003 / TP-070) |
+| Classification | **THIRD-PARTY — LICENSE UNKNOWN** |
+| License | UNKNOWN — **LICENSE REVIEW REQUIRED** |
+| Manual use status | Introduced for M3 Train Selection parity per milestone brief; **formal USE APPROVED pending PO visual review** |
+
 ### TP-001 — Fredoka
 
 | Field | Value |
@@ -301,8 +349,10 @@ Approved items remain **THIRD-PARTY — LICENSE UNKNOWN** under product-owner us
 | `exalo-home-v2.png` | TP-003 | `exalo/src/assets/exalo-home-v2.png` | `assets/home/` | Home | AI/SynthID | UNKNOWN | APPROVED Home |
 | `journey-bg.png` | TP-070 | `exalo/src/assets/journey-bg.png` | `assets/journey/` | Provenance source (baked header) | AI/SynthID | UNKNOWN | **USE APPROVED** |
 | `journey-bg-clean.png` | TP-071 | **Derivative of TP-070 only** | `assets/journey/` | Journey runtime | Same as TP-070 | UNKNOWN | **USE APPROVED** (derivative); **LICENSE REVIEW REQUIRED** |
+| `maths-train-mode.png` | TP-073 | `exalo/src/assets/maths-train-mode.png` | `assets/train/` | Train Selection `/train/maths` | AI/SynthID | UNKNOWN | M3 introduced; **LICENSE REVIEW REQUIRED**; formal USE APPROVED pending PO visual review |
+| `english-train-mode.png` | TP-074 | `exalo/src/assets/english-train-mode.png` | `assets/train/` | Train Selection `/train/english` | AI/SynthID | UNKNOWN | M3 introduced; **LICENSE REVIEW REQUIRED**; formal USE APPROVED pending PO visual review |
 | Onboarding page wash | — | CSS `--gradient-bg` | StyleSheet approx. | Onboarding | System/platform recreation | N/A | System |
-| `background planets.png` | — | Pack / prior | `assets/backgrounds/` | Optional SpaceBackground | UNKNOWN | UNKNOWN | Not newly expanded this milestone — **not** used as Journey background |
+| `background planets.png` | — | Pack / prior | `assets/backgrounds/` | Optional SpaceBackground | UNKNOWN | UNKNOWN | Not newly expanded this milestone — **not** used as Journey / Train background |
 
 ---
 
@@ -313,6 +363,8 @@ Approved items remain **THIRD-PARTY — LICENSE UNKNOWN** under product-owner us
 | TP-003 `exalo-home-v2.png` | XMP + C2PA Google Generative AI / SynthID | APPROVED for Home use |
 | TP-070 `journey-bg.png` | XMP `trainedAlgorithmicMedia` + C2PA / SynthID signals | **USE APPROVED**; LICENSE REVIEW REQUIRED |
 | TP-071 `journey-bg-clean.png` | Derivative of TP-070 (header text removed) | **USE APPROVED** as derivative; LICENSE REVIEW REQUIRED |
+| TP-073 `maths-train-mode.png` | XMP `trainedAlgorithmicMedia` + C2PA / SynthID signals | M3 introduced; LICENSE REVIEW REQUIRED; formal USE APPROVED pending |
+| TP-074 `english-train-mode.png` | XMP `trainedAlgorithmicMedia` + C2PA / SynthID signals | M3 introduced; LICENSE REVIEW REQUIRED; formal USE APPROVED pending |
 | TP-068 `onboarding_email_hero.png` | AI meta previously noted | **REJECTED / DO NOT USE** |
 
 ---
@@ -330,6 +382,8 @@ TP-058, TP-059, TP-060, TP-025…TP-030 — provenance unknown beyond Lovable re
 | TP-003 | Approved use; license still UNKNOWN |
 | TP-070 | USE APPROVED; license UNKNOWN — LICENSE REVIEW REQUIRED |
 | TP-071 | USE APPROVED (derivative of TP-070); license UNKNOWN — LICENSE REVIEW REQUIRED |
+| TP-073 | M3 Train Selection maths artboard; license UNKNOWN — LICENSE REVIEW REQUIRED |
+| TP-074 | M3 Train Selection english artboard; license UNKNOWN — LICENSE REVIEW REQUIRED |
 | TP-058 | Approved use; license UNKNOWN |
 | TP-059 | Approved use; license UNKNOWN |
 | TP-060 | Approved use; license UNKNOWN |

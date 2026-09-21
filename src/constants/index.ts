@@ -4,6 +4,7 @@ export {
   BackgroundAssets,
   HomeAssets,
   JourneyAssets,
+  TrainAssets,
   PlanetAssets,
   RocketAssets,
   AstronautAssets,
@@ -36,6 +37,20 @@ export {
   journeyPathSubtitle,
 } from './journey';
 export type { JourneySubject } from './journey';
+export {
+  TRAIN_DIFFICULTIES,
+  TRAIN_DIFFICULTY_DEFAULT,
+  TRAIN_MATHS_TOPICS,
+  TRAIN_ENGLISH_TOPICS,
+  TRAIN_DIFFICULTY_SELECTED,
+  TRAIN_DIFFICULTY_LABEL_STYLE,
+  TRAIN_PROFILE_OVERLAY,
+  trainTopicsFor,
+  trainTopicLabel,
+  normalizeTrainDifficulty,
+  trainScreenTitle,
+} from './train';
+export type { TrainDifficulty, TrainTopic } from './train';
 export {
   STREAK_GOAL_MINUTES,
   FREEZE_CAP,

@@ -21,6 +21,12 @@ export const JOURNEY_ARTBOARD = {
   height: 1264,
 } as const;
 
+/** Lovable Train Selection artboard (TP-073 / TP-074). Same 843×1264. */
+export const TRAIN_ARTBOARD = {
+  width: 843,
+  height: 1264,
+} as const;
+
 export type DeviceClass = 'phone' | 'tablet' | 'other';
 export type Orientation = 'portrait' | 'landscape';
 

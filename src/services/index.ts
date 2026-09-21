@@ -21,3 +21,9 @@ export type {
 } from './streak';
 export { getProfilePrefs, setProfilePref, defaultPrefs } from './profilePrefs';
 export type { ProfilePrefs } from './profilePrefs';
+export {
+  setTrainSelection,
+  getTrainSelection,
+  clearTrainSelection,
+} from './trainSelection';
+export type { TrainSelectionSnapshot } from './trainSelection';

@@ -33,6 +33,17 @@ export const JourneyAssets = {
   artboard: require('../../assets/journey/journey-bg-clean.png'),
 } as const;
 
+/**
+ * TP-073 / TP-074 — Train Selection artboards (843×1264), LICENSE REVIEW REQUIRED.
+ * Copied from Lovable TrainMode assets for M3 parity.
+ */
+export const TrainAssets = {
+  /** TP-073 — Maths Train Selection artboard. */
+  maths: require('../../assets/train/maths-train-mode.png'),
+  /** TP-074 — English Train Selection artboard. */
+  english: require('../../assets/train/english-train-mode.png'),
+} as const;
+
 export const PlanetAssets = {
   blue: require('../../assets/planets/planet blue.png'),
   purple: require('../../assets/planets/planet purple.png'),
@@ -132,6 +143,7 @@ export const assets = {
   backgrounds: BackgroundAssets,
   home: HomeAssets,
   journey: JourneyAssets,
+  train: TrainAssets,
   planets: PlanetAssets,
   rockets: RocketAssets,
   astronauts: AstronautAssets,

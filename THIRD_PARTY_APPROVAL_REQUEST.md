@@ -1,11 +1,24 @@
 # EXALO THIRD-PARTY / OPEN-SOURCE APPROVAL REQUEST
 
 **Project:** `C:\projects\exalofrontendapp`  
-**Milestone:** M8A Streak (+ retained M2 Journey / M1 onboarding decisions)
-**Last updated:** 2026-09-17  
+**Milestone:** M3 Train Selection (+ retained M8 / M2 / M1 decisions)  
+**Last updated:** 2026-09-21  
 
 Existing Lovable usage does **not** constitute approval for exalofrontendapp.  
 Manual product-owner approval ≠ open-source license ≠ ownership.
+
+---
+
+## M3 TRAIN SELECTION — APPROVAL REQUEST (2026-09-21)
+
+| ID | Item | Requested decision | Notes |
+| --- | --- | --- | --- |
+| **TP-073** | `maths-train-mode.png` | **USE APPROVAL REQUESTED** | Copied from `exalo/src/assets/maths-train-mode.png` → `assets/train/`. SynthID / C2PA / `trainedAlgorithmicMedia`. Required for M3 `/train/maths` parity. **LICENSE REVIEW REQUIRED**. |
+| **TP-074** | `english-train-mode.png` | **USE APPROVAL REQUESTED** | Copied from `exalo/src/assets/english-train-mode.png` → `assets/train/`. SynthID / C2PA / `trainedAlgorithmicMedia`. Required for M3 `/train/english` parity. **LICENSE REVIEW REQUIRED**. |
+| New packages | — | NONE | No new npm dependencies for M3 |
+| Backend / `/train/start` | — | NONE | Explicitly parked |
+
+USE APPROVAL ≠ LICENSE CLEARANCE for TP-073 / TP-074.
 
 ---
 
@@ -40,7 +53,7 @@ Manual product-owner approval ≠ open-source license ≠ ownership.
 | Android portrait | NOT YET DEVICE-VERIFIED |
 | Android landscape | NOT YET DEVICE-VERIFIED |
 | Backend / DB / question-bank | NONE |
-| M3 | NOT STARTED |
+| M3 | **IMPLEMENTED** (Train Selection) — see M3 approval request above; visual USE APPROVAL pending |
 
 USE APPROVAL ≠ LICENSE CLEARANCE for TP-070 / TP-071.
 
@@ -48,7 +61,14 @@ USE APPROVAL ≠ LICENSE CLEARANCE for TP-070 / TP-071.
 
 ## NEW APPROVAL REQUESTS
 
-**NONE** outstanding — prior M8A requests decided:
+**Outstanding (M3):**
+
+| ID | Item | Product-owner decision | License note |
+| --- | --- | --- | --- |
+| **TP-073** | `maths-train-mode.png` | **USE APPROVAL REQUESTED** (pending visual review) | UNKNOWN — LICENSE REVIEW REQUIRED (SynthID / C2PA) |
+| **TP-074** | `english-train-mode.png` | **USE APPROVAL REQUESTED** (pending visual review) | UNKNOWN — LICENSE REVIEW REQUIRED (SynthID / C2PA) |
+
+**Prior M8A requests (decided):**
 
 | ID | Item | Product-owner decision | License note |
 | --- | --- | --- | --- |

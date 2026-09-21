@@ -12,3 +12,9 @@ export {
   JOURNEY_HEADER_ROW,
   resolveJourneyRoute,
 } from './journeyHotspots';
+export {
+  TRAIN_DIFFICULTY_HOTSPOTS,
+  TRAIN_CHROME_HOTSPOTS,
+  trainTopicHotspotPercent,
+  resolveTrainChromeRoute,
+} from './trainHotspots';

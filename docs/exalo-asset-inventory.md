@@ -47,7 +47,16 @@ Transparency notes:
 | `journey-bg.png` | 843×1264 | `assets/journey/journey-bg.png` | TP-070 source (baked header). Retained unchanged for provenance. **USE APPROVED** / **LICENSE REVIEW REQUIRED**. |
 | `journey-bg-clean.png` | 843×1264 | `assets/journey/journey-bg-clean.png` | TP-071 **DERIVATIVE OF TP-070** — baked “Maths” / “Choose your path” removed. **Runtime Journey artboard.** **USE APPROVED** (derivative) / **LICENSE REVIEW REQUIRED**. Not Exalo-original. |
 
-M2 PRODUCT-OWNER VISUAL REVIEW: **APPROVED** (Maths + English). Native device matrix: **NOT YET DEVICE-VERIFIED**. M3: NOT STARTED.
+M2 PRODUCT-OWNER VISUAL REVIEW: **APPROVED** (Maths + English). Native device matrix: **NOT YET DEVICE-VERIFIED**.
+
+### Lovable Train Selection artboards (M3)
+
+| Filename | Dimensions | Project location | Notes |
+| --- | --- | --- | --- |
+| `maths-train-mode.png` | 843×1264 | `assets/train/maths-train-mode.png` | TP-073. Maths Train Selection runtime artboard. **LICENSE REVIEW REQUIRED**. Formal USE APPROVED pending PO visual review. |
+| `english-train-mode.png` | 843×1264 | `assets/train/english-train-mode.png` | TP-074. English Train Selection runtime artboard. **LICENSE REVIEW REQUIRED**. Formal USE APPROVED pending PO visual review. |
+
+M3 PRODUCT-OWNER VISUAL REVIEW: **PENDING**. Native device matrix: **NOT YET DEVICE-VERIFIED**. M4 gameplay: not started.
 
 ### M8A Streak (2026-09-17)
 
@@ -282,23 +291,28 @@ Confidence: **Confirmed** = visual match to a source file · **Candidate** = clo
 
 | Element | Mapping |
 | --- | --- |
-| Background / planets | **Confirmed:** `background planets.png`, planet cutouts |
-| Small heading rocket | **Candidate:** `rocket_main.png` (or cropped `rocket.png`) |
-| Number Skills graphic | **Missing** (weak adjacent only: `maths.png` operators) |
-| Fractions | **Missing** |
-| Decimals | **Missing** |
-| Percentages | **Missing** |
-| Ratio & Proportion | **Missing** |
-| Algebra | **Missing** |
-| Geometry | **Missing** |
-| Angles | **Missing** |
-| Measurement | **Missing** |
-| Word Problems | **Missing** |
-| Robot mascot | **Missing** |
-| Trophy | **Missing** (do not substitute `badge.png`) |
-| Bottom nav | **Confirmed:** `home_icon.png`, `parents_icon.png` |
+| Full Train Selection artboard | **M3 runtime:** `assets/train/maths-train-mode.png` (TP-073). Difficulty pills + topic tiles baked in; hotspots from Lovable `TrainMode.tsx`. |
+| Background / planets (pack reconstruction) | Pack candidates only; superseded for Train Selection by TP-073 artboard |
+| Small heading rocket | Baked into TP-073 |
+| Number Skills graphic | Baked into TP-073 |
+| Fractions | Baked into TP-073 |
+| Decimals | Baked into TP-073 |
+| Percentages | Baked into TP-073 |
+| Ratio & Proportion | Baked into TP-073 |
+| Algebra | Baked into TP-073 |
+| Geometry | Baked into TP-073 |
+| Angles | Baked into TP-073 |
+| Measurement | Baked into TP-073 |
+| Word Problems | Baked into TP-073 |
+| Robot mascot | Baked into TP-073 (if present on artboard) |
+| Trophy | Baked into TP-073 (if present on artboard) |
+| Bottom nav | Baked into TP-073; hotspots match Lovable TrainMode.tsx |
 
----
+### H2. English Train Mode
+
+| Element | Mapping |
+| --- | --- |
+| Full Train Selection artboard | **M3 runtime:** `assets/train/english-train-mode.png` (TP-074). Same hotspot layout as maths; English topic tiles baked in. |
 
 ## Duplicate / Alternate Assets
 
@@ -330,18 +344,7 @@ Project-only duplicate copy (intentional): `onb-astronaut-goal.png` exists under
 | Choose Your Path | Red Test rocket | White body, red nose/fins, black porthole, exhaust | None |
 | Choose Your Path | Silver Train rocket | White body, silver/grey nose/fins, exhaust | None |
 | Choose Your Path | Mode icons | Target, open-book, crosshair glyphs on path cards | `book.png` only for Focus |
-| Train Mode | Topic 1 Number Skills | 3D “123” icon | Weak: `maths.png` |
-| Train Mode | Topic 2 Fractions | Pie chart “1/4” | None |
-| Train Mode | Topic 3 Decimals | “2.5.” numerals | None |
-| Train Mode | Topic 4 Percentages | “%” glyph | None |
-| Train Mode | Topic 5 Ratio & Proportion | Balance scale | None |
-| Train Mode | Topic 6 Algebra | “x+y” | None |
-| Train Mode | Topic 7 Geometry | Cube / pyramid / sphere | None |
-| Train Mode | Topic 8 Angles | Protractor “45°” | None |
-| Train Mode | Topic 9 Measurement | Ruler + clock | None |
-| Train Mode | Topic 10 Word Problems | Speech bubble “?” | None |
-| Train Mode | Robot | White/blue waving robot | None |
-| Train Mode | Trophy | Gold cup with star + sparkles | Do not use `badge.png` |
+| Train Mode | Topic tiles / robot / trophy | **Superseded for M3** by full artboards TP-073 / TP-074 (baked). Separate cutouts not required for Train Selection. | — |
 | Multiple | Back arrow / chevrons / search / envelope | Small UI icons in screenshots | None in pack (implement as vector/UI) |
 | Home / Train | EXALO Score decorative rays | Orange/blue dashes around score | Only similar rays inside `exalo logo.png` |
 
@@ -366,7 +369,7 @@ Project-only duplicate copy (intentional): `onb-astronaut-goal.png` exists under
 | Onboarding 5 | Ready (`avatar-1`…`avatar-6`) |
 | Home | Mostly ready (logo, background, planets, streak/badge cards, subject cards, nav, rocket candidates). Maths operators may need composition / corrected divide glyph. |
 | Maths Choose Your Path | Incomplete — red Test + silver Train rockets and mode icons missing |
-| Maths Train Mode | Incomplete — all 10 topic graphics, robot, and trophy missing |
+| Maths Train Mode | **M3 covered** by TP-073 full artboard (separate topic cutouts not required for Selection) |
 
 **Overall:** Not all artwork required for the supplied reference screens is available in the current asset directory. Confirmed coverage is strongest for Home chrome, Onboarding 4–5, planets/background, and bottom navigation. Major gaps remain for onboarding hero scenes, path-mode rocket trio, Train Mode topics, robot, and trophy.
 
