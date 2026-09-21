@@ -47,5 +47,9 @@ export {
   setTrainResult,
   getTrainResult,
   clearTrainResult,
+  armTrainRetry,
+  clearArmedTrainRetry,
+  consumeArmedTrainRetry,
+  trainResultPercent,
 } from './trainResults';
 export type { TrainResultSnapshot } from './trainResults';

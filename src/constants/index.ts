@@ -112,5 +112,9 @@ export {
   TRAIN_GAMEPLAY,
   TRAIN_GAMEPLAY_COPY,
 } from './trainGameplay';
+export {
+  TRAIN_RESULTS,
+  TRAIN_RESULTS_COPY,
+} from './trainResults';
 export { Routes, IMPLEMENTED_ROUTES } from './routes';
 export type { RoutePath } from './routes';

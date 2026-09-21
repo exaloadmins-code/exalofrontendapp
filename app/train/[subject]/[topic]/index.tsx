@@ -18,7 +18,10 @@ import {
   type TrainAnswerRecord,
   type TrainQuestionRow,
 } from '@/services/trainQuestions';
-import { setTrainResult } from '@/services/trainResults';
+import {
+  consumeArmedTrainRetry,
+  setTrainResult,
+} from '@/services/trainResults';
 import { fonts } from '@/theme';
 
 /**
@@ -66,6 +69,18 @@ export default function TrainGameplayScreen() {
     setLoading(true);
     setError(null);
 
+    const armed = consumeArmedTrainRetry(subject, topicSlug, difficulty);
+    if (armed && armed.length > 0) {
+      setQuestions(armed);
+      setBankDifficultyLabel(
+        difficulty === 'hard' ? 'Hard' : difficulty === 'medium' ? 'Medium' : 'Easy',
+      );
+      setLoading(false);
+      return () => {
+        cancelled = true;
+      };
+    }
+
     loadTrainQuestions({
       subject,
       topicSlug,
@@ -110,7 +125,9 @@ export default function TrainGameplayScreen() {
       topicSlug,
       topicLabel,
       difficulty,
+      title: `Train Mode · ${topicLabel}`,
       answers,
+      questions,
     });
     router.push({
       pathname: '/train/[subject]/[topic]/results',

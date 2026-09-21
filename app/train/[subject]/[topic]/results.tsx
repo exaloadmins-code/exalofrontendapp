@@ -1,28 +1,30 @@
 import { Href, useLocalSearchParams, useRouter } from 'expo-router';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { normalizeJourneySubject, journeySubjectLabel } from '@/constants/journey';
+import { TrainResultsView } from '@/components/train/TrainResultsView';
+import { normalizeJourneySubject } from '@/constants/journey';
 import { Routes } from '@/constants/routes';
+import { normalizeTrainDifficulty } from '@/constants/train';
 import {
-  normalizeTrainDifficulty,
-  trainTopicLabel,
-} from '@/constants/train';
-import { TRAIN_GAMEPLAY as T } from '@/constants/trainGameplay';
-import { getTrainResult } from '@/services/trainResults';
-import { useDeviceLayout } from '@/responsive';
-import { colors, fonts, spacing } from '@/theme';
-
+  TRAIN_RESULTS as R,
+  TRAIN_RESULTS_COPY as COPY,
+} from '@/constants/trainResults';
+import { setTrainDifficulty } from '@/services/trainSelection';
+import {
+  armTrainRetry,
+  clearArmedTrainRetry,
+  getTrainResult,
+} from '@/services/trainResults';
+import { fonts } from '@/theme';
 /**
- * M4 → M5 boundary placeholder.
+ * M5 Train Results — Lovable QuizPlayer finished-state parity on the native
+ * `/train/[subject]/[topic]/results` route.
  *
- * Lovable embeds a full Results UI inside QuizPlayer when finished.
- * M5 owns Results — this screen only proves the handoff and preserves local
- * answer data via `getTrainResult()`. Do not expand into full M5 here.
+ * Frontend-only: uses `getTrainResult()` in-memory handoff from M4. No API.
  */
-export default function TrainResultsBoundaryScreen() {
+export default function TrainResultsScreen() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
-  const layout = useDeviceLayout();
   const params = useLocalSearchParams<{
     subject: string;
     topic: string;
@@ -34,17 +36,17 @@ export default function TrainResultsBoundaryScreen() {
   const difficulty = normalizeTrainDifficulty(params.difficulty);
   const result = getTrainResult();
 
-  const topicLabel =
-    result?.topicLabel ??
-    (subject && topicSlug ? trainTopicLabel(subject, topicSlug) : undefined) ??
-    topicSlug ??
-    'Topic';
-  const subjectLabel = subject ? journeySubjectLabel(subject) : 'Subject';
-  const totalCorrect = result?.totalCorrect ?? 0;
-  const totalQuestions = result?.totalQuestions ?? 0;
+  const resultMatchesRoute =
+    !!result &&
+    !!subject &&
+    !!topicSlug &&
+    result.subject === subject &&
+    result.topicSlug === topicSlug;
 
-  const backToSelection = () => {
+  const goTrainSelection = () => {
+    clearArmedTrainRetry();
     if (subject) {
+      setTrainDifficulty(subject, difficulty);
       router.replace(`/train/${subject}` as Href);
       return;
     }
@@ -55,79 +57,110 @@ export default function TrainResultsBoundaryScreen() {
     router.replace(Routes.Home as Href);
   };
 
-  return (
-    <View
-      style={[
-        styles.root,
-        {
-          paddingTop: Math.max(insets.top, layout.safeAreaInsets.top) + spacing.lg,
-          paddingBottom: Math.max(insets.bottom, layout.safeAreaInsets.bottom) + spacing.lg,
-          paddingHorizontal: spacing.lg,
-        },
-      ]}
-    >
-      <Text style={styles.brand}>EXALO</Text>
-      <Text style={styles.title}>Train results next</Text>
-      <Text style={styles.body}>
-        M4 Train Gameplay is complete. You finished {subjectLabel} · {topicLabel} ·{' '}
-        {difficulty.toUpperCase()}
-        {totalQuestions > 0
-          ? ` — ${totalCorrect} / ${totalQuestions} correct locally.`
-          : '.'}{' '}
-        Results (M5) is not implemented yet. Answer data is held in temporary
-        frontend memory only — no backend session was created.
-      </Text>
-      <Pressable
-        accessibilityRole="button"
-        accessibilityLabel="Back to Train selection"
-        onPress={backToSelection}
-        style={styles.button}
+  const onTryAgain = () => {
+    if (!subject || !topicSlug || !resultMatchesRoute || !result) {
+      goTrainSelection();
+      return;
+    }
+    // Lovable restart() keeps the same question array; arm it for Gameplay remount.
+    armTrainRetry(result);
+    setTrainDifficulty(subject, result.difficulty);
+    router.replace({
+      pathname: '/train/[subject]/[topic]',
+      params: {
+        subject,
+        topic: topicSlug,
+        difficulty: result.difficulty,
+      },
+    } as Href);
+  };
+
+  const onHome = () => {
+    // Lovable Results "Home" calls onExit — TrainGameplay wires that to /train/:subject.
+    goTrainSelection();
+  };
+
+  if (!resultMatchesRoute || !result || result.answers.length === 0) {
+    return (
+      <View
+        style={[
+          styles.missingRoot,
+          {
+            paddingTop: insets.top + 24,
+            paddingBottom: insets.bottom + 24,
+            paddingHorizontal: 24,
+          },
+        ]}
       >
-        <Text style={styles.buttonLabel}>Back to Train selection</Text>
-      </Pressable>
-    </View>
+        <View style={styles.missingCard}>
+          <Text style={styles.missingTitle}>{COPY.missingTitle}</Text>
+          <Text style={styles.missingBody}>{COPY.missingBody}</Text>
+          <Pressable
+            accessibilityRole="button"
+            accessibilityLabel={COPY.goBack}
+            onPress={goTrainSelection}
+            style={styles.missingCta}
+          >
+            <Text style={styles.missingCtaLabel}>{COPY.goBack}</Text>
+          </Pressable>
+        </View>
+      </View>
+    );
+  }
+
+  return (
+    <TrainResultsView
+      result={result}
+      onTryAgain={onTryAgain}
+      onHome={onHome}
+    />
   );
 }
 
 const styles = StyleSheet.create({
-  root: {
+  missingRoot: {
     flex: 1,
-    backgroundColor: T.background,
+    backgroundColor: R.background,
+    alignItems: 'center',
     justifyContent: 'center',
-    gap: spacing.md,
   },
-  brand: {
-    fontFamily: fonts.display,
-    fontWeight: '700',
-    fontSize: 28,
-    color: colors.orange,
+  missingCard: {
+    maxWidth: 448,
+    width: '100%',
+    borderRadius: 24,
+    backgroundColor: 'rgba(26, 23, 72, 0.8)',
+    borderWidth: 1,
+    borderColor: R.panelBorder,
+    padding: 32,
+    alignItems: 'center',
   },
-  title: {
+  missingTitle: {
     fontFamily: fonts.display,
-    fontWeight: '700',
     fontSize: 24,
-    color: colors.textPrimary,
+    fontWeight: '700',
+    color: '#FFFFFF',
+    marginBottom: 8,
+    textAlign: 'center',
   },
-  body: {
+  missingBody: {
     fontFamily: fonts.display,
+    fontSize: 14,
     fontWeight: '500',
-    fontSize: 15,
-    color: colors.textSecondary,
-    lineHeight: 22,
-    maxWidth: 420,
+    color: 'rgba(221, 214, 254, 0.8)',
+    marginBottom: 24,
+    textAlign: 'center',
+    lineHeight: 20,
   },
-  button: {
-    marginTop: spacing.md,
-    alignSelf: 'flex-start',
-    backgroundColor: T.cta,
-    paddingHorizontal: spacing.xl,
-    paddingVertical: spacing.md,
+  missingCta: {
+    paddingVertical: 12,
+    paddingHorizontal: 20,
     borderRadius: 16,
+    backgroundColor: R.cta,
   },
-  buttonLabel: {
+  missingCtaLabel: {
     fontFamily: fonts.display,
-    fontWeight: '600',
     fontSize: 16,
-    color: colors.white,
+    fontWeight: '600',
+    color: '#FFFFFF',
   },
 });
