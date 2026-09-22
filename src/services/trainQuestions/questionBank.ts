@@ -153,7 +153,7 @@ const MATHS_GENERATORS: Record<string, Gen> = {
       text: `What is ${pct}% of ${base}?`,
       correct: String(ans),
       distractors: near(ans, Math.max(2, Math.round(ans / 4))),
-      explanation: `${pct}% of ${base} = ${base} Ã— ${pct}/100 = ${ans}.`,
+      explanation: `${pct}% of ${base} = ${base} × ${pct}/100 = ${ans}.`,
     };
   },
   "Ratio & Proportion": (d) => {
@@ -163,17 +163,17 @@ const MATHS_GENERATORS: Record<string, Gen> = {
     const total = parts * rnd(2, scale(d, 4, 8, 12));
     const share = (total / parts) * r1;
     return {
-      text: `Â£${total} is shared in the ratio ${r1} : ${r2}. How much is the smaller-ratio share (the ${r1} part)?`,
-      correct: `Â£${share}`,
+      text: `£${total} is shared in the ratio ${r1} : ${r2}. How much is the smaller-ratio share (the ${r1} part)?`,
+      correct: `£${share}`,
       distractors: [
-        `Â£${total - share}`,
-        `Â£${total / parts}`,
-        `Â£${share + total / parts}`,
-        `Â£${Math.round(total / 2)}`,
+        `£${total - share}`,
+        `£${total / parts}`,
+        `£${share + total / parts}`,
+        `£${Math.round(total / 2)}`,
       ],
-      explanation: `There are ${parts} equal parts, so one part = ${total} Ã· ${parts} = ${
+      explanation: `There are ${parts} equal parts, so one part = ${total} ÷ ${parts} = ${
         total / parts
-      }. The ${r1} part = ${total / parts} Ã— ${r1} = ${share}.`,
+      }. The ${r1} part = ${total / parts} × ${r1} = ${share}.`,
     };
   },
   Algebra: (d) => {
@@ -194,14 +194,14 @@ const MATHS_GENERATORS: Record<string, Gen> = {
     const area = w * h;
     return {
       text: `A rectangle measures ${w} cm by ${h} cm. What is its area?`,
-      correct: `${area} cmÂ²`,
+      correct: `${area} cm²`,
       distractors: [
-        `${2 * (w + h)} cmÂ²`,
-        `${area + w} cmÂ²`,
-        `${w + h} cmÂ²`,
-        `${area - h} cmÂ²`,
+        `${2 * (w + h)} cm²`,
+        `${area + w} cm²`,
+        `${w + h} cm²`,
+        `${area - h} cm²`,
       ],
-      explanation: `Area of a rectangle = length Ã— width = ${w} Ã— ${h} = ${area} cmÂ².`,
+      explanation: `Area of a rectangle = length × width = ${w} × ${h} = ${area} cm².`,
     };
   },
   Angles: (d) => {
@@ -212,10 +212,10 @@ const MATHS_GENERATORS: Record<string, Gen> = {
     const shape =
       total === 180 ? "on a straight line" : "around a point";
     return {
-      text: `Two angles ${shape} measure ${a}Â° and ${b}Â°. What is the missing angle?`,
-      correct: `${missing}Â°`,
-      distractors: [`${missing + 10}Â°`, `${missing - 10}Â°`, `${a + b}Â°`, `${180 - missing}Â°`],
-      explanation: `Angles ${shape} add to ${total}Â°, so the missing angle = ${total} âˆ’ ${a} âˆ’ ${b} = ${missing}Â°.`,
+      text: `Two angles ${shape} measure ${a}° and ${b}°. What is the missing angle?`,
+      correct: `${missing}°`,
+      distractors: [`${missing + 10}°`, `${missing - 10}°`, `${a + b}°`, `${180 - missing}°`],
+      explanation: `Angles ${shape} add to ${total}°, so the missing angle = ${total} − ${a} − ${b} = ${missing}°.`,
     };
   },
   Measurement: (d) => {
@@ -225,7 +225,7 @@ const MATHS_GENERATORS: Record<string, Gen> = {
       text: `Convert ${m} metres into centimetres.`,
       correct: `${cm} cm`,
       distractors: [`${m * 10} cm`, `${m * 1000} cm`, `${cm / 2} cm`, `${cm + 100} cm`],
-      explanation: `There are 100 cm in 1 m, so ${m} Ã— 100 = ${cm} cm.`,
+      explanation: `There are 100 cm in 1 m, so ${m} × 100 = ${cm} cm.`,
     };
   },
   "Word Problems": (d) => {
@@ -234,15 +234,15 @@ const MATHS_GENERATORS: Record<string, Gen> = {
     const paid = price * qty + rnd(1, 20);
     const change = paid - price * qty;
     return {
-      text: `A pack of stickers costs Â£${price}. Maya buys ${qty} packs and pays with Â£${paid}. How much change does she get?`,
-      correct: `Â£${change}`,
+      text: `A pack of stickers costs £${price}. Maya buys ${qty} packs and pays with £${paid}. How much change does she get?`,
+      correct: `£${change}`,
       distractors: [
-        `Â£${change + price}`,
-        `Â£${price * qty}`,
-        `Â£${Math.abs(change - qty)}`,
-        `Â£${paid - price}`,
+        `£${change + price}`,
+        `£${price * qty}`,
+        `£${Math.abs(change - qty)}`,
+        `£${paid - price}`,
       ],
-      explanation: `Cost = ${price} Ã— ${qty} = ${price * qty}. Change = ${paid} âˆ’ ${
+      explanation: `Cost = ${price} × ${qty} = ${price * qty}. Change = ${paid} − ${
         price * qty
       } = ${change}.`,
     };
@@ -291,7 +291,7 @@ const ENGLISH_SEEDS: Record<string, Record<Difficulty, EnglishSeed[]>> = {
         text: "Choose the closest synonym for 'obstinate'.",
         correct: "stubborn",
         distractors: ["obvious", "flexible", "anxious"],
-        explanation: "'Obstinate' describes someone who refuses to change their mind â€” stubborn.",
+        explanation: "'Obstinate' describes someone who refuses to change their mind — stubborn.",
       },
       {
         text: "Which word is the OPPOSITE of 'candid'?",
@@ -409,7 +409,7 @@ const ENGLISH_SEEDS: Record<string, Record<Difficulty, EnglishSeed[]>> = {
         text: "Rearrange to make a sentence. Which word is left over?  'rain / because / match / cancelled / the / was / happy'",
         correct: "happy",
         distractors: ["rain", "cancelled", "because"],
-        explanation: "'The match was cancelled because of rain' â€” 'happy' is unused.",
+        explanation: "'The match was cancelled because of rain' — 'happy' is unused.",
       },
       {
         text: "Which is the correct order?  'quietly / library / in / read / the / we'",
@@ -427,7 +427,7 @@ const ENGLISH_SEEDS: Record<string, Record<Difficulty, EnglishSeed[]>> = {
         text: "Rearrange to make a sentence. Which word is left over?  'although / tired / finished / she / was / she / race / the / never'",
         correct: "never",
         distractors: ["although", "finished", "tired"],
-        explanation: "'Although she was tired, she finished the race' â€” 'never' is not needed.",
+        explanation: "'Although she was tired, she finished the race' — 'never' is not needed.",
       },
       {
         text: "Which is the correct order?  'having / homework / his / finished / television / watched / he'",
@@ -447,7 +447,7 @@ const ENGLISH_SEEDS: Record<string, Record<Difficulty, EnglishSeed[]>> = {
         text: "Choose the best word: 'The sun was so bright that Ella had to ____ her eyes.'",
         correct: "shield",
         distractors: ["shout", "shape", "share"],
-        explanation: "'Shield' means to protect â€” the only word that fits the meaning.",
+        explanation: "'Shield' means to protect — the only word that fits the meaning.",
       },
       {
         text: "Choose the best word: 'We had to be quiet ____ the baby was sleeping.'",
@@ -475,7 +475,7 @@ const ENGLISH_SEEDS: Record<string, Record<Difficulty, EnglishSeed[]>> = {
         text: "Choose the best word: 'Her argument was so ____ that even her critics conceded the point.'",
         correct: "cogent",
         distractors: ["fragile", "verbose", "obscure"],
-        explanation: "'Cogent' means clear and convincing â€” the only word that explains why critics agreed.",
+        explanation: "'Cogent' means clear and convincing — the only word that explains why critics agreed.",
       },
       {
         text: "Choose the best word: 'The manuscript was ____ preserved, despite being four centuries old.'",
@@ -505,7 +505,7 @@ const ENGLISH_SEEDS: Record<string, Record<Difficulty, EnglishSeed[]>> = {
         text: "'Despite the drizzle, forty-two runners lined up at the start; three withdrew before the gun.' How many runners started the race?",
         correct: "39",
         distractors: ["42", "45", "3"],
-        explanation: "42 lined up and 3 withdrew, so 42 âˆ’ 3 = 39 started.",
+        explanation: "42 lined up and 3 withdrew, so 42 − 3 = 39 started.",
       },
       {
         text: "'Marta's grandmother arrived from Lisbon on Tuesday and stayed a fortnight.' How long did she stay?",
@@ -729,7 +729,7 @@ const ENGLISH_SEEDS: Record<string, Record<Difficulty, EnglishSeed[]>> = {
           "Neither the teacher or the pupils were ready.",
           "Neither the teacher nor the pupils is ready.",
         ],
-        explanation: "With 'neitherâ€¦nor', the verb agrees with the nearer subject ('pupils' â€” plural).",
+        explanation: "With 'neither…nor', the verb agrees with the nearer subject ('pupils' — plural).",
       },
     ],
   },

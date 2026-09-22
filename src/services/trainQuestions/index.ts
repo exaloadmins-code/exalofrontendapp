@@ -14,3 +14,11 @@ export type {
   LoadTrainQuestionsParams,
   LoadTrainQuestionsResult,
 } from './loadTrainQuestions';
+export {
+  loadFocusQuestions,
+  canonicalizeFocusDifficulty,
+} from './loadFocusQuestions';
+export type {
+  LoadFocusQuestionsParams,
+  LoadFocusQuestionsResult,
+} from './loadFocusQuestions';
