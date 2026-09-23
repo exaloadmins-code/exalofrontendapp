@@ -74,9 +74,8 @@ export function ResponsiveArtboard({
       testID={testID}
       style={[styles.root, { width: contentWidth, height: contentHeight, alignSelf: 'center' }, style]}
     >
-      <Image
-        source={source}
-        accessibilityLabel={accessibilityLabel}
+      <View
+        pointerEvents="none"
         style={{
           position: 'absolute',
           left: artboard.x,
@@ -84,8 +83,14 @@ export function ResponsiveArtboard({
           width: artboard.width,
           height: artboard.height,
         }}
-        resizeMode="stretch"
-      />
+      >
+        <Image
+          source={source}
+          accessibilityLabel={accessibilityLabel}
+          style={{ width: '100%', height: '100%' }}
+          resizeMode="stretch"
+        />
+      </View>
       {children?.(artboard)}
       {hotspots.map((h) => {
         const box = percentRectToLayout(artboard, h.percent);

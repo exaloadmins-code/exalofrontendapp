@@ -5,7 +5,7 @@ export {
 export type { ArtboardRect, PercentRect, LayoutBox, ArtboardFitMode } from './artboardMath';
 export { ResponsiveArtboard } from './ResponsiveArtboard';
 export type { HotspotDef } from './ResponsiveArtboard';
-export { HOME_HOTSPOTS, HOME_OVERLAYS } from './homeHotspots';
+export { HOME_HOTSPOTS, HOME_ARROW_HOTSPOTS, HOME_OVERLAYS, HOME_COUNT_COVER } from './homeHotspots';
 export {
   JOURNEY_HOTSPOTS,
   JOURNEY_OVERLAYS,

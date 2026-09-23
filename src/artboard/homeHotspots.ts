@@ -24,14 +24,16 @@ export const HOME_HOTSPOTS: {
   },
   {
     id: 'maths',
-    label: 'Maths',
+    label: 'Open Maths',
     route: '/journey/maths',
+    /** Lovable card body (arrow pills sit below this rect — see mathsArrow). */
     percent: { top: 32, left: 4, width: 40, height: 32 },
   },
   {
     id: 'english',
-    label: 'English',
+    label: 'Open English',
     route: '/journey/english',
+    /** Lovable card body (arrow pills sit below this rect — see englishArrow). */
     percent: { top: 32, right: 4, width: 40, height: 32 },
   },
   {
@@ -54,6 +56,34 @@ export const HOME_HOTSPOTS: {
   },
 ];
 
+/**
+ * Dedicated hit targets for the baked Maths/English arrow pills.
+ *
+ * Measured on `exalo-home-v2.png` (843×1264): pills sit at ~66.7–69.6% Y —
+ * entirely BELOW the Lovable card hotspot (ends 64%). Card expansion alone
+ * cannot cover them without eating unrelated space; these targets must be
+ * separate Pressables rendered above decorative Home overlays.
+ */
+export const HOME_ARROW_HOTSPOTS = {
+  mathsArrow: {
+    id: 'mathsArrow',
+    label: 'Open Maths',
+    route: '/journey/maths',
+    percent: { top: 65.5, left: 10, width: 16, height: 5.5 },
+  },
+  englishArrow: {
+    id: 'englishArrow',
+    label: 'Open English',
+    route: '/journey/english',
+    percent: { top: 65.5, left: 73.5, width: 16, height: 5.5 },
+  },
+} as const;
+
+/**
+ * Home overlay anchors (% of fitted artboard).
+ *
+ * `profile` documents Lovable Index.tsx `top/right/height` percentages.
+ */
 export const HOME_OVERLAYS = {
   profile: {
     top: 3,
@@ -73,4 +103,34 @@ export const HOME_OVERLAYS = {
     width: 13,
     height: 7,
   } satisfies PercentRect,
+  /**
+   * Full baked empty Score inset left of "/100" (interior + rounded border +
+   * outer outline/shadow). Used ONLY when exaloScore <= 0. Extends past the
+   * outer shell so no rounded square remains visible; artboard PNG unchanged.
+   */
+  scoreEmptyInset: {
+    top: 82.8,
+    left: 37,
+    width: 18,
+    height: 12.8,
+  } satisfies PercentRect,
+} as const;
+
+/**
+ * Conceal empty count squares baked into `exalo-home-v2.png`.
+ * Colors sampled from the card/pill fill around those insets — not a new visible box.
+ * Artwork file is intentionally left unchanged.
+ */
+export const HOME_COUNT_COVER = {
+  /** STREAK card panel fill under the count inset. */
+  streak: '#030F28',
+  /** BADGES card panel fill under the count inset. */
+  badges: '#070B34',
+  /**
+   * EXALO SCORE pill fill around the empty inset (zero-score only).
+   * Sampled from the pill ring outside the full inset shell — not inset grey.
+   */
+  scoreEmpty: '#010E2B',
+  /** Match baked Streak/Badges inset corner rounding (~22% of box min-edge). */
+  radiusFromMinEdge: 0.22,
 } as const;

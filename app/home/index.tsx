@@ -1,4 +1,5 @@
 import { Href, useRouter } from 'expo-router';
+import { LinearGradient } from 'expo-linear-gradient';
 import { useCallback, useMemo, useState } from 'react';
 import {
   Image,
@@ -10,6 +11,8 @@ import {
   View,
 } from 'react-native';
 import {
+  HOME_ARROW_HOTSPOTS,
+  HOME_COUNT_COVER,
   HOME_HOTSPOTS,
   HOME_OVERLAYS,
   ResponsiveArtboard,
@@ -22,6 +25,9 @@ import { Routes } from '@/constants/routes';
 import { useAppContext } from '@/providers';
 import { HOME_ARTBOARD } from '@/responsive';
 import { colors, fonts } from '@/theme';
+
+/** Vertical pill lighting around the Score inset (sampled from artboard). */
+const SCORE_EMPTY_GRADIENT = ['#000E2E', '#010E2B', '#000D2C'] as const;
 
 type SurfaceBox = { width: number; height: number };
 
@@ -48,6 +54,9 @@ export default function HomeScreen() {
   const avatarSource = resolveAvatarSource(profile.avatarId);
   const streakCount = profile.streak;
   const badgesUnlocked = profile.badgeCount;
+  /** Live Exalo Score — zero/empty triggers Score inset concealment only. */
+  const exaloScore = profile.exaloScore ?? 0;
+  const isEmptyScore = exaloScore <= 0;
 
   const onSurfaceLayout = useCallback((event: LayoutChangeEvent) => {
     const { width, height } = event.nativeEvent.layout;
@@ -93,6 +102,16 @@ export default function HomeScreen() {
     );
   }, [available]);
 
+  const navigateHomeHotspot = useCallback(
+    (route: string) => {
+      if (route === '/home') {
+        return;
+      }
+      router.push(route as Href);
+    },
+    [router],
+  );
+
   const hotspots = useMemo(() => {
     const minTouch = artboard && artboard.scale < 0.42 ? 52 : 44;
     return HOME_HOTSPOTS.map((h) => ({
@@ -100,20 +119,55 @@ export default function HomeScreen() {
       label: h.label,
       percent: h.percent,
       minTouch,
-      onPress: () => {
-        if (h.route === '/home') {
-          return;
-        }
-        router.push(h.route as Href);
-      },
+      onPress: () => navigateHomeHotspot(h.route),
     }));
-  }, [router, artboard]);
+  }, [artboard, navigateHomeHotspot]);
 
   const profileBox = artboard ? percentRectToLayout(artboard, HOME_OVERLAYS.profile) : null;
   const streakBox = artboard ? percentRectToLayout(artboard, HOME_OVERLAYS.streakCount) : null;
   const badgesBox = artboard ? percentRectToLayout(artboard, HOME_OVERLAYS.badgesCount) : null;
+  const scoreEmptyBox =
+    artboard && isEmptyScore
+      ? percentRectToLayout(artboard, HOME_OVERLAYS.scoreEmptyInset)
+      : null;
   const chipHeight = profileBox ? Math.max(profileBox.height, 36) : 36;
-  const fontSize = artboard ? Math.min(artboard.width * 0.05, 28) : 16;
+  const countFontSize = artboard ? Math.min(artboard.width * 0.05, 28) : 16;
+
+  /**
+   * Arrow pills sit below the Lovable card hotspots. Render as top-layer
+   * Pressables (above decorative overlays) using the same navigate callback
+   * as the Maths/English cards. RN hit-tests the topmost Pressable only —
+   * no duplicate router.push when targets slightly overlap after minTouch pad.
+   */
+  const arrowHitMin = artboard && artboard.scale < 0.42 ? 52 : 44;
+  const mathsArrowHit = useMemo(() => {
+    if (!artboard) {
+      return null;
+    }
+    const box = percentRectToLayout(artboard, HOME_ARROW_HOTSPOTS.mathsArrow.percent);
+    const hitW = Math.max(box.width, arrowHitMin);
+    const hitH = Math.max(box.height, arrowHitMin);
+    return {
+      left: box.left - (hitW - box.width) / 2,
+      top: box.top - (hitH - box.height) / 2,
+      width: hitW,
+      height: hitH,
+    };
+  }, [artboard, arrowHitMin]);
+  const englishArrowHit = useMemo(() => {
+    if (!artboard) {
+      return null;
+    }
+    const box = percentRectToLayout(artboard, HOME_ARROW_HOTSPOTS.englishArrow.percent);
+    const hitW = Math.max(box.width, arrowHitMin);
+    const hitH = Math.max(box.height, arrowHitMin);
+    return {
+      left: box.left - (hitW - box.width) / 2,
+      top: box.top - (hitH - box.height) / 2,
+      width: hitW,
+      height: hitH,
+    };
+  }, [artboard, arrowHitMin]);
 
   return (
     <View
@@ -178,10 +232,14 @@ export default function HomeScreen() {
                   top: streakBox.top,
                   width: streakBox.width,
                   height: streakBox.height,
+                  backgroundColor: HOME_COUNT_COVER.streak,
+                  borderRadius:
+                    Math.min(streakBox.width, streakBox.height) *
+                    HOME_COUNT_COVER.radiusFromMinEdge,
                 },
               ]}
             >
-              <Text style={[styles.countText, { fontSize }]}>{streakCount}</Text>
+              <Text style={[styles.countText, { fontSize: countFontSize }]}>{streakCount}</Text>
             </View>
           ) : null}
           {badgesBox ? (
@@ -194,11 +252,74 @@ export default function HomeScreen() {
                   top: badgesBox.top,
                   width: badgesBox.width,
                   height: badgesBox.height,
+                  backgroundColor: HOME_COUNT_COVER.badges,
+                  borderRadius:
+                    Math.min(badgesBox.width, badgesBox.height) *
+                    HOME_COUNT_COVER.radiusFromMinEdge,
                 },
               ]}
             >
-              <Text style={[styles.countText, { fontSize }]}>{badgesUnlocked}</Text>
+              <Text style={[styles.countText, { fontSize: countFontSize }]}>{badgesUnlocked}</Text>
             </View>
+          ) : null}
+
+          {/*
+            Zero/empty Score only: cover the COMPLETE baked inset (fill + rounded
+            border + outer shadow) with pill-matched gradient, then bare "0".
+            score > 0: no cover / no overlay (populated Score unchanged).
+          */}
+          {scoreEmptyBox ? (
+            <View
+              pointerEvents="none"
+              style={[
+                styles.countOverlay,
+                styles.scoreEmptyCover,
+                {
+                  left: scoreEmptyBox.left,
+                  top: scoreEmptyBox.top,
+                  width: scoreEmptyBox.width,
+                  height: scoreEmptyBox.height,
+                },
+              ]}
+            >
+              <LinearGradient
+                colors={[...SCORE_EMPTY_GRADIENT]}
+                locations={[0, 0.45, 1]}
+                start={{ x: 0.5, y: 0 }}
+                end={{ x: 0.5, y: 1 }}
+                style={StyleSheet.absoluteFill}
+              />
+              <Text
+                style={[
+                  styles.countText,
+                  styles.scoreEmptyDigit,
+                  { fontSize: countFontSize },
+                ]}
+              >
+                {exaloScore}
+              </Text>
+            </View>
+          ) : null}
+
+          {/*
+            Explicit arrow hit targets — baked pills sit below card hotspots.
+            Transparent; zIndex above decorative overlays; same nav as cards.
+          */}
+          {mathsArrowHit ? (
+            <Pressable
+              accessibilityRole="button"
+              accessibilityLabel={HOME_ARROW_HOTSPOTS.mathsArrow.label}
+              onPress={() => navigateHomeHotspot(HOME_ARROW_HOTSPOTS.mathsArrow.route)}
+              style={[styles.arrowHit, mathsArrowHit]}
+            />
+          ) : null}
+          {englishArrowHit ? (
+            <Pressable
+              accessibilityRole="button"
+              accessibilityLabel={HOME_ARROW_HOTSPOTS.englishArrow.label}
+              onPress={() => navigateHomeHotspot(HOME_ARROW_HOTSPOTS.englishArrow.route)}
+              style={[styles.arrowHit, englishArrowHit]}
+            />
           ) : null}
         </>
       ) : null}
@@ -256,15 +377,44 @@ const styles = StyleSheet.create({
     color: '#C4B5FD',
     marginTop: -2,
   },
+  /**
+   * Positioning shell for Streak/Badges counts. Fill is applied per-instance
+   * via HOME_COUNT_COVER to conceal baked empty squares on the artboard —
+   * not a decorative count "card".
+   */
   countOverlay: {
     position: 'absolute',
     alignItems: 'center',
     justifyContent: 'center',
     zIndex: 2,
+    overflow: 'hidden',
   },
   countText: {
     fontFamily: fonts.display,
     fontWeight: '800',
     color: colors.white,
+  },
+  /**
+   * Expanded Score concealment shell — sharp corners so the cover extends past
+   * the baked rounded border/shadow (inset radius would leave corners peeking).
+   */
+  scoreEmptyCover: {
+    borderRadius: 0,
+    backgroundColor: HOME_COUNT_COVER.scoreEmpty,
+  },
+  /** Bare digit over zero-score cover — never a second box. */
+  scoreEmptyDigit: {
+    backgroundColor: 'transparent',
+    borderWidth: 0,
+    includeFontPadding: false,
+  },
+  /**
+   * Transparent Maths/English arrow hit target. Sits above decorative overlays
+   * (zIndex 3); no visible chrome.
+   */
+  arrowHit: {
+    position: 'absolute',
+    backgroundColor: 'transparent',
+    zIndex: 3,
   },
 });
