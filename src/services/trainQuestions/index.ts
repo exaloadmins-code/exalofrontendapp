@@ -22,3 +22,8 @@ export type {
   LoadFocusQuestionsParams,
   LoadFocusQuestionsResult,
 } from './loadFocusQuestions';
+export { loadTestQuestions } from './loadTestQuestions';
+export type {
+  LoadTestQuestionsParams,
+  LoadTestQuestionsResult,
+} from './loadTestQuestions';

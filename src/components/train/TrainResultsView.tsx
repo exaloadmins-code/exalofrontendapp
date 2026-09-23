@@ -7,7 +7,7 @@ import {
   View,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { Check, Home, RotateCcw, X } from 'lucide-react-native';
+import { Check, Home, Minus, RotateCcw, X } from 'lucide-react-native';
 import {
   TRAIN_RESULTS as R,
   TRAIN_RESULTS_COPY as COPY,
@@ -26,8 +26,8 @@ export type TrainResultsViewProps = {
 
 /**
  * Lovable QuizPlayer finished-state Results UI (composable).
- * Review lists every answered question with letter-only chosen/correct — no stems,
- * options, explanations, or diagrams (live Lovable parity).
+ * Review lists every paper question with letter-only chosen/correct — or
+ * "Unanswered" when `chosen` is null (Test timeout). Train/Focus always set letters.
  */
 export function TrainResultsView({
   result,
@@ -62,24 +62,39 @@ export function TrainResultsView({
           </Text>
 
           <View style={styles.reviewList}>
-            {result.answers.map((a, i) => (
-              <View
-                key={`${a.qid}-${i}`}
-                style={[
-                  styles.row,
-                  a.isCorrect ? styles.rowCorrect : styles.rowWrong,
-                ]}
-              >
-                {a.isCorrect ? (
-                  <Check size={16} color="#6EE7B7" strokeWidth={2.25} />
-                ) : (
-                  <X size={16} color="#FDA4AF" strokeWidth={2.25} />
-                )}
-                <Text style={styles.rowText}>
-                  {COPY.reviewLine(i + 1, a.chosen, a.correct)}
-                </Text>
-              </View>
-            ))}
+            {result.answers.map((a, i) => {
+              const unanswered = a.chosen == null;
+              return (
+                <View
+                  key={`${a.qid}-${i}`}
+                  style={[
+                    styles.row,
+                    unanswered
+                      ? styles.rowUnanswered
+                      : a.isCorrect
+                        ? styles.rowCorrect
+                        : styles.rowWrong,
+                  ]}
+                >
+                  {unanswered ? (
+                    <Minus
+                      size={16}
+                      color={R.unansweredIcon}
+                      strokeWidth={2.25}
+                    />
+                  ) : a.isCorrect ? (
+                    <Check size={16} color="#6EE7B7" strokeWidth={2.25} />
+                  ) : (
+                    <X size={16} color="#FDA4AF" strokeWidth={2.25} />
+                  )}
+                  <Text style={styles.rowText}>
+                    {unanswered
+                      ? COPY.unansweredLine(i + 1)
+                      : COPY.reviewLine(i + 1, a.chosen!, a.correct)}
+                  </Text>
+                </View>
+              );
+            })}
           </View>
 
           <View style={styles.actions}>
@@ -150,6 +165,10 @@ const styles = StyleSheet.create({
   rowWrong: {
     backgroundColor: R.rowWrongBg,
     borderColor: R.rowWrongBorder,
+  },
+  rowUnanswered: {
+    backgroundColor: R.rowUnansweredBg,
+    borderColor: R.rowUnansweredBorder,
   },
   rowText: {
     flex: 1,

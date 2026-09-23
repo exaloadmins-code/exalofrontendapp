@@ -1,5 +1,6 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import {
+  AppState,
   Pressable,
   ScrollView,
   StyleSheet,
@@ -14,6 +15,7 @@ import {
   TRAIN_GAMEPLAY as T,
   TRAIN_GAMEPLAY_COPY as COPY,
 } from '@/constants/trainGameplay';
+import { TEST, formatTestCountdown } from '@/constants/test';
 import {
   getTrainOptions,
   type OptionLetter,
@@ -32,11 +34,19 @@ export type TrainQuizPlayerProps = {
    * M4 does not render Lovable's finished Results screen — hand off to M5 boundary.
    */
   onSeeResults: (answers: TrainAnswerRecord[]) => void;
+  /**
+   * Optional Test-session wall-clock deadline (ms since epoch).
+   * When set, shows a countdown and auto-finalizes via `onTimeExpired`.
+   * Omit for Train / Focus (no timer).
+   */
+  sessionEndsAtMs?: number;
+  /** Fired once when the session deadline is reached (Test only). */
+  onTimeExpired?: (answers: TrainAnswerRecord[]) => void;
 };
 
 /**
- * Lovable `QuizPlayer` parity for Train gameplay (composable UI).
- * No diagrams, timer, live score, sound, or haptics — matches live Lovable behavior.
+ * Lovable `QuizPlayer` parity for Train / Focus / Test gameplay (composable UI).
+ * Optional session timer is Test-only — absent props leave Train/Focus unchanged.
  */
 export function TrainQuizPlayer({
   title,
@@ -44,12 +54,60 @@ export function TrainQuizPlayer({
   questions,
   onExit,
   onSeeResults,
+  sessionEndsAtMs,
+  onTimeExpired,
 }: TrainQuizPlayerProps) {
   const insets = useSafeAreaInsets();
   const { width: windowWidth } = useWindowDimensions();
   const [idx, setIdx] = useState(0);
   const [selected, setSelected] = useState<OptionLetter | null>(null);
   const [answers, setAnswers] = useState<TrainAnswerRecord[]>([]);
+  const [remainingSec, setRemainingSec] = useState<number | null>(() =>
+    sessionEndsAtMs != null
+      ? Math.max(0, Math.ceil((sessionEndsAtMs - Date.now()) / 1000))
+      : null,
+  );
+
+  const answersRef = useRef(answers);
+  answersRef.current = answers;
+  const expiredRef = useRef(false);
+  const onTimeExpiredRef = useRef(onTimeExpired);
+  onTimeExpiredRef.current = onTimeExpired;
+
+  const timed = sessionEndsAtMs != null;
+  const locked = timed && (expiredRef.current || (remainingSec !== null && remainingSec <= 0));
+
+  useEffect(() => {
+    if (sessionEndsAtMs == null) {
+      setRemainingSec(null);
+      expiredRef.current = false;
+      return;
+    }
+
+    expiredRef.current = false;
+
+    const tick = () => {
+      const rem = Math.max(0, Math.ceil((sessionEndsAtMs - Date.now()) / 1000));
+      setRemainingSec(rem);
+      if (rem <= 0 && !expiredRef.current) {
+        expiredRef.current = true;
+        onTimeExpiredRef.current?.(answersRef.current);
+      }
+    };
+
+    tick();
+    const id = setInterval(tick, 250);
+    const sub = AppState.addEventListener('change', (state) => {
+      if (state === 'active') {
+        tick();
+      }
+    });
+
+    return () => {
+      clearInterval(id);
+      sub.remove();
+    };
+  }, [sessionEndsAtMs]);
 
   const contentWidth = Math.min(windowWidth - 32, T.contentMaxWidth);
   const q = questions[idx];
@@ -57,6 +115,7 @@ export function TrainQuizPlayer({
   const correct = (q?.Correct_Option ?? 'A').toString().trim().toUpperCase() as OptionLetter;
 
   const submit = (letter: OptionLetter) => {
+    if (expiredRef.current || locked) return;
     if (selected || !q) return;
     setSelected(letter);
     setAnswers((prev) => [
@@ -66,8 +125,9 @@ export function TrainQuizPlayer({
   };
 
   const next = () => {
+    if (expiredRef.current || locked) return;
     if (idx + 1 >= questions.length) {
-      onSeeResults(answers);
+      onSeeResults(answersRef.current);
       return;
     }
     setSelected(null);
@@ -105,6 +165,7 @@ export function TrainQuizPlayer({
   const isWrong = selected !== null && selected !== correct;
   const isRight = selected !== null && selected === correct;
   const isLast = idx + 1 >= questions.length;
+  const timerUrgent = remainingSec !== null && remainingSec <= 30;
 
   return (
     <View style={[styles.root, { paddingTop: insets.top + 8 }]}>
@@ -130,6 +191,17 @@ export function TrainQuizPlayer({
             >
               <ArrowLeft size={20} color="#FFFFFF" strokeWidth={2.25} />
             </Pressable>
+            {remainingSec !== null ? (
+              <Text
+                accessibilityRole="timer"
+                accessibilityLabel={`Time remaining ${formatTestCountdown(remainingSec)}`}
+                style={[styles.timer, timerUrgent && styles.timerUrgent]}
+              >
+                {formatTestCountdown(remainingSec)}
+              </Text>
+            ) : (
+              <View style={styles.timerSpacer} />
+            )}
             <Text style={styles.counter}>
               {idx + 1} / {questions.length}
             </Text>
@@ -161,8 +233,11 @@ export function TrainQuizPlayer({
                   <Pressable
                     key={letter}
                     accessibilityRole="button"
-                    accessibilityState={{ disabled: selected !== null, selected: chosen }}
-                    disabled={selected !== null}
+                    accessibilityState={{
+                      disabled: selected !== null || locked,
+                      selected: chosen,
+                    }}
+                    disabled={selected !== null || locked}
                     onPress={() => submit(letter)}
                     style={[
                       styles.option,
@@ -212,7 +287,7 @@ export function TrainQuizPlayer({
               </View>
             ) : null}
 
-            {selected !== null ? (
+            {selected !== null && !locked ? (
               <Pressable
                 accessibilityRole="button"
                 accessibilityLabel={isLast ? COPY.seeResults : COPY.nextQuestion}
@@ -257,11 +332,28 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
+  timer: {
+    fontFamily: fonts.display,
+    fontSize: 18,
+    fontWeight: '700',
+    letterSpacing: 1,
+    color: TEST.timerText,
+    minWidth: 72,
+    textAlign: 'center',
+  },
+  timerUrgent: {
+    color: TEST.timerUrgent,
+  },
+  timerSpacer: {
+    minWidth: 72,
+  },
   counter: {
     fontFamily: fonts.display,
     fontSize: 14,
     fontWeight: '500',
     color: T.violetText,
+    minWidth: 44,
+    textAlign: 'right',
   },
   title: {
     fontFamily: fonts.display,
@@ -284,7 +376,6 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: T.cardBorder,
     padding: 24,
-    // Approximate Lovable violet card glow (RN elevation/shadow — soft).
     shadowColor: T.cardShadow,
     shadowOpacity: 0.55,
     shadowRadius: 30,

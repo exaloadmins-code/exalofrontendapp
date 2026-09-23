@@ -30,7 +30,11 @@ export type TrainQuestionRow = {
 
 export type TrainAnswerRecord = {
   qid: string;
-  chosen: OptionLetter;
+  /**
+   * Selected option letter. `null` = unanswered (Test timeout partial paper).
+   * Train / Focus always set a letter.
+   */
+  chosen: OptionLetter | null;
   correct: OptionLetter;
   isCorrect: boolean;
 };
