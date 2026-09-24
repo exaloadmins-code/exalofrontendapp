@@ -111,6 +111,18 @@ export type ExaloTextInputProps = Omit<TextInputProps, 'style'> & {
   /** Text typography only — border/background/radius stripped. */
   inputStyle?: TextStyle;
   variant?: 'default';
+  /**
+   * Optional override for bottom corner radii (e.g. `0` when a dropdown is attached).
+   * Top corners always use the default Exalo radius.
+   */
+  bottomCornerRadius?: number;
+  /**
+   * When true, focus uses border color/width only — no outer box-shadow/glow ring.
+   * Required for attached combobox joins so bottom corners do not paint “hooks”.
+   */
+  disableFocusRing?: boolean;
+  /** Rendered inside the same width container, directly below the field chrome. */
+  belowControl?: ReactNode;
 };
 
 export type ExaloTextInputHandle = {
@@ -129,6 +141,9 @@ export const ExaloTextInput = forwardRef<ExaloTextInputHandle, ExaloTextInputPro
       fieldStyle,
       inputStyle,
       variant = 'default',
+      bottomCornerRadius,
+      disableFocusRing = false,
+      belowControl,
       onFocus,
       onBlur,
       editable = true,
@@ -176,9 +191,15 @@ export const ExaloTextInput = forwardRef<ExaloTextInputHandle, ExaloTextInputPro
       console.warn(`[ExaloTextInput] Unsupported variant "${String(variant)}" — using default.`);
     }
 
-    // Lovable focus-visible:ring-2 ring-ring ring-offset-2 — on the SAME element as the border
-    const focusRingStyle: TextStyle | undefined =
-      focused && !hasError
+    const bottomRadius = bottomCornerRadius ?? radius;
+
+    // Lovable focus-visible:ring-2 ring-ring ring-offset-2 — on the SAME element as the border.
+    // Attached comboboxes disable the outer ring so the join stays a clean shared border.
+    const focusRingStyle: TextStyle | undefined = disableFocusRing
+      ? Platform.OS === 'web'
+        ? ({ boxShadow: 'none' } as unknown as TextStyle)
+        : undefined
+      : focused && !hasError
         ? Platform.OS === 'web'
           ? ({
               boxShadow: `0 0 0 2px ${colors.background}, 0 0 0 4px ${colors.inputRing}`,
@@ -269,7 +290,10 @@ export const ExaloTextInput = forwardRef<ExaloTextInputHandle, ExaloTextInputPro
               styles.input,
               {
                 minHeight: multiline ? s(80) : height,
-                borderRadius: radius,
+                borderTopLeftRadius: radius,
+                borderTopRightRadius: radius,
+                borderBottomLeftRadius: bottomRadius,
+                borderBottomRightRadius: bottomRadius,
                 borderWidth,
                 borderColor,
                 backgroundColor: colors.inputBackground,
@@ -297,6 +321,8 @@ export const ExaloTextInput = forwardRef<ExaloTextInputHandle, ExaloTextInputPro
             ]}
           />
         </View>
+
+        {belowControl ?? null}
 
         {errorText || helperText ? (
           <Text

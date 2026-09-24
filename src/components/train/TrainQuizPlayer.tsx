@@ -16,6 +16,7 @@ import {
   TRAIN_GAMEPLAY_COPY as COPY,
 } from '@/constants/trainGameplay';
 import { TEST, formatTestCountdown } from '@/constants/test';
+import { FOCUS, formatFocusElapsed } from '@/constants/focus';
 import {
   getTrainOptions,
   type OptionLetter,
@@ -37,16 +38,24 @@ export type TrainQuizPlayerProps = {
   /**
    * Optional Test-session wall-clock deadline (ms since epoch).
    * When set, shows a countdown and auto-finalizes via `onTimeExpired`.
-   * Omit for Train / Focus (no timer).
+   * Omit for Train / Focus (no countdown).
    */
   sessionEndsAtMs?: number;
   /** Fired once when the session deadline is reached (Test only). */
   onTimeExpired?: (answers: TrainAnswerRecord[]) => void;
+  /**
+   * Optional Focus-session start timestamp (ms since epoch).
+   * When set (and `sessionEndsAtMs` is omitted), shows an elapsed count-up timer.
+   * Omit for Train. Do not combine with Test countdown.
+   */
+  sessionStartedAtMs?: number;
 };
 
 /**
  * Lovable `QuizPlayer` parity for Train / Focus / Test gameplay (composable UI).
- * Optional session timer is Test-only — absent props leave Train/Focus unchanged.
+ * - Train: no timer props
+ * - Focus: `sessionStartedAtMs` → elapsed count-up (M9A)
+ * - Test: `sessionEndsAtMs` → countdown (unchanged)
  */
 export function TrainQuizPlayer({
   title,
@@ -56,6 +65,7 @@ export function TrainQuizPlayer({
   onSeeResults,
   sessionEndsAtMs,
   onTimeExpired,
+  sessionStartedAtMs,
 }: TrainQuizPlayerProps) {
   const insets = useSafeAreaInsets();
   const { width: windowWidth } = useWindowDimensions();
@@ -67,6 +77,11 @@ export function TrainQuizPlayer({
       ? Math.max(0, Math.ceil((sessionEndsAtMs - Date.now()) / 1000))
       : null,
   );
+  const [elapsedSec, setElapsedSec] = useState<number | null>(() =>
+    sessionEndsAtMs == null && sessionStartedAtMs != null
+      ? Math.max(0, Math.floor((Date.now() - sessionStartedAtMs) / 1000))
+      : null,
+  );
 
   const answersRef = useRef(answers);
   answersRef.current = answers;
@@ -76,6 +91,7 @@ export function TrainQuizPlayer({
 
   const timed = sessionEndsAtMs != null;
   const locked = timed && (expiredRef.current || (remainingSec !== null && remainingSec <= 0));
+  const showElapsed = !timed && sessionStartedAtMs != null;
 
   useEffect(() => {
     if (sessionEndsAtMs == null) {
@@ -108,6 +124,32 @@ export function TrainQuizPlayer({
       sub.remove();
     };
   }, [sessionEndsAtMs]);
+
+  useEffect(() => {
+    if (sessionEndsAtMs != null || sessionStartedAtMs == null) {
+      setElapsedSec(null);
+      return;
+    }
+
+    const tick = () => {
+      setElapsedSec(
+        Math.max(0, Math.floor((Date.now() - sessionStartedAtMs) / 1000)),
+      );
+    };
+
+    tick();
+    const id = setInterval(tick, 250);
+    const sub = AppState.addEventListener('change', (state) => {
+      if (state === 'active') {
+        tick();
+      }
+    });
+
+    return () => {
+      clearInterval(id);
+      sub.remove();
+    };
+  }, [sessionStartedAtMs, sessionEndsAtMs]);
 
   const contentWidth = Math.min(windowWidth - 32, T.contentMaxWidth);
   const q = questions[idx];
@@ -166,6 +208,8 @@ export function TrainQuizPlayer({
   const isRight = selected !== null && selected === correct;
   const isLast = idx + 1 >= questions.length;
   const timerUrgent = remainingSec !== null && remainingSec <= 30;
+  const elapsedLabel =
+    elapsedSec !== null ? formatFocusElapsed(elapsedSec) : null;
 
   return (
     <View style={[styles.root, { paddingTop: insets.top + 8 }]}>
@@ -198,6 +242,14 @@ export function TrainQuizPlayer({
                 style={[styles.timer, timerUrgent && styles.timerUrgent]}
               >
                 {formatTestCountdown(remainingSec)}
+              </Text>
+            ) : showElapsed && elapsedLabel !== null ? (
+              <Text
+                accessibilityRole="timer"
+                accessibilityLabel={`Focus elapsed time ${elapsedLabel}`}
+                style={styles.elapsedTimer}
+              >
+                {elapsedLabel}
               </Text>
             ) : (
               <View style={styles.timerSpacer} />
@@ -343,6 +395,16 @@ const styles = StyleSheet.create({
   },
   timerUrgent: {
     color: TEST.timerUrgent,
+  },
+  /** Focus elapsed count-up — same header slot as Test, violet (not countdown yellow). */
+  elapsedTimer: {
+    fontFamily: fonts.display,
+    fontSize: 18,
+    fontWeight: '700',
+    letterSpacing: 1,
+    color: FOCUS.timerText,
+    minWidth: 88,
+    textAlign: 'center',
   },
   timerSpacer: {
     minWidth: 72,

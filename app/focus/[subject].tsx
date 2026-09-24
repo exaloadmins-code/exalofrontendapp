@@ -33,7 +33,9 @@ type FocusPhase = 'setup' | 'play' | 'results';
  * Start requires ≥1 topic and ≥1 difficulty). Intentional departure from
  * Lovable's default-all / zero-means-all behaviour.
  *
- * Session state is in-memory only; Home on results returns to Focus setup.
+ * M9A: in-memory Focus elapsed timer via `sessionStartedAtMs` (count-up).
+ * No AsyncStorage / resumability. Session state remains in-memory only;
+ * Home on results returns to Focus setup.
  */
 export default function FocusScreen() {
   const router = useRouter();
@@ -58,6 +60,8 @@ export default function FocusScreen() {
   const [questions, setQuestions] = useState<TrainQuestionRow[]>([]);
   const [answers, setAnswers] = useState<TrainAnswerRecord[]>([]);
   const [sessionKey, setSessionKey] = useState(0);
+  /** Wall-clock start for Focus elapsed timer (M9A). In-memory only — no persistence. */
+  const [sessionStartedAtMs, setSessionStartedAtMs] = useState<number | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -75,6 +79,7 @@ export default function FocusScreen() {
     setPhase('setup');
     setQuestions([]);
     setAnswers([]);
+    setSessionStartedAtMs(null);
     setError(null);
   };
 
@@ -115,6 +120,7 @@ export default function FocusScreen() {
       setQuestions(result.questions);
       setSessionDiffs(result.effectiveDifficulties);
       setAnswers([]);
+      setSessionStartedAtMs(Date.now());
       setSessionKey((k) => k + 1);
       setPhase('play');
     } catch (e) {
@@ -132,6 +138,7 @@ export default function FocusScreen() {
 
   const onTryAgain = () => {
     setAnswers([]);
+    setSessionStartedAtMs(Date.now());
     setSessionKey((k) => k + 1);
     setPhase('play');
   };
@@ -198,6 +205,7 @@ export default function FocusScreen() {
         questions={questions}
         onExit={returnToSetup}
         onSeeResults={onSeeResults}
+        sessionStartedAtMs={sessionStartedAtMs ?? undefined}
       />
     );
   }

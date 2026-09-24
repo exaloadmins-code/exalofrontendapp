@@ -50,6 +50,23 @@ export const FOCUS = {
   ctaFrom: '#8B5CF6',
   ctaTo: '#6D28D9',
   ctaBorder: '#A78BFA',
+  /** Elapsed Focus gameplay timer (M9A) — violet, not Test countdown yellow. */
+  timerText: '#DDD6FE',
   /** Tailwind `sm` breakpoint for 2-column topic grid. */
   topicGridSmMinWidth: 640,
 } as const;
+
+/**
+ * Format Focus elapsed whole seconds.
+ * Under 1 hour: `MM:SS`. At/above 1 hour: `HH:MM:SS`. No 59:59 cap.
+ */
+export function formatFocusElapsed(totalSeconds: number): string {
+  const safe = Math.max(0, Math.floor(totalSeconds));
+  const hours = Math.floor(safe / 3600);
+  const minutes = Math.floor((safe % 3600) / 60);
+  const seconds = safe % 60;
+  if (hours >= 1) {
+    return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+  }
+  return `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+}
