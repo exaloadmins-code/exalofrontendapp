@@ -22,9 +22,9 @@ import { colors, fonts, typography } from '@/theme';
 /**
  * Onboarding step 4 — School.
  *
- * Searchable free-text combobox: suggestions attach under the input when open.
+ * Free-text textbox with optional autocomplete suggestions from ONBOARDING_SCHOOLS.
  * Custom school names allowed (trimmed string only — no IDs, no list mutation).
- * Dataset unchanged from ONBOARDING_SCHOOLS.
+ * Suggestions appear only after the user types; empty input shows no list.
  */
 export default function OnboardingSchoolScreen() {
   const router = useRouter();
@@ -40,6 +40,10 @@ export default function OnboardingSchoolScreen() {
   const query = school.trim().toLowerCase();
 
   const suggestions = useMemo(() => {
+    // Empty / whitespace-only: no suggestion panel (do not dump the full list).
+    if (!query) {
+      return [];
+    }
     const seen = new Set<string>();
     const out: string[] = [];
     for (const name of ONBOARDING_SCHOOLS) {
@@ -47,15 +51,15 @@ export default function OnboardingSchoolScreen() {
         continue;
       }
       seen.add(name);
-      if (!query || name.toLowerCase().includes(query)) {
+      if (name.toLowerCase().includes(query)) {
         out.push(name);
       }
     }
     return out;
   }, [query]);
 
-  /** Open + has matches — collapse entirely on zero matches (custom text still valid). */
-  const showDropdown = open && suggestions.length > 0;
+  /** Open + typed query + has matches — hide when empty or zero matches (custom text still valid). */
+  const showDropdown = open && query.length > 0 && suggestions.length > 0;
 
   const listMax = s(220);
   const radius = s(16);

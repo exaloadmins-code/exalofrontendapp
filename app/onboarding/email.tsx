@@ -37,14 +37,8 @@ export default function OnboardingEmailScreen() {
     router.push(Routes.OnboardingName);
   };
 
-  const handleBack = () => {
-    if (router.canGoBack()) {
-      router.back();
-    }
-  };
-
   return (
-    <OnboardingShell step={1} onBack={handleBack}>
+    <OnboardingShell step={1}>
       <View>
         <View style={styles.hero}>
           <Image
