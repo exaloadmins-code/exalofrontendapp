@@ -83,6 +83,9 @@ export const HOME_ARROW_HOTSPOTS = {
  * Home overlay anchors (% of fitted artboard).
  *
  * `profile` documents Lovable Index.tsx `top/right/height` percentages.
+ * Runtime uses `profileChipMetrics` in `app/home/index.tsx`: right-anchored,
+ * content-aware width, with a narrow-artboard vertical adaptation when a
+ * readable name would intersect EXALO logo ink.
  */
 export const HOME_OVERLAYS = {
   profile: {
@@ -134,3 +137,16 @@ export const HOME_COUNT_COVER = {
   /** Match baked Streak/Badges inset corner rounding (~22% of box min-edge). */
   radiusFromMinEdge: 0.22,
 } as const;
+
+/**
+ * Right extent of EXALO wordmark + motion dashes on TP-003 (header band, left
+ * of baked profile). Measured ~61.8% of artboard width.
+ */
+export const HOME_LOGO_CLEAR_LEFT = 0.62;
+
+/**
+ * Bottom of EXALO logo ink band on TP-003 (~12.5% artboard height). Below this,
+ * logo no longer occupies the right header corridor — chip may use useful width.
+ * Streak/Badges hotspots begin at 14%.
+ */
+export const HOME_LOGO_BOTTOM = 0.128;

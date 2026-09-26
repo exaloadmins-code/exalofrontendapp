@@ -1,5 +1,6 @@
 import { Href, useRouter } from 'expo-router';
 import { LinearGradient } from 'expo-linear-gradient';
+import { ChevronDown } from 'lucide-react-native';
 import { useCallback, useMemo, useState } from 'react';
 import {
   Image,
@@ -14,6 +15,8 @@ import {
   HOME_ARROW_HOTSPOTS,
   HOME_COUNT_COVER,
   HOME_HOTSPOTS,
+  HOME_LOGO_BOTTOM,
+  HOME_LOGO_CLEAR_LEFT,
   HOME_OVERLAYS,
   ResponsiveArtboard,
   computeArtboardRect,
@@ -30,6 +33,130 @@ import { colors, fonts } from '@/theme';
 const SCORE_EMPTY_GRADIENT = ['#000E2E', '#010E2B', '#000D2C'] as const;
 
 type SurfaceBox = { width: number; height: number };
+
+/** Lovable Index.tsx chip right inset (`right: 3%`). */
+const CHIP_RIGHT_INSET = 0.03;
+/** Preferred Lovable chip top (`top: 3%`). */
+const CHIP_TOP_PREFERRED = 0.03;
+/** Gap between logo clear-line and chip left when sharing the header row. */
+const LOGO_CHIP_GAP_X = 0.008;
+/**
+ * Place chip just below logo ink when a readable name would collide horizontally.
+ * Streak/Badges hotspots begin at 14%; logo ink ends ~12.8%.
+ */
+const CHIP_TOP_BELOW_LOGO = HOME_LOGO_BOTTOM + 0.004;
+
+/**
+ * Approximate rendered width of `text` at Fredoka semibold (Lovable text-xs / scaled).
+ * Tuned so short names like "Preethi" reserve a useful chip (not "P…").
+ */
+function estimateNameWidth(text: string, fontSize: number): number {
+  const lovableCap = fontSize * 5; // max-w-[5rem]
+  const estimated = Math.ceil(text.length * fontSize * 0.55);
+  return Math.min(lovableCap, Math.max(fontSize * 2, estimated));
+}
+
+/**
+ * Minimum name slot that stays usable. Short names (≤7, e.g. "Preethi") require
+ * the full estimate; longer names keep ≥5 glyphs so we never collapse to "P…".
+ */
+function minUsefulNameWidth(text: string, fontSize: number): number {
+  const full = estimateNameWidth(text, fontSize);
+  if (text.length <= 7) {
+    return full;
+  }
+  return Math.min(full, Math.ceil(5 * fontSize * 0.55));
+}
+
+/**
+ * Lovable Index.tsx Home profile chip + narrow native adaptation.
+ *
+ * Default (sufficient horizontal room for a useful name):
+ *   top 3%, right 3%, width capped to the logo-clear → right-inset column,
+ *   height max(6%, 36). Long names may truncate inside that column.
+ *
+ * Before leaving the Lovable top row, avatar may shrink slightly (≥24) so a
+ * short readable name can stay right-anchored over the baked profile.
+ *
+ * Only when even that useful-minimum still intersects EXALO ink:
+ *   keep a readable chip width + right anchor; move top just below the logo
+ *   band; mask the baked "Niam" chip so the wrong name does not show through.
+ *
+ * Tablet / normal phones with room keep the preferred top — no unnecessary drop.
+ * Tablet typography/avatar caps are unchanged.
+ */
+function profileChipMetrics(
+  artboard: { x: number; y: number; width: number; height: number },
+  surfaceWidth: number,
+  displayName: string,
+) {
+  const height = Math.max((6 / 100) * artboard.height, 36);
+  const gap = 6;
+  const paddingLeft = 4;
+  const paddingRight = 8;
+  let avatarSize = Math.round(Math.min(36, Math.max(22, height - 8)));
+  const nameFontSize = Math.round(Math.min(16, Math.max(11, height * 0.33)));
+  const chevronSize = Math.round(Math.min(16, Math.max(12, nameFontSize + 2)));
+
+  const chromeFor = (avatar: number) =>
+    paddingLeft + paddingRight + avatar + chevronSize + gap * 2;
+
+  const fullNameWidth = estimateNameWidth(displayName, nameFontSize);
+  const minNameWidth = minUsefulNameWidth(displayName, nameFontSize);
+
+  const right =
+    surfaceWidth - (artboard.x + artboard.width) + CHIP_RIGHT_INSET * artboard.width;
+  const chipRightX = artboard.x + artboard.width * (1 - CHIP_RIGHT_INSET);
+  const logoClearX = artboard.x + artboard.width * (HOME_LOGO_CLEAR_LEFT + LOGO_CHIP_GAP_X);
+  const availableAtPreferred = Math.max(0, Math.floor(chipRightX - logoClearX));
+  const preferredTop = artboard.y + CHIP_TOP_PREFERRED * artboard.height;
+
+  const intersectsLogo = (avatar: number, nameW: number) =>
+    chipRightX - (chromeFor(avatar) + nameW) < logoClearX - 0.5;
+
+  /** Prefer Lovable top row: modest avatar shrink before vertical move. */
+  while (intersectsLogo(avatarSize, minNameWidth) && avatarSize > 24) {
+    avatarSize -= 1;
+  }
+
+  const collidesAtPreferredTop = intersectsLogo(avatarSize, minNameWidth);
+  const chromeWidth = chromeFor(avatarSize);
+  const fullChipWidth = chromeWidth + fullNameWidth;
+
+  /**
+   * Preferred row: never grow left of logo clear (prevents logo/dash overlap).
+   * Below logo: wider content-aware max so the full display name can show.
+   */
+  const maxWidth = collidesAtPreferredTop
+    ? Math.max(fullChipWidth, Math.floor(artboard.width * 0.48))
+    : availableAtPreferred;
+
+  const nameMaxWidth = Math.max(24, maxWidth - chromeWidth);
+
+  const top = collidesAtPreferredTop
+    ? artboard.y + CHIP_TOP_BELOW_LOGO * artboard.height
+    : preferredTop;
+
+  /** Lovable 24% column — masks baked profile when the live chip drops. */
+  const maskWidth = Math.floor(artboard.width * 0.24);
+
+  return {
+    top,
+    preferredTop,
+    right,
+    height,
+    avatarSize,
+    nameFontSize,
+    chevronSize,
+    nameMaxWidth,
+    maxWidth,
+    maskWidth,
+    gap,
+    paddingLeft,
+    paddingRight,
+    displacedBelowLogo: collidesAtPreferredTop,
+  };
+}
 
 /**
  * Lovable-faithful Home (portrait primary; landscape = true viewport contain).
@@ -123,14 +250,13 @@ export default function HomeScreen() {
     }));
   }, [artboard, navigateHomeHotspot]);
 
-  const profileBox = artboard ? percentRectToLayout(artboard, HOME_OVERLAYS.profile) : null;
+  const chip = artboard && available ? profileChipMetrics(artboard, available.width, name) : null;
   const streakBox = artboard ? percentRectToLayout(artboard, HOME_OVERLAYS.streakCount) : null;
   const badgesBox = artboard ? percentRectToLayout(artboard, HOME_OVERLAYS.badgesCount) : null;
   const scoreEmptyBox =
     artboard && isEmptyScore
       ? percentRectToLayout(artboard, HOME_OVERLAYS.scoreEmptyInset)
       : null;
-  const chipHeight = profileBox ? Math.max(profileBox.height, 36) : 36;
   const countFontSize = artboard ? Math.min(artboard.width * 0.05, 28) : 16;
 
   /**
@@ -188,7 +314,24 @@ export default function HomeScreen() {
             accessibilityLabel="Exalo home screen with rocket, Maths and English, streak, badges, and score"
           />
 
-          {profileBox ? (
+          {chip?.displacedBelowLogo ? (
+            <View
+              pointerEvents="none"
+              accessibilityElementsHidden
+              importantForAccessibility="no-hide-descendants"
+              style={[
+                styles.bakedProfileMask,
+                {
+                  top: chip.preferredTop,
+                  right: chip.right,
+                  width: chip.maskWidth,
+                  height: chip.height,
+                },
+              ]}
+            />
+          ) : null}
+
+          {chip ? (
             <Pressable
               accessibilityRole="button"
               accessibilityLabel="Open profile menu"
@@ -196,14 +339,26 @@ export default function HomeScreen() {
               style={[
                 styles.profileChip,
                 {
-                  left: profileBox.left,
-                  top: profileBox.top,
-                  minWidth: profileBox.width,
-                  height: chipHeight,
+                  top: chip.top,
+                  right: chip.right,
+                  height: chip.height,
+                  maxWidth: chip.maxWidth,
+                  gap: chip.gap,
+                  paddingLeft: chip.paddingLeft,
+                  paddingRight: chip.paddingRight,
                 },
               ]}
             >
-              <View style={styles.avatarCircle}>
+              <View
+                style={[
+                  styles.avatarCircle,
+                  {
+                    height: chip.avatarSize,
+                    width: chip.avatarSize,
+                    borderRadius: chip.avatarSize / 2,
+                  },
+                ]}
+              >
                 {avatarSource ? (
                   <Image
                     source={avatarSource}
@@ -212,13 +367,29 @@ export default function HomeScreen() {
                     accessibilityLabel={`${name} avatar`}
                   />
                 ) : (
-                  <Text style={styles.avatarLetter}>{name.charAt(0).toUpperCase()}</Text>
+                  <Text style={[styles.avatarLetter, { fontSize: Math.round(chip.avatarSize * 0.4) }]}>
+                    {name.charAt(0).toUpperCase()}
+                  </Text>
                 )}
               </View>
-              <Text style={styles.profileName} numberOfLines={1}>
+              <Text
+                style={[
+                  styles.profileName,
+                  {
+                    fontSize: chip.nameFontSize,
+                    lineHeight: Math.round(chip.nameFontSize * 1.25),
+                    maxWidth: chip.nameMaxWidth,
+                  },
+                ]}
+                numberOfLines={1}
+              >
                 {name}
               </Text>
-              <Text style={styles.chevron}>▾</Text>
+              <ChevronDown
+                size={chip.chevronSize}
+                color="#C4B5FD"
+                strokeWidth={2.25}
+              />
             </Pressable>
           ) : null}
 
@@ -337,19 +508,24 @@ const styles = StyleSheet.create({
     position: 'absolute',
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 6,
-    paddingRight: 8,
-    paddingLeft: 4,
+    alignSelf: 'flex-start',
     borderRadius: 999,
     backgroundColor: '#1a1748',
     borderWidth: StyleSheet.hairlineWidth * 2,
     borderColor: 'rgba(139, 92, 255, 0.4)',
     zIndex: 2,
   },
+  /**
+   * When the live chip drops below the logo band, paint over the baked "Niam"
+   * profile so the wrong name does not show through (artwork unchanged).
+   */
+  bakedProfileMask: {
+    position: 'absolute',
+    borderRadius: 999,
+    backgroundColor: '#1a1748',
+    zIndex: 1,
+  },
   avatarCircle: {
-    height: 28,
-    width: 28,
-    borderRadius: 14,
     backgroundColor: colors.blue,
     alignItems: 'center',
     justifyContent: 'center',
@@ -362,20 +538,13 @@ const styles = StyleSheet.create({
   avatarLetter: {
     fontFamily: fonts.display,
     fontWeight: '700',
-    fontSize: 12,
     color: colors.white,
   },
   profileName: {
     fontFamily: fonts.display,
     fontWeight: '600',
-    fontSize: 12,
     color: colors.white,
-    maxWidth: 80,
-  },
-  chevron: {
-    fontSize: 14,
-    color: '#C4B5FD',
-    marginTop: -2,
+    flexShrink: 1,
   },
   /**
    * Positioning shell for Streak/Badges counts. Fill is applied per-instance
