@@ -3,7 +3,7 @@
 **Project:** `C:\projects\exalofrontendapp`  
 **Companion:** `THIRD_PARTY_APPROVAL_REQUEST.md`  
 **Nature:** PERMANENT CUMULATIVE governance register (not milestone-only)  
-**Last updated:** 2026-09-22 (documentation remediation — M4/M5 status, Lucide usage map, JFIF→PNG lineage, Train 848×1264, unused/preloaded register, root LICENSE clarification)
+**Last updated:** 2026-09-26 (M9A Focus timer + M9B school combobox milestone status)
 
 > Manual product-owner **APPROVAL** authorizes specified product use only.  
 > It does **not** establish Exalo ownership, open-source license, or completed legal terms review.  
@@ -32,6 +32,8 @@
 | M6 Focus | **Not complete** — placeholder route only (`app/focus/[subject].tsx`) |
 | M7 Test | **Not complete** — placeholder route only (`app/test/[subject].tsx`) |
 | M8 Streak / Badges / Score / Profile / Parents | Implemented (utility/profile screens) |
+| M9A Focus elapsed timer | Implemented (committed) |
+| M9B School searchable free-text combobox | Implemented (committed) |
 
 Backend `/train/*` APIs remain **parked** for frontend Train. This register is **frontend-only** (not question-bank generation).
 
