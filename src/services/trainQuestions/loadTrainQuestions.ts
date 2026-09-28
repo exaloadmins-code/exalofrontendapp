@@ -6,6 +6,21 @@
  * Future backend integration replaces this module's body without redesigning gameplay UI.
  *
  * No network. No session IDs. No `/train/start`.
+ *
+ * ---------------------------------------------------------------------------
+ * LOCAL FILL POLICY (temporary — remove when backend integration resumes)
+ * ---------------------------------------------------------------------------
+ * When `limit` exceeds the unique local pool for topic+difficulty:
+ *   1. Prefer unique questions first (maths uniqueness loop; english shuffled seeds).
+ *   2. THEN repeat / cycle until `limit` is reached so the session length equals
+ *      the learner's requested questionCount.
+ *
+ * FUTURE BACKEND INTENT (not implemented here):
+ *   - Request desired count from the API.
+ *   - Use only unique backend questions.
+ *   - NEVER repeat backend questions merely to pad count.
+ *   - If fewer unique questions exist, cap session size to what the backend provides.
+ * Do NOT modify exam-prep-api in this milestone.
  */
 
 import type { JourneySubject } from '@/constants/journey';
@@ -21,6 +36,11 @@ import type {
   TrainSubjectType,
 } from './types';
 
+/**
+ * Legacy Lovable default when callers omit `limit`.
+ * Train Number-of-Questions flow always passes an explicit count — do not treat
+ * this as a UI default on the count screen.
+ */
 export const TRAIN_QUESTIONS_PER_RUN = 20;
 
 export type LoadTrainQuestionsParams = {
@@ -29,7 +49,11 @@ export type LoadTrainQuestionsParams = {
   topicSlug: string;
   /** Route/query difficulty (lowercase). */
   difficulty: TrainDifficulty | string;
-  /** Defaults to Lovable Train parity (20). */
+  /**
+   * Exact session length. Local bank fills to this size (unique first, then
+   * LOCAL_REPEAT_TO_FILL). Defaults to {@link TRAIN_QUESTIONS_PER_RUN} only for
+   * legacy callers — Train gameplay must pass the learner's chosen count.
+   */
   limit?: number;
 };
 
@@ -54,6 +78,9 @@ function toSubjectType(subject: JourneySubject): TrainSubjectType {
 /**
  * LOCAL-ONLY Train question load.
  * Throws if topic slug is unknown for the subject.
+ *
+ * LOCAL_REPEAT_TO_FILL: `generateQuestions` returns exactly `limit` rows,
+ * repeating after unique pool exhaustion when needed (see module header).
  */
 export async function loadTrainQuestions(
   params: LoadTrainQuestionsParams,

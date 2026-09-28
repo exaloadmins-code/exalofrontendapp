@@ -4,7 +4,9 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { TrainResultsView } from '@/components/train/TrainResultsView';
 import { normalizeJourneySubject } from '@/constants/journey';
 import { Routes } from '@/constants/routes';
-import { normalizeTrainDifficulty } from '@/constants/train';
+import {
+  normalizeTrainDifficulty,
+} from '@/constants/train';
 import {
   TRAIN_RESULTS as R,
   TRAIN_RESULTS_COPY as COPY,
@@ -29,6 +31,7 @@ export default function TrainResultsScreen() {
     subject: string;
     topic: string;
     difficulty?: string;
+    count?: string;
   }>();
 
   const subject = normalizeJourneySubject(params.subject);
@@ -63,6 +66,8 @@ export default function TrainResultsScreen() {
       return;
     }
     // Lovable restart() keeps the same question array; arm it for Gameplay remount.
+    // Same subject + topic + difficulty + questionCount + same question set.
+    const retryCount = result.questionCount || result.questions.length;
     armTrainRetry(result);
     setTrainDifficulty(subject, result.difficulty);
     router.replace({
@@ -71,6 +76,7 @@ export default function TrainResultsScreen() {
         subject,
         topic: topicSlug,
         difficulty: result.difficulty,
+        count: String(retryCount),
       },
     } as Href);
   };

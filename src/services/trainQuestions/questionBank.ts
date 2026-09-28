@@ -760,8 +760,9 @@ const mathsQuestions = (
     );
   }
   // Finite generators (e.g. Fractions Easy: den=4 → only 9 unique texts) exhaust
-  // uniqueness before `count`. Fill the remainder by continuing to generate,
-  // allowing repeats — same fill-to-count idea as English seed cycling.
+  // uniqueness before `count`. LOCAL_REPEAT_TO_FILL: continue generating and
+  // allow repeats until `count` is reached (temporary local-bank policy).
+  // Future backend: never pad with repeats — cap session to unique API supply.
   while (rows.length < count) {
     const item = gen(difficulty);
     rows.push(
@@ -785,6 +786,8 @@ const englishQuestions = (
   const rows: QuestionRow[] = [];
   const pool = shuffle(seeds);
   let i = 0;
+  // Unique seeds first (one full pass over the shuffled pool), then cycle
+  // LOCAL_REPEAT_TO_FILL until `count` (temporary local-bank policy).
   while (rows.length < count && pool.length > 0) {
     const seed = pool[i % pool.length];
     i++;

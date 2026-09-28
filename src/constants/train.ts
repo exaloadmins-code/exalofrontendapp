@@ -24,6 +24,78 @@ export type TrainDifficulty = (typeof TRAIN_DIFFICULTIES)[number];
 export const TRAIN_DIFFICULTY_DEFAULT: TrainDifficulty = 'easy';
 
 /**
+ * Train Number-of-Questions step (after difficulty + topic, before gameplay).
+ * No default count — the learner must pick a preset or enter a valid custom value.
+ */
+export const TRAIN_QUESTION_COUNT_MIN = 5;
+export const TRAIN_QUESTION_COUNT_MAX = 50;
+export const TRAIN_QUESTION_COUNT_PRESETS = [10, 20, 30] as const;
+export type TrainQuestionCountPreset =
+  (typeof TRAIN_QUESTION_COUNT_PRESETS)[number];
+
+export const TRAIN_QUESTION_COUNT_COPY = {
+  title: 'How many questions?',
+  subtitle: (topicLabel: string, difficultyLabel: string) =>
+    `${topicLabel} · ${difficultyLabel}`,
+  inputLabel: 'Or enter your own',
+  inputPlaceholder: 'e.g. 15',
+  start: 'START TRAINING',
+  loading: 'Loading…',
+  cancel: 'Cancel',
+  tooLow: `Pick at least ${TRAIN_QUESTION_COUNT_MIN} questions.`,
+  tooHigh: `Pick at most ${TRAIN_QUESTION_COUNT_MAX} questions.`,
+  invalid: 'Enter a whole number.',
+} as const;
+
+/** True when `n` is a usable Train session size for this milestone. */
+export function isValidTrainQuestionCount(n: number): boolean {
+  return (
+    Number.isInteger(n) &&
+    n >= TRAIN_QUESTION_COUNT_MIN &&
+    n <= TRAIN_QUESTION_COUNT_MAX
+  );
+}
+
+/**
+ * Parse free-text / route question-count input.
+ * Rejects empty, decimals, signs, and non-numeric text — never silently clamps.
+ */
+export function parseTrainQuestionCountInput(
+  raw: string,
+): { ok: true; value: number } | { ok: false; reason: 'empty' | 'invalid' | 'tooLow' | 'tooHigh' } {
+  const trimmed = raw.trim();
+  if (trimmed.length === 0) {
+    return { ok: false, reason: 'empty' };
+  }
+  // Digits only — no decimals, signs, exponents, or separators.
+  if (!/^\d+$/.test(trimmed)) {
+    return { ok: false, reason: 'invalid' };
+  }
+  const value = Number(trimmed);
+  if (!Number.isSafeInteger(value)) {
+    return { ok: false, reason: 'invalid' };
+  }
+  if (value < TRAIN_QUESTION_COUNT_MIN) {
+    return { ok: false, reason: 'tooLow' };
+  }
+  if (value > TRAIN_QUESTION_COUNT_MAX) {
+    return { ok: false, reason: 'tooHigh' };
+  }
+  return { ok: true, value };
+}
+
+/** Route/query → validated count, or `null` when missing/invalid. */
+export function normalizeTrainQuestionCount(
+  raw: string | string[] | undefined,
+): number | null {
+  const value = Array.isArray(raw) ? raw[0] : raw;
+  if (value == null) {
+    return null;
+  }
+  const parsed = parseTrainQuestionCountInput(String(value));
+  return parsed.ok ? parsed.value : null;
+}
+/**
  * Maths topic order — Lovable `TrainMode` TOPICS.maths / `MATHS_TOPICS`.
  * Display labels are baked into maths-train-mode.png (TP-073).
  */

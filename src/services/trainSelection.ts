@@ -16,6 +16,11 @@ export type TrainSelectionSnapshot = {
   topicSlug: string;
   topicLabel: string;
   difficulty: TrainDifficulty;
+  /**
+   * Chosen on the Number-of-Questions step (5–50). Optional until START TRAINING.
+   * Not a backend session field.
+   */
+  questionCount?: number;
   /** Local wall-clock ms — debug / handoff only; not a backend session. */
   selectedAt: number;
 };
@@ -51,6 +56,8 @@ export function setTrainDifficulty(
     topicSlug: sameSubject && prev ? prev.topicSlug : '',
     topicLabel: sameSubject && prev ? prev.topicLabel : '',
     difficulty,
+    // Preserve count when difficulty is updated from Results/Home handoff.
+    questionCount: sameSubject && prev ? prev.questionCount : undefined,
   });
 }
 

@@ -10,6 +10,7 @@ import {
 } from '@/constants/trainGameplay';
 import {
   normalizeTrainDifficulty,
+  normalizeTrainQuestionCount,
   trainTopicLabel,
 } from '@/constants/train';
 import { getTrainSelection } from '@/services/trainSelection';
@@ -27,6 +28,7 @@ import { fonts } from '@/theme';
 /**
  * M4 Train Gameplay — Lovable `TrainGameplay` + `QuizPlayer` parity.
  * Local questions only via `loadTrainQuestions`. No `/train/start`. No diagrams.
+ * Session length comes from the Number-of-Questions step (`count` param).
  */
 export default function TrainGameplayScreen() {
   const router = useRouter();
@@ -35,12 +37,19 @@ export default function TrainGameplayScreen() {
     subject: string;
     topic: string;
     difficulty?: string;
+    count?: string;
   }>();
 
   const subject = normalizeJourneySubject(params.subject);
   const topicSlug = Array.isArray(params.topic) ? params.topic[0] : params.topic;
   const difficulty = normalizeTrainDifficulty(params.difficulty);
   const snapshot = getTrainSelection();
+  const questionCount =
+    normalizeTrainQuestionCount(params.count) ??
+    (snapshot?.questionCount != null &&
+    Number.isInteger(snapshot.questionCount)
+      ? snapshot.questionCount
+      : null);
 
   const topicLabel =
     (subject && topicSlug ? trainTopicLabel(subject, topicSlug) : undefined) ??
@@ -66,10 +75,21 @@ export default function TrainGameplayScreen() {
       return;
     }
 
+    if (questionCount == null) {
+      setError('Choose how many questions before starting Train.');
+      setLoading(false);
+      return;
+    }
+
     setLoading(true);
     setError(null);
 
-    const armed = consumeArmedTrainRetry(subject, topicSlug, difficulty);
+    const armed = consumeArmedTrainRetry(
+      subject,
+      topicSlug,
+      difficulty,
+      questionCount,
+    );
     if (armed && armed.length > 0) {
       setQuestions(armed);
       setBankDifficultyLabel(
@@ -85,7 +105,7 @@ export default function TrainGameplayScreen() {
       subject,
       topicSlug,
       difficulty,
-      limit: 20,
+      limit: questionCount,
     })
       .then((result) => {
         if (cancelled) return;
@@ -104,7 +124,7 @@ export default function TrainGameplayScreen() {
     return () => {
       cancelled = true;
     };
-  }, [subject, topicSlug, topicLabel, difficulty]);
+  }, [subject, topicSlug, topicLabel, difficulty, questionCount]);
 
   const exitToSelection = () => {
     if (subject) {
@@ -117,7 +137,7 @@ export default function TrainGameplayScreen() {
   };
 
   const onSeeResults = (answers: TrainAnswerRecord[]) => {
-    if (!subject || !topicSlug || !topicLabel) {
+    if (!subject || !topicSlug || !topicLabel || questionCount == null) {
       return;
     }
     setTrainResult({
@@ -125,9 +145,11 @@ export default function TrainGameplayScreen() {
       topicSlug,
       topicLabel,
       difficulty,
+      questionCount,
       title: `Train Mode · ${topicLabel}`,
       answers,
       questions,
+      totalQuestions: questions.length,
     });
     router.push({
       pathname: '/train/[subject]/[topic]/results',
@@ -135,6 +157,7 @@ export default function TrainGameplayScreen() {
         subject,
         topic: topicSlug,
         difficulty,
+        count: String(questionCount),
       },
     } as Href);
   };

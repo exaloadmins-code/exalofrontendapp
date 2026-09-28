@@ -18,6 +18,11 @@ export type TrainResultSnapshot = {
   topicSlug: string;
   topicLabel: string;
   difficulty: TrainDifficulty;
+  /**
+   * Train Number-of-Questions session length. Optional for Focus/Test result
+   * snapshots that reuse this shape; Train always sets it.
+   */
+  questionCount?: number;
   /** Lovable QuizPlayer title prefix, e.g. `Train Mode · Fractions`. */
   title: string;
   answers: TrainAnswerRecord[];
@@ -42,19 +47,21 @@ function retryKey(
   subject: JourneySubject,
   topicSlug: string,
   difficulty: TrainDifficulty,
+  questionCount: number,
 ): string {
-  return `${subject}::${topicSlug}::${difficulty}`;
+  return `${subject}::${topicSlug}::${difficulty}::${questionCount}`;
 }
 
 export function setTrainResult(
   snapshot: Omit<
     TrainResultSnapshot,
-    'completedAt' | 'totalCorrect' | 'totalQuestions' | 'title'
+    'completedAt' | 'totalCorrect' | 'totalQuestions' | 'title' | 'questionCount'
   > & {
     completedAt?: number;
     totalCorrect?: number;
     totalQuestions?: number;
     title?: string;
+    questionCount?: number;
   },
 ): TrainResultSnapshot {
   // A new completion supersedes any pending Try-again arm.
@@ -64,11 +71,16 @@ export function setTrainResult(
     snapshot.totalCorrect ?? snapshot.answers.filter((a) => a.isCorrect).length;
   const title =
     snapshot.title ?? `Train Mode · ${snapshot.topicLabel}`;
+  const questionCount =
+    snapshot.questionCount ??
+    snapshot.questions?.length ??
+    totalQuestions;
   lastResult = {
     subject: snapshot.subject,
     topicSlug: snapshot.topicSlug,
     topicLabel: snapshot.topicLabel,
     difficulty: snapshot.difficulty,
+    questionCount,
     title,
     answers: snapshot.answers,
     questions: snapshot.questions ?? [],
@@ -95,25 +107,37 @@ export function clearArmedTrainRetry(): void {
 /**
  * Lovable QuizPlayer `restart()` keeps the same question array in memory.
  * Expo remounts Gameplay — arm the completed run's questions for one consume.
+ * Same subject + topic + difficulty + questionCount + same question set.
  */
 export function armTrainRetry(result: TrainResultSnapshot): void {
   if (!result.questions.length) {
     clearArmedTrainRetry();
     return;
   }
+  const questionCount =
+    result.questionCount ?? result.questions.length ?? result.totalQuestions;
   armedRetryQuestions = result.questions;
-  armedRetryKey = retryKey(result.subject, result.topicSlug, result.difficulty);
+  armedRetryKey = retryKey(
+    result.subject,
+    result.topicSlug,
+    result.difficulty,
+    questionCount,
+  );
 }
 
 export function consumeArmedTrainRetry(
   subject: JourneySubject,
   topicSlug: string,
   difficulty: TrainDifficulty,
+  questionCount: number,
 ): TrainQuestionRow[] | null {
   if (!armedRetryQuestions || !armedRetryKey) {
     return null;
   }
-  if (armedRetryKey !== retryKey(subject, topicSlug, difficulty)) {
+  if (
+    armedRetryKey !==
+    retryKey(subject, topicSlug, difficulty, questionCount)
+  ) {
     return null;
   }
   const questions = armedRetryQuestions;

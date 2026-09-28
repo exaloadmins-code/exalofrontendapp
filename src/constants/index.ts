@@ -41,6 +41,10 @@ export type { JourneySubject } from './journey';
 export {
   TRAIN_DIFFICULTIES,
   TRAIN_DIFFICULTY_DEFAULT,
+  TRAIN_QUESTION_COUNT_MIN,
+  TRAIN_QUESTION_COUNT_MAX,
+  TRAIN_QUESTION_COUNT_PRESETS,
+  TRAIN_QUESTION_COUNT_COPY,
   TRAIN_MATHS_TOPICS,
   TRAIN_ENGLISH_TOPICS,
   TRAIN_DIFFICULTY_SELECTED,
@@ -49,9 +53,16 @@ export {
   trainTopicsFor,
   trainTopicLabel,
   normalizeTrainDifficulty,
+  normalizeTrainQuestionCount,
+  parseTrainQuestionCountInput,
+  isValidTrainQuestionCount,
   trainScreenTitle,
 } from './train';
-export type { TrainDifficulty, TrainTopic } from './train';
+export type {
+  TrainDifficulty,
+  TrainTopic,
+  TrainQuestionCountPreset,
+} from './train';
 export {
   STREAK_GOAL_MINUTES,
   FREEZE_CAP,
