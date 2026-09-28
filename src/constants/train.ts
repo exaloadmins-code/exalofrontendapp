@@ -17,6 +17,10 @@ import type { JourneySubject } from './journey';
 export const TRAIN_DIFFICULTIES = ['easy', 'medium', 'hard'] as const;
 export type TrainDifficulty = (typeof TRAIN_DIFFICULTIES)[number];
 
+/**
+ * Fallback for normalizing missing/invalid route difficulty params (gameplay /
+ * results). Train Selection UI must NOT auto-select this — starts as `null`.
+ */
 export const TRAIN_DIFFICULTY_DEFAULT: TrainDifficulty = 'easy';
 
 /**

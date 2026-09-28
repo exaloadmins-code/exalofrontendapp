@@ -29,9 +29,8 @@ type FocusPhase = 'setup' | 'play' | 'results';
 /**
  * M6 Focus — setup + shared QuizPlayer / Results.
  *
- * Difficulty selection is Exalo explicit opt-in (none selected by default;
- * Start requires ≥1 topic and ≥1 difficulty). Intentional departure from
- * Lovable's default-all / zero-means-all behaviour.
+ * Setup: multi-topic (≥2) + exactly one difficulty (Train-like exclusive select).
+ * Intentional Exalo departure from Lovable default-all / multi-difficulty Focus.
  *
  * M9A: in-memory Focus elapsed timer via `sessionStartedAtMs` (count-up).
  * No AsyncStorage / resumability. Session state remains in-memory only;
@@ -52,10 +51,12 @@ export default function FocusScreen() {
     subject === 'english' ? 'English' : subject === 'maths' ? 'Maths' : '';
 
   const [selectedTopics, setSelectedTopics] = useState<string[]>([]);
-  /** Explicit opt-in — empty until the learner selects one or more tiers. */
-  const [selectedDiffs, setSelectedDiffs] = useState<FocusDifficulty[]>([]);
-  /** Difficulties locked for the active play/results session (from Start). */
-  const [sessionDiffs, setSessionDiffs] = useState<FocusDifficulty[]>([]);
+  /** Exactly one difficulty — null until the learner picks Easy/Medium/Hard. */
+  const [selectedDifficulty, setSelectedDifficulty] =
+    useState<FocusDifficulty | null>(null);
+  /** Difficulty locked for the active play/results session (from Start). */
+  const [sessionDifficulty, setSessionDifficulty] =
+    useState<FocusDifficulty | null>(null);
   const [phase, setPhase] = useState<FocusPhase>('setup');
   const [questions, setQuestions] = useState<TrainQuestionRow[]>([]);
   const [answers, setAnswers] = useState<TrainAnswerRecord[]>([]);
@@ -89,23 +90,16 @@ export default function FocusScreen() {
     );
   };
 
-  const toggleAllTopics = () => {
-    setSelectedTopics((prev) =>
-      prev.length === topics.length ? [] : topics.map((t) => t.label),
-    );
-  };
-
-  const toggleDiff = (d: FocusDifficulty) => {
-    setSelectedDiffs((prev) =>
-      prev.includes(d) ? prev.filter((x) => x !== d) : [...prev, d],
-    );
+  const selectDifficulty = (d: FocusDifficulty) => {
+    setSelectedDifficulty(d);
   };
 
   const start = async () => {
     if (
+      loading ||
       !subject ||
-      selectedTopics.length === 0 ||
-      selectedDiffs.length === 0
+      selectedTopics.length < 2 ||
+      selectedDifficulty == null
     ) {
       return;
     }
@@ -115,10 +109,10 @@ export default function FocusScreen() {
       const result = await loadFocusQuestions({
         subject,
         topicLabels: selectedTopics,
-        difficulties: selectedDiffs,
+        difficulties: [selectedDifficulty],
       });
       setQuestions(result.questions);
-      setSessionDiffs(result.effectiveDifficulties);
+      setSessionDifficulty(selectedDifficulty);
       setAnswers([]);
       setSessionStartedAtMs(Date.now());
       setSessionKey((k) => k + 1);
@@ -144,7 +138,7 @@ export default function FocusScreen() {
   };
 
   const quizTitle = `Focus Mode · ${subjectTypeLabel}`;
-  const quizSubtitle = `${selectedTopics.length} topics · ${sessionDiffs.join(', ')}`;
+  const quizSubtitle = `${selectedTopics.length} topics · ${sessionDifficulty ?? ''}`;
 
   const resultsSnapshot: TrainResultSnapshot | null =
     subject && phase === 'results'
@@ -212,16 +206,16 @@ export default function FocusScreen() {
 
   return (
     <FocusSetupView
+      subject={subject}
       subjectLabel={subjectLabel}
       topics={topics}
       selectedTopics={selectedTopics}
-      selectedDiffs={selectedDiffs}
+      selectedDifficulty={selectedDifficulty}
       loading={loading}
       error={error}
       onBack={exitToJourney}
       onToggleTopic={toggleTopic}
-      onToggleAllTopics={toggleAllTopics}
-      onToggleDiff={toggleDiff}
+      onSelectDifficulty={selectDifficulty}
       onStart={start}
     />
   );

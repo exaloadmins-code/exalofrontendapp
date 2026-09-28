@@ -3,7 +3,7 @@
 **Project:** `C:\projects\exalofrontendapp`  
 **Companion:** `THIRD_PARTY_APPROVAL_REQUEST.md`  
 **Nature:** PERMANENT CUMULATIVE governance register (not milestone-only)  
-**Last updated:** 2026-09-26 (M9A Focus timer + M9B school combobox milestone status)
+**Last updated:** 2026-09-27 (Focus dedicated artboards TP-075 / TP-076 — independent Focus-specific derivative compositions referenced from TP-073 / TP-074; not runtime-patched Train)
 
 > Manual product-owner **APPROVAL** authorizes specified product use only.  
 > It does **not** establish Exalo ownership, open-source license, or completed legal terms review.  
@@ -29,7 +29,7 @@
 | M3 Train Selection | Implemented (`/train/:subject`; TP-073 / TP-074) |
 | M4 Train Gameplay | **Implemented** (`/train/[subject]/[topic]`; local question seam; Lucide + LinearGradient) |
 | M5 Train Results | **Implemented** (`/train/[subject]/[topic]/results`; `TrainResultsView`) |
-| M6 Focus | **Not complete** — placeholder route only (`app/focus/[subject].tsx`) |
+| M6 Focus | **In progress** — dedicated Focus artboards TP-075 / TP-076; multi-topic setup + M9A timer; PO visual review pending |
 | M7 Test | **Not complete** — placeholder route only (`app/test/[subject].tsx`) |
 | M8 Streak / Badges / Score / Profile / Parents | Implemented (utility/profile screens) |
 | M9A Focus elapsed timer | Implemented (committed) |
@@ -63,6 +63,7 @@ Backend `/train/*` APIs remain **parked** for frontend Train. This register is *
 | 2026-09-21+ | **M4 Train Gameplay:** Implemented composable `TrainQuizPlayer`; local `loadTrainQuestions` seam; no `/train/start`. Reuses TP-004 Lucide + TP-072 LinearGradient. No new visual TP assets. |
 | 2026-09-21+ | **M5 Train Results:** Implemented `TrainResultsView` on `/train/[subject]/[topic]/results`. Reuses TP-004 Lucide. No new visual TP assets / packages. |
 | 2026-09-22 | **Register remediation (docs only):** Corrected Train artboard dimensions to **848×1264**; expanded TP-004 usage map through M4/M5 + utility screens; documented JFIF→PNG format conversion for TP-058/059/060 and TP-025…030; clarified root LICENSE vs product/asset IP; added unused/preloaded/rejected distinction; app icon/splash provenance; NOTICE follow-up. |
+| 2026-09-27 | **Focus dedicated artboards (architecture):** TP-075 / TP-076 rebuilt as independent Focus-specific derivative compositions referenced from TP-073 / TP-074 via `scripts/derive_focus_artboards.py` (Pillow + bundled Fredoka). Static PNG contains FOCUS MODE, Focus instruction, Train-geometry topic cards without 1–10 badges, clean action region (Train promo never copied into Focus), Train-position footer. Runtime UI is checkboxes + START FOCUS + profile/difficulty only — no Train artboard rendering, no promo/title repair masks. **Not EXALO ORIGINAL** — inherits THIRD-PARTY LICENSE UNKNOWN / **LICENSE REVIEW REQUIRED**. Source Train PNGs unmodified. |
 
 ---
 
@@ -332,6 +333,42 @@ REVIEWED — NO NEW MATERIAL INTRODUCED BY HOME LANDSCAPE CORRECTION.
 | License | UNKNOWN — **LICENSE REVIEW REQUIRED** |
 | Manual use status | Introduced for M3 Train Selection parity; **formal USE APPROVED pending PO visual review** (as last recorded) |
 
+### TP-075 — `maths-focus-mode.png` (Maths Focus Selection artboard)
+
+| Field | Value |
+| --- | --- |
+| Filename | `maths-focus-mode.png` |
+| Source | Local derivative of **TP-073** `assets/train/maths-train-mode.png` |
+| Destination | `assets/focus/maths-focus-mode.png` |
+| Copy relationship | **DERIVATIVE** of TP-073 — independent Focus-specific composition (not byte-identical; not a runtime-patched Train artboard; not Exalo-original ownership) |
+| Screens | Focus Selection `/focus/maths` |
+| Intrinsic size | **848×1264** (matches TP-073) |
+| Provenance | Inherits TP-073 (XMP / C2PA / SynthID class) |
+| Classification | **THIRD-PARTY — LICENSE UNKNOWN** (derivative) |
+| License | UNKNOWN — **LICENSE REVIEW REQUIRED** (inherits TP-073) |
+| Manual use status | Dedicated Focus artboard architecture; **PO visual review pending** |
+| Open-source? | **No** |
+| Derivation tooling | `scripts/derive_focus_artboards.py` (Pillow + bundled Fredoka TP-001) — composes Focus canvas from Train reference regions; local derivation ≠ new ownership |
+| Composition | FOCUS MODE + Focus multi-topic instruction; Train-geometry topic cards without 1–10 badges; clean action region (Train promotional strip not copied); footer / EXALO SCORE / HOME / PARENTS at Train coordinates |
+
+### TP-076 — `english-focus-mode.png` (English Focus Selection artboard)
+
+| Field | Value |
+| --- | --- |
+| Filename | `english-focus-mode.png` |
+| Source | Local derivative of **TP-074** `assets/train/english-train-mode.png` |
+| Destination | `assets/focus/english-focus-mode.png` |
+| Copy relationship | **DERIVATIVE** of TP-074 — independent Focus-specific composition (not byte-identical; not a runtime-patched Train artboard; not Exalo-original ownership) |
+| Screens | Focus Selection `/focus/english` |
+| Intrinsic size | **848×1264** (matches TP-074) |
+| Provenance | Inherits TP-074 (XMP / C2PA / SynthID class) |
+| Classification | **THIRD-PARTY — LICENSE UNKNOWN** (derivative) |
+| License | UNKNOWN — **LICENSE REVIEW REQUIRED** (inherits TP-074) |
+| Manual use status | Dedicated Focus artboard architecture; **PO visual review pending** |
+| Open-source? | **No** |
+| Derivation tooling | `scripts/derive_focus_artboards.py` (Pillow + bundled Fredoka TP-001) — composes Focus canvas from Train reference regions; local derivation ≠ new ownership |
+| Composition | Same class as TP-075 on English Train reference |
+
 ### TP-001 — Fredoka
 
 | Field | Value |
@@ -469,13 +506,15 @@ Approved items remain **THIRD-PARTY — LICENSE UNKNOWN** or **PROVENANCE UNKNOW
 | Journey | TP-071 clean derivative of TP-070 | 4 + LRR |
 | Train Selection Maths | TP-073 (848×1264) | 4 + LRR |
 | Train Selection English | TP-074 (848×1264) | 4 + LRR |
+| Focus Selection Maths | TP-075 derivative of TP-073 (848×1264) | 4 + LRR |
+| Focus Selection English | TP-076 derivative of TP-074 (848×1264) | 4 + LRR |
 | Onboarding | TP-058 / TP-059 / TP-060 heroes + theme wash | 5 + LRR; wash = 6 |
 | Train Gameplay | Theme `#070421` + software UI (no artboard TP) | 6 / software |
 | Train Results | Theme `#070421` + software UI | 6 / software |
 | Streak / Badges / Score | Theme + LinearGradient (TP-072) + Lucide (TP-004) | 2 |
 | Profile / Parents | Theme + LinearGradient + Lucide | 2 |
 | Gallery / `SpaceBackground` | `background planets.png` (+ optional planet overlays) | 5 + LRR |
-| Focus / Test | Placeholders only — **no final visual materials claimed** | — |
+| Focus / Test | Focus: TP-075 / TP-076; Test: placeholders — **no final Test visual materials claimed** | Focus 4 + LRR |
 
 | Asset | TP | Lovable/source | Expo dest | Screens | Provenance | License | Approval |
 | --- | --- | --- | --- | --- | --- | --- | --- |
@@ -484,6 +523,8 @@ Approved items remain **THIRD-PARTY — LICENSE UNKNOWN** or **PROVENANCE UNKNOW
 | `journey-bg-clean.png` | TP-071 | Derivative of TP-070 only | `assets/journey/` | Journey runtime | Inherits TP-070 | UNKNOWN | **USE APPROVED** (derivative) |
 | `maths-train-mode.png` | TP-073 | Lovable (byte-identical) | `assets/train/` | Train Selection maths | AI/SynthID | UNKNOWN | LRR; formal USE APPROVED pending |
 | `english-train-mode.png` | TP-074 | Lovable (byte-identical) | `assets/train/` | Train Selection english | AI/SynthID | UNKNOWN | LRR; formal USE APPROVED pending |
+| `maths-focus-mode.png` | TP-075 | Derivative of TP-073 only | `assets/focus/` | Focus Selection maths | Inherits TP-073 | UNKNOWN | LRR; PO visual review pending |
+| `english-focus-mode.png` | TP-076 | Derivative of TP-074 only | `assets/focus/` | Focus Selection english | Inherits TP-074 | UNKNOWN | LRR; PO visual review pending |
 | Onboarding page wash | — | CSS `--gradient-bg` | StyleSheet | Onboarding | Recreated | N/A | System |
 | `background planets.png` | — | OneDrive/pack lineage | `assets/backgrounds/` | SpaceBackground / gallery | UNKNOWN | UNKNOWN | LRR — not Journey/Train artboard |
 
@@ -495,7 +536,7 @@ Evidence: `src/constants/assets.ts` registry; UI `require`/component references;
 
 ### A. USED IN PRODUCT UI
 
-Home artboard (TP-003); Journey clean (TP-071); Train Selection artboards (TP-073/074); onboarding heroes (TP-058/059/060); avatars (TP-025…030); nav `home_icon` / `parents_icon`; SpaceBackground planets (gallery/`Screen` path); Fredoka; Lucide; LinearGradient.
+Home artboard (TP-003); Journey clean (TP-071); Train Selection artboards (TP-073/074); Focus Selection artboards (TP-075/076); onboarding heroes (TP-058/059/060); avatars (TP-025…030); nav `home_icon` / `parents_icon`; SpaceBackground planets (gallery/`Screen` path); Fredoka; Lucide; LinearGradient.
 
 ### B. PRESENT / PRELOADED BUT APPARENTLY UNUSED IN CURRENT UI
 
@@ -531,6 +572,8 @@ Lovable repo assets not copied into Expo; exalo-mobile scaffold icons (technical
 | TP-071 `journey-bg-clean.png` | Derivative of TP-070 only | **USE APPROVED** as derivative; LRR; **not** EXALO ORIGINAL |
 | TP-073 `maths-train-mode.png` | XMP + C2PA / SynthID | LRR; formal USE APPROVED pending |
 | TP-074 `english-train-mode.png` | XMP `trainedAlgorithmicMedia` + C2PA / SynthID | LRR; formal USE APPROVED pending |
+| TP-075 `maths-focus-mode.png` | Derivative of TP-073 only | LRR (inherits TP-073); **not** EXALO ORIGINAL; PO visual review pending |
+| TP-076 `english-focus-mode.png` | Derivative of TP-074 only | LRR (inherits TP-074); **not** EXALO ORIGINAL; PO visual review pending |
 | TP-068 `onboarding_email_hero.png` | AI meta previously noted | **REJECTED / DO NOT USE** |
 
 AI-generated provenance ≠ copyright ownership, commercial rights, or redistribution rights.

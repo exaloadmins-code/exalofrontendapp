@@ -30,7 +30,6 @@ import {
 import { resolveAvatarSource } from '@/constants/onboarding';
 import { Routes } from '@/constants/routes';
 import {
-  TRAIN_DIFFICULTY_DEFAULT,
   TRAIN_DIFFICULTY_LABEL_STYLE,
   TRAIN_DIFFICULTY_SELECTED,
   TRAIN_PROFILE_OVERLAY,
@@ -54,7 +53,9 @@ type SurfaceBox = { width: number; height: number };
  *
  * Artboards: TP-073 maths / TP-074 english (843×1264). Hotspots from TrainMode.tsx.
  * Catalogue: `src/constants/train.ts` (TEMPORARY frontend-only).
- * Topic tap → M3 boundary placeholder (no gameplay, no `/train/start`).
+ * Difficulty starts unselected (`null`) — no automatic Easy default.
+ * Topic tap requires an explicit difficulty; return/retry restores via
+ * `getTrainSelection()` when Results/Home or Back intentionally preserved it.
  */
 export default function TrainSelectionScreen() {
   const router = useRouter();
@@ -63,20 +64,20 @@ export default function TrainSelectionScreen() {
   const { profile } = useAppContext();
   const { width: windowWidth, height: windowHeight } = useWindowDimensions();
   const [surface, setSurface] = useState<SurfaceBox | null>(null);
-  const [selectedDifficulty, setSelectedDifficulty] = useState<TrainDifficulty>(
-    () => {
+  /** `null` until the learner taps Easy / Medium / Hard (or a preserved handoff restores). */
+  const [selectedDifficulty, setSelectedDifficulty] =
+    useState<TrainDifficulty | null>(() => {
       if (!subject) {
-        return TRAIN_DIFFICULTY_DEFAULT;
+        return null;
       }
       const snap = getTrainSelection();
       if (snap?.subject === subject) {
         return snap.difficulty;
       }
-      return TRAIN_DIFFICULTY_DEFAULT;
-    },
-  );
+      return null;
+    });
 
-  // Remount / subject switch: restore difficulty from M3 handoff when subject matches.
+  // Remount / subject switch: restore only when handoff explicitly preserved a difficulty.
   useEffect(() => {
     if (!subject) {
       return;
@@ -86,7 +87,7 @@ export default function TrainSelectionScreen() {
       setSelectedDifficulty(snap.difficulty);
       return;
     }
-    setSelectedDifficulty(TRAIN_DIFFICULTY_DEFAULT);
+    setSelectedDifficulty(null);
   }, [subject]);
 
   const name = profile.displayName?.trim() || 'Explorer';
@@ -186,6 +187,10 @@ export default function TrainSelectionScreen() {
       percent: trainTopicHotspotPercent(index),
       minTouch,
       onPress: () => {
+        // ONE difficulty + ONE topic — refuse topic start with no difficulty.
+        if (selectedDifficulty == null) {
+          return;
+        }
         setTrainSelection({
           subject,
           topicSlug: topic.slug,
@@ -316,7 +321,9 @@ export default function TrainSelectionScreen() {
               },
             ]}
           >
-            {`Selected Difficulty: ${selectedDifficulty.toUpperCase()}`}
+            {selectedDifficulty
+              ? `Selected Difficulty: ${selectedDifficulty.toUpperCase()}`
+              : 'Select Difficulty: EASY · MEDIUM · HARD'}
           </Text>
 
           {profileBox ? (

@@ -5,6 +5,7 @@ export {
   HomeAssets,
   JourneyAssets,
   TrainAssets,
+  FocusAssets,
   PlanetAssets,
   RocketAssets,
   AstronautAssets,

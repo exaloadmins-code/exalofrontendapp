@@ -53,8 +53,15 @@ M2 PRODUCT-OWNER VISUAL REVIEW: **APPROVED** (Maths + English). Native device ma
 
 | Filename | Dimensions | Project location | Notes |
 | --- | --- | --- | --- |
-| `maths-train-mode.png` | 843×1264 | `assets/train/maths-train-mode.png` | TP-073. Maths Train Selection runtime artboard. **LICENSE REVIEW REQUIRED**. Formal USE APPROVED pending PO visual review. |
-| `english-train-mode.png` | 843×1264 | `assets/train/english-train-mode.png` | TP-074. English Train Selection runtime artboard. **LICENSE REVIEW REQUIRED**. Formal USE APPROVED pending PO visual review. |
+| `maths-train-mode.png` | 848×1264 | `assets/train/maths-train-mode.png` | TP-073. Maths Train Selection runtime artboard. **LICENSE REVIEW REQUIRED**. Formal USE APPROVED pending PO visual review. |
+| `english-train-mode.png` | 848×1264 | `assets/train/english-train-mode.png` | TP-074. English Train Selection runtime artboard. **LICENSE REVIEW REQUIRED**. Formal USE APPROVED pending PO visual review. |
+
+### Focus Selection artboards (derivatives of Train)
+
+| Filename | Dimensions | Project location | Notes |
+| --- | --- | --- | --- |
+| `maths-focus-mode.png` | 848×1264 | `assets/focus/maths-focus-mode.png` | TP-075. Independent Focus-specific derivative composition referenced from TP-073 via `scripts/derive_focus_artboards.py` (FOCUS MODE, Focus instruction, badge-free cards, clean action region; no Train promo). **LICENSE REVIEW REQUIRED** (inherits TP-073). Not EXALO ORIGINAL. Not a runtime-patched Train artboard. |
+| `english-focus-mode.png` | 848×1264 | `assets/focus/english-focus-mode.png` | TP-076. Independent Focus-specific derivative composition referenced from TP-074 via `scripts/derive_focus_artboards.py` (same Focus composition rules as TP-075). **LICENSE REVIEW REQUIRED** (inherits TP-074). Not EXALO ORIGINAL. Not a runtime-patched Train artboard. |
 
 M3 PRODUCT-OWNER VISUAL REVIEW: **PENDING**. Native device matrix: **NOT YET DEVICE-VERIFIED**. M4 gameplay: not started.
 

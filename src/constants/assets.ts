@@ -34,14 +34,27 @@ export const JourneyAssets = {
 } as const;
 
 /**
- * TP-073 / TP-074 — Train Selection artboards (843×1264), LICENSE REVIEW REQUIRED.
- * Copied from Lovable TrainMode assets for M3 parity.
+ * TP-073 / TP-074 — Train Selection artboards (848×1264 intrinsic; layout ref 843×1264),
+ * LICENSE REVIEW REQUIRED. Copied from Lovable TrainMode assets for M3 parity.
  */
 export const TrainAssets = {
   /** TP-073 — Maths Train Selection artboard. */
   maths: require('../../assets/train/maths-train-mode.png'),
   /** TP-074 — English Train Selection artboard. */
   english: require('../../assets/train/english-train-mode.png'),
+} as const;
+
+/**
+ * TP-075 / TP-076 — Focus Selection artboards.
+ * Independent Focus-specific derivative compositions referenced from TP-073 / TP-074
+ * (`scripts/derive_focus_artboards.py`). Same intrinsic size; inherits
+ * LICENSE REVIEW REQUIRED — not Exalo-original ownership. Not runtime-patched Train.
+ */
+export const FocusAssets = {
+  /** TP-075 — Maths Focus Selection artboard (derivative of TP-073). */
+  maths: require('../../assets/focus/maths-focus-mode.png'),
+  /** TP-076 — English Focus Selection artboard (derivative of TP-074). */
+  english: require('../../assets/focus/english-focus-mode.png'),
 } as const;
 
 export const PlanetAssets = {
@@ -144,6 +157,7 @@ export const assets = {
   home: HomeAssets,
   journey: JourneyAssets,
   train: TrainAssets,
+  focus: FocusAssets,
   planets: PlanetAssets,
   rockets: RocketAssets,
   astronauts: AstronautAssets,
