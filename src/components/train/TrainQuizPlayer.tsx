@@ -1,6 +1,8 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import {
   AppState,
+  BackHandler,
+  Modal,
   Pressable,
   ScrollView,
   StyleSheet,
@@ -10,7 +12,7 @@ import {
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
-import { ArrowLeft, Check, ChevronRight, Lightbulb, X } from 'lucide-react-native';
+import { ArrowLeft, ChevronRight } from 'lucide-react-native';
 import {
   TRAIN_GAMEPLAY as T,
   TRAIN_GAMEPLAY_COPY as COPY,
@@ -29,10 +31,13 @@ export type TrainQuizPlayerProps = {
   title: string;
   subtitle?: string;
   questions: TrainQuestionRow[];
+  /**
+   * Empty-state exit only. Active gameplay Back is previous-question, not exit.
+   */
   onExit: () => void;
   /**
-   * Called when the learner taps "See results" after the final question.
-   * M4 does not render Lovable's finished Results screen — hand off to M5 boundary.
+   * Called when the learner finishes (last question) or confirms End Focus.
+   * Always receives one row per session question position (unanswered → chosen:null).
    */
   onSeeResults: (answers: TrainAnswerRecord[]) => void;
   /**
@@ -49,13 +54,50 @@ export type TrainQuizPlayerProps = {
    * Omit for Train. Do not combine with Test countdown.
    */
   sessionStartedAtMs?: number;
+  /**
+   * Focus only — shows END FOCUS (with confirmation). Never enable for Train/Test.
+   */
+  showEndFocus?: boolean;
 };
 
 /**
- * Lovable `QuizPlayer` parity for Train / Focus / Test gameplay (composable UI).
+ * Expand position slots → Results rows. Unanswered positions stay `chosen: null`.
+ * Order matches session question positions (Train local-repeat safe).
+ */
+function slotsToResults(
+  slots: readonly (TrainAnswerRecord | null)[],
+  questions: readonly TrainQuestionRow[],
+): TrainAnswerRecord[] {
+  return questions.map((q, i) => {
+    const existing = slots[i];
+    if (existing) {
+      return existing;
+    }
+    const correct = (q.Correct_Option ?? 'A')
+      .toString()
+      .trim()
+      .toUpperCase() as OptionLetter;
+    return {
+      qid: q.Question_ID,
+      chosen: null,
+      correct,
+      isCorrect: false,
+    };
+  });
+}
+
+/**
+ * Shared QuizPlayer for Train / Focus / Test.
+ *
+ * GAMEPLAY: neutral answer selection only — no correct/wrong reveal.
+ * NAV: in-app Back = previous question (disabled on Q1). Next = next / See results.
+ * FOCUS: optional END FOCUS → confirm → partial Results.
+ * SCORING: answer slots keyed by session position (not qid).
+ * RESULTS: callers hand answers to TrainResultsView after the run.
+ *
  * - Train: no timer props
- * - Focus: `sessionStartedAtMs` → elapsed count-up (M9A)
- * - Test: `sessionEndsAtMs` → countdown (unchanged)
+ * - Focus: `sessionStartedAtMs` → elapsed count-up (M9A) + `showEndFocus`
+ * - Test: `sessionEndsAtMs` → countdown (unchanged deadline)
  */
 export function TrainQuizPlayer({
   title,
@@ -66,12 +108,16 @@ export function TrainQuizPlayer({
   sessionEndsAtMs,
   onTimeExpired,
   sessionStartedAtMs,
+  showEndFocus = false,
 }: TrainQuizPlayerProps) {
   const insets = useSafeAreaInsets();
   const { width: windowWidth } = useWindowDimensions();
   const [idx, setIdx] = useState(0);
   const [selected, setSelected] = useState<OptionLetter | null>(null);
-  const [answers, setAnswers] = useState<TrainAnswerRecord[]>([]);
+  /** One slot per session position — independent of repeated Question_IDs. */
+  const [answerSlots, setAnswerSlots] = useState<(TrainAnswerRecord | null)[]>(
+    () => Array.from({ length: questions.length }, () => null),
+  );
   const [remainingSec, setRemainingSec] = useState<number | null>(() =>
     sessionEndsAtMs != null
       ? Math.max(0, Math.ceil((sessionEndsAtMs - Date.now()) / 1000))
@@ -82,16 +128,53 @@ export function TrainQuizPlayer({
       ? Math.max(0, Math.floor((Date.now() - sessionStartedAtMs) / 1000))
       : null,
   );
+  /** Focus End Focus confirmation — in-tree Modal (reliable on Android vs Alert). */
+  const [endFocusConfirmVisible, setEndFocusConfirmVisible] = useState(false);
 
-  const answersRef = useRef(answers);
-  answersRef.current = answers;
+  const answerSlotsRef = useRef(answerSlots);
+  answerSlotsRef.current = answerSlots;
+  const questionsRef = useRef(questions);
+  questionsRef.current = questions;
   const expiredRef = useRef(false);
+  const finalizedRef = useRef(false);
   const onTimeExpiredRef = useRef(onTimeExpired);
   onTimeExpiredRef.current = onTimeExpired;
+  const onSeeResultsRef = useRef(onSeeResults);
+  onSeeResultsRef.current = onSeeResults;
 
   const timed = sessionEndsAtMs != null;
-  const locked = timed && (expiredRef.current || (remainingSec !== null && remainingSec <= 0));
+  const locked =
+    timed &&
+    (expiredRef.current ||
+      finalizedRef.current ||
+      (remainingSec !== null && remainingSec <= 0));
   const showElapsed = !timed && sessionStartedAtMs != null;
+  const canGoPrevious =
+    idx > 0 && !locked && !finalizedRef.current && !expiredRef.current;
+
+  const finalizeOnce = (slots: readonly (TrainAnswerRecord | null)[]) => {
+    if (finalizedRef.current) return;
+    finalizedRef.current = true;
+    onSeeResultsRef.current(slotsToResults(slots, questionsRef.current));
+  };
+
+  /**
+   * Android hardware Back: consume during active gameplay — do not exit session.
+   * If End Focus confirmation is open, dismiss it first (Keep Focusing equivalent).
+   */
+  useEffect(() => {
+    if (!questions.length) {
+      return;
+    }
+    const sub = BackHandler.addEventListener('hardwareBackPress', () => {
+      if (endFocusConfirmVisible) {
+        setEndFocusConfirmVisible(false);
+        return true;
+      }
+      return true;
+    });
+    return () => sub.remove();
+  }, [questions.length, endFocusConfirmVisible]);
 
   useEffect(() => {
     if (sessionEndsAtMs == null) {
@@ -105,9 +188,12 @@ export function TrainQuizPlayer({
     const tick = () => {
       const rem = Math.max(0, Math.ceil((sessionEndsAtMs - Date.now()) / 1000));
       setRemainingSec(rem);
-      if (rem <= 0 && !expiredRef.current) {
+      if (rem <= 0 && !expiredRef.current && !finalizedRef.current) {
         expiredRef.current = true;
-        onTimeExpiredRef.current?.(answersRef.current);
+        finalizedRef.current = true;
+        onTimeExpiredRef.current?.(
+          slotsToResults(answerSlotsRef.current, questionsRef.current),
+        );
       }
     };
 
@@ -154,26 +240,70 @@ export function TrainQuizPlayer({
   const contentWidth = Math.min(windowWidth - 32, T.contentMaxWidth);
   const q = questions[idx];
   const opts = useMemo(() => (q ? getTrainOptions(q) : []), [q]);
-  const correct = (q?.Correct_Option ?? 'A').toString().trim().toUpperCase() as OptionLetter;
+  const correct = (q?.Correct_Option ?? 'A')
+    .toString()
+    .trim()
+    .toUpperCase() as OptionLetter;
 
-  const submit = (letter: OptionLetter) => {
-    if (expiredRef.current || locked) return;
-    if (selected || !q) return;
+  /**
+   * Neutral selection only. Correctness is stored for Results but never shown here.
+   * Learner may change selection (including after Back). Latest selection wins per index.
+   */
+  const selectAnswer = (letter: OptionLetter) => {
+    if (expiredRef.current || locked || finalizedRef.current || !q) return;
     setSelected(letter);
-    setAnswers((prev) => [
-      ...prev,
-      { qid: q.Question_ID, chosen: letter, correct, isCorrect: letter === correct },
-    ]);
+    const record: TrainAnswerRecord = {
+      qid: q.Question_ID,
+      chosen: letter,
+      correct,
+      isCorrect: letter === correct,
+    };
+    setAnswerSlots((prev) => {
+      const next = prev.slice();
+      while (next.length < questions.length) {
+        next.push(null);
+      }
+      next[idx] = record;
+      answerSlotsRef.current = next;
+      return next;
+    });
   };
 
-  const next = () => {
-    if (expiredRef.current || locked) return;
+  const goPrevious = () => {
+    if (!canGoPrevious) return;
+    const nextIdx = idx - 1;
+    setIdx(nextIdx);
+    setSelected(answerSlots[nextIdx]?.chosen ?? null);
+  };
+
+  const goNext = () => {
+    if (expiredRef.current || locked || finalizedRef.current) return;
+    if (selected == null) return;
     if (idx + 1 >= questions.length) {
-      onSeeResults(answersRef.current);
+      finalizeOnce(answerSlotsRef.current);
       return;
     }
-    setSelected(null);
-    setIdx((i) => i + 1);
+    const nextIdx = idx + 1;
+    setIdx(nextIdx);
+    setSelected(answerSlots[nextIdx]?.chosen ?? null);
+  };
+
+  const requestEndFocus = () => {
+    // Do not gate on Test `locked` — End Focus is Focus-only and must remain tappable.
+    if (!showEndFocus || finalizedRef.current || expiredRef.current) {
+      return;
+    }
+    setEndFocusConfirmVisible(true);
+  };
+
+  const cancelEndFocus = () => {
+    setEndFocusConfirmVisible(false);
+  };
+
+  const confirmEndFocus = () => {
+    setEndFocusConfirmVisible(false);
+    if (finalizedRef.current || expiredRef.current) return;
+    finalizeOnce(answerSlotsRef.current);
   };
 
   if (!questions.length) {
@@ -204,36 +334,34 @@ export function TrainQuizPlayer({
     );
   }
 
-  const isWrong = selected !== null && selected !== correct;
-  const isRight = selected !== null && selected === correct;
   const isLast = idx + 1 >= questions.length;
   const timerUrgent = remainingSec !== null && remainingSec <= 30;
   const elapsedLabel =
     elapsedSec !== null ? formatFocusElapsed(elapsedSec) : null;
+  const horizontalPad = Math.max(16, (windowWidth - contentWidth) / 2);
 
   return (
     <View style={[styles.root, { paddingTop: insets.top + 8 }]}>
-      <ScrollView
-        contentContainerStyle={[
-          styles.scrollContent,
-          {
-            paddingBottom: insets.bottom + 24,
-            paddingHorizontal: Math.max(16, (windowWidth - contentWidth) / 2),
-          },
-        ]}
-        keyboardShouldPersistTaps="handled"
-        showsVerticalScrollIndicator={false}
-        showsHorizontalScrollIndicator={false}
-      >
-        <View style={{ width: contentWidth, alignSelf: 'center' }}>
+      {/*
+        Header chrome lives OUTSIDE ScrollView so END FOCUS remains tappable on
+        Android (ScrollView gesture interception was swallowing presses).
+      */}
+      <View style={[styles.headerChrome, { paddingHorizontal: horizontalPad }]}>
+        <View style={[styles.headerInner, { width: contentWidth }]}>
           <View style={styles.topRow}>
             <Pressable
               accessibilityRole="button"
-              accessibilityLabel="Back"
-              onPress={onExit}
-              style={styles.backBtn}
+              accessibilityLabel={COPY.previousQuestion}
+              accessibilityState={{ disabled: !canGoPrevious }}
+              disabled={!canGoPrevious}
+              onPress={goPrevious}
+              style={[styles.backBtn, !canGoPrevious && styles.backBtnDisabled]}
             >
-              <ArrowLeft size={20} color="#FFFFFF" strokeWidth={2.25} />
+              <ArrowLeft
+                size={20}
+                color={canGoPrevious ? '#FFFFFF' : 'rgba(255,255,255,0.4)'}
+                strokeWidth={2.25}
+              />
             </Pressable>
             {remainingSec !== null ? (
               <Text
@@ -259,9 +387,50 @@ export function TrainQuizPlayer({
             </Text>
           </View>
 
-          <Text style={styles.title}>{title}</Text>
-          {subtitle ? <Text style={styles.subtitle}>{subtitle}</Text> : null}
+          {showEndFocus ? (
+            <View style={styles.modeHeaderRow}>
+              <Text
+                style={[styles.title, styles.titleInRow]}
+                numberOfLines={2}
+              >
+                {title}
+              </Text>
+              <Pressable
+                accessibilityRole="button"
+                accessibilityLabel={COPY.endFocus}
+                disabled={finalizedRef.current || expiredRef.current}
+                onPress={requestEndFocus}
+                hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+                style={({ pressed }) => [
+                  styles.endFocusBtn,
+                  pressed && styles.endFocusBtnPressed,
+                ]}
+              >
+                <Text style={styles.endFocusLabel}>{COPY.endFocus}</Text>
+              </Pressable>
+            </View>
+          ) : (
+            <Text style={styles.title}>{title}</Text>
+          )}
 
+          {subtitle ? <Text style={styles.subtitle}>{subtitle}</Text> : null}
+        </View>
+      </View>
+
+      <ScrollView
+        style={styles.scroll}
+        contentContainerStyle={[
+          styles.scrollContent,
+          {
+            paddingBottom: insets.bottom + 24,
+            paddingHorizontal: horizontalPad,
+          },
+        ]}
+        keyboardShouldPersistTaps="handled"
+        showsVerticalScrollIndicator={false}
+        showsHorizontalScrollIndicator={false}
+      >
+        <View style={{ width: contentWidth, alignSelf: 'center' }}>
           <LinearGradient
             colors={[T.cardFrom, T.cardTo]}
             start={{ x: 0.5, y: 0 }}
@@ -276,74 +445,32 @@ export function TrainQuizPlayer({
             <View style={styles.options}>
               {opts.map(({ letter, text }) => {
                 const chosen = selected === letter;
-                const isCorrectOpt = selected !== null && letter === correct;
-                const isWrongChoice = chosen && letter !== correct;
-                const dimOthers =
-                  selected !== null && !chosen && !isCorrectOpt;
-
                 return (
                   <Pressable
                     key={letter}
                     accessibilityRole="button"
                     accessibilityState={{
-                      disabled: selected !== null || locked,
+                      disabled: locked || finalizedRef.current,
                       selected: chosen,
                     }}
-                    disabled={selected !== null || locked}
-                    onPress={() => submit(letter)}
-                    style={[
-                      styles.option,
-                      isCorrectOpt && styles.optionCorrect,
-                      isWrongChoice && styles.optionWrong,
-                      dimOthers && styles.optionDim,
-                    ]}
+                    disabled={locked || finalizedRef.current}
+                    onPress={() => selectAnswer(letter)}
+                    style={[styles.option, chosen && styles.optionSelected]}
                   >
-                    <View style={styles.badge}>
+                    <View style={[styles.badge, chosen && styles.badgeSelected]}>
                       <Text style={styles.badgeText}>{letter}</Text>
                     </View>
                     <Text style={styles.optionText}>{text}</Text>
-                    {isCorrectOpt ? (
-                      <Check
-                        size={20}
-                        color={T.correctIcon}
-                        strokeWidth={2.25}
-                        style={styles.optionIcon}
-                      />
-                    ) : null}
-                    {isWrongChoice ? (
-                      <X
-                        size={20}
-                        color={T.wrongIcon}
-                        strokeWidth={2.25}
-                        style={styles.optionIcon}
-                      />
-                    ) : null}
                   </Pressable>
                 );
               })}
             </View>
 
-            {isRight ? (
-              <View style={styles.correctBanner}>
-                <Text style={styles.correctBannerText}>{COPY.correctBanner}</Text>
-              </View>
-            ) : null}
-
-            {isWrong && q.Explanation ? (
-              <View style={styles.explainBanner}>
-                <View style={styles.explainHeader}>
-                  <Lightbulb size={16} color={T.explainText} strokeWidth={2.25} />
-                  <Text style={styles.explainTitle}>{COPY.explanationTitle}</Text>
-                </View>
-                <Text style={styles.explainBody}>{q.Explanation}</Text>
-              </View>
-            ) : null}
-
-            {selected !== null && !locked ? (
+            {selected !== null && !locked && !finalizedRef.current ? (
               <Pressable
                 accessibilityRole="button"
                 accessibilityLabel={isLast ? COPY.seeResults : COPY.nextQuestion}
-                onPress={next}
+                onPress={goNext}
                 style={styles.nextBtn}
               >
                 <Text style={styles.ctaLabel}>
@@ -355,6 +482,41 @@ export function TrainQuizPlayer({
           </LinearGradient>
         </View>
       </ScrollView>
+
+      {showEndFocus ? (
+        <Modal
+          visible={endFocusConfirmVisible}
+          transparent
+          animationType="fade"
+          onRequestClose={cancelEndFocus}
+        >
+          <View style={styles.confirmBackdrop}>
+            <View
+              style={styles.confirmCard}
+              accessibilityViewIsModal
+            >
+              <Text style={styles.confirmTitle}>{COPY.endFocusTitle}</Text>
+              <Text style={styles.confirmMessage}>{COPY.endFocusMessage}</Text>
+              <Pressable
+                accessibilityRole="button"
+                accessibilityLabel={COPY.keepFocusing}
+                onPress={cancelEndFocus}
+                style={styles.confirmKeepBtn}
+              >
+                <Text style={styles.confirmKeepLabel}>{COPY.keepFocusing}</Text>
+              </Pressable>
+              <Pressable
+                accessibilityRole="button"
+                accessibilityLabel={COPY.endFocus}
+                onPress={confirmEndFocus}
+                style={styles.confirmEndBtn}
+              >
+                <Text style={styles.confirmEndLabel}>{COPY.endFocus}</Text>
+              </Pressable>
+            </View>
+          </View>
+        </Modal>
+      ) : null}
     </View>
   );
 }
@@ -364,9 +526,21 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: T.background,
   },
+  headerChrome: {
+    width: '100%',
+    alignItems: 'center',
+    zIndex: 2,
+    elevation: 2,
+  },
+  headerInner: {
+    alignSelf: 'center',
+  },
+  scroll: {
+    flex: 1,
+  },
   scrollContent: {
     flexGrow: 1,
-    paddingTop: 8,
+    paddingTop: 4,
   },
   topRow: {
     flexDirection: 'row',
@@ -383,6 +557,9 @@ const styles = StyleSheet.create({
     borderColor: T.panelBorder,
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  backBtnDisabled: {
+    opacity: 0.45,
   },
   timer: {
     fontFamily: fonts.display,
@@ -417,6 +594,13 @@ const styles = StyleSheet.create({
     minWidth: 44,
     textAlign: 'right',
   },
+  modeHeaderRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    gap: 12,
+    marginBottom: 8,
+  },
   title: {
     fontFamily: fonts.display,
     fontSize: 12,
@@ -426,12 +610,110 @@ const styles = StyleSheet.create({
     color: T.violetMuted,
     marginBottom: 8,
   },
+  titleInRow: {
+    flex: 1,
+    flexShrink: 1,
+    marginBottom: 0,
+    paddingRight: 4,
+  },
   subtitle: {
     fontFamily: fonts.display,
     fontSize: 14,
     fontWeight: '500',
     color: T.violetSoft,
-    marginBottom: 16,
+    marginBottom: 12,
+  },
+  /** Destructive End Focus — red treatment (not violet). */
+  endFocusBtn: {
+    flexShrink: 0,
+    minHeight: 44,
+    paddingVertical: 10,
+    paddingHorizontal: 12,
+    borderRadius: 12,
+    backgroundColor: T.wrongBg,
+    borderWidth: 1.5,
+    borderColor: T.wrongBorder,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  endFocusBtnPressed: {
+    opacity: 0.85,
+    backgroundColor: 'rgba(244, 63, 94, 0.35)',
+  },
+  endFocusLabel: {
+    fontFamily: fonts.display,
+    fontSize: 12,
+    fontWeight: '800',
+    letterSpacing: 0.8,
+    textTransform: 'uppercase',
+    color: '#FFE4E6',
+  },
+  confirmBackdrop: {
+    flex: 1,
+    backgroundColor: 'rgba(7, 4, 33, 0.78)',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingHorizontal: 24,
+  },
+  confirmCard: {
+    width: '100%',
+    maxWidth: 360,
+    borderRadius: 20,
+    backgroundColor: T.panel,
+    borderWidth: 1,
+    borderColor: T.panelBorder,
+    padding: 24,
+    gap: 12,
+  },
+  confirmTitle: {
+    fontFamily: fonts.display,
+    fontSize: 22,
+    fontWeight: '800',
+    color: '#FFFFFF',
+    textAlign: 'center',
+  },
+  confirmMessage: {
+    fontFamily: fonts.display,
+    fontSize: 15,
+    fontWeight: '500',
+    lineHeight: 22,
+    color: T.violetText,
+    textAlign: 'center',
+    marginBottom: 8,
+  },
+  confirmKeepBtn: {
+    minHeight: 48,
+    borderRadius: 14,
+    backgroundColor: T.cta,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingHorizontal: 16,
+  },
+  confirmKeepLabel: {
+    fontFamily: fonts.display,
+    fontSize: 16,
+    fontWeight: '700',
+    color: '#FFFFFF',
+    textTransform: 'uppercase',
+    letterSpacing: 0.4,
+  },
+  confirmEndBtn: {
+    minHeight: 48,
+    borderRadius: 14,
+    backgroundColor: T.wrongBg,
+    borderWidth: 1.5,
+    borderColor: T.wrongBorder,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingHorizontal: 16,
+  },
+  confirmEndLabel: {
+    fontFamily: fonts.display,
+    fontSize: 16,
+    fontWeight: '800',
+    color: '#FFE4E6',
+    textTransform: 'uppercase',
+    letterSpacing: 0.4,
   },
   card: {
     borderRadius: 24,
@@ -473,16 +755,10 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: T.optionBorder,
   },
-  optionCorrect: {
-    backgroundColor: T.correctBg,
-    borderColor: T.correctBorder,
-  },
-  optionWrong: {
-    backgroundColor: T.wrongBg,
-    borderColor: T.wrongBorder,
-  },
-  optionDim: {
-    opacity: 0.7,
+  /** Neutral “selected” only — never encodes correct/wrong. */
+  optionSelected: {
+    backgroundColor: 'rgba(124, 58, 237, 0.32)',
+    borderColor: '#A78BFA',
   },
   badge: {
     height: 32,
@@ -494,6 +770,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     flexShrink: 0,
+  },
+  badgeSelected: {
+    backgroundColor: T.cta,
+    borderColor: '#A78BFA',
   },
   badgeText: {
     fontFamily: fonts.display,
@@ -509,51 +789,6 @@ const styles = StyleSheet.create({
     lineHeight: 22,
     color: '#FFFFFF',
     paddingTop: 4,
-  },
-  optionIcon: {
-    marginTop: 4,
-    marginLeft: 'auto',
-  },
-  correctBanner: {
-    marginTop: 20,
-    borderRadius: 16,
-    padding: 16,
-    backgroundColor: T.correctBannerBg,
-    borderWidth: 1,
-    borderColor: T.correctBannerBorder,
-  },
-  correctBannerText: {
-    fontFamily: fonts.display,
-    fontSize: 14,
-    fontWeight: '500',
-    color: T.correctText,
-  },
-  explainBanner: {
-    marginTop: 20,
-    borderRadius: 16,
-    padding: 16,
-    backgroundColor: T.explainBg,
-    borderWidth: 1,
-    borderColor: T.explainBorder,
-  },
-  explainHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-    marginBottom: 4,
-  },
-  explainTitle: {
-    fontFamily: fonts.display,
-    fontSize: 14,
-    fontWeight: '600',
-    color: T.explainText,
-  },
-  explainBody: {
-    fontFamily: fonts.display,
-    fontSize: 14,
-    fontWeight: '500',
-    lineHeight: 20,
-    color: T.explainText,
   },
   nextBtn: {
     marginTop: 24,

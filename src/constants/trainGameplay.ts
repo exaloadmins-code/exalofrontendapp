@@ -1,6 +1,9 @@
 /**
  * Lovable QuizPlayer visual tokens (`components/QuizPlayer.tsx`).
  * Gameplay is composable — these are screen-local, not global theme overrides.
+ *
+ * Correct/wrong color tokens are reserved for Results (TrainResultsView), not
+ * active gameplay. Gameplay uses neutral violet selection only.
  */
 export const TRAIN_GAMEPLAY = {
   background: '#070421',
@@ -39,9 +42,8 @@ export const TRAIN_GAMEPLAY = {
 } as const;
 
 export const TRAIN_GAMEPLAY_COPY = {
-  correctBanner: 'Correct! Nice work.',
-  explanationTitle: 'Explanation',
   nextQuestion: 'Next question',
+  previousQuestion: 'Previous question',
   seeResults: 'See results',
   loading: 'Loading questions…',
   emptyTitle: 'No questions found',
@@ -50,4 +52,9 @@ export const TRAIN_GAMEPLAY_COPY = {
   errorTitle: "Couldn't load questions",
   goBack: 'Go back',
   back: 'Back',
+  /** Focus gameplay only — End Focus control + confirmation modal. */
+  endFocus: 'End Focus',
+  endFocusTitle: 'End Focus?',
+  endFocusMessage: 'Are you sure you want to end this Focus session?',
+  keepFocusing: 'Keep Focusing',
 } as const;

@@ -200,6 +200,7 @@ export default function FocusScreen() {
         onExit={returnToSetup}
         onSeeResults={onSeeResults}
         sessionStartedAtMs={sessionStartedAtMs ?? undefined}
+        showEndFocus
       />
     );
   }
@@ -228,7 +229,8 @@ function buildFocusResultSnapshot(params: {
   questions: TrainQuestionRow[];
 }): TrainResultSnapshot {
   const { subject, title, answers, questions } = params;
-  const totalQuestions = answers.length;
+  /** Full session paper — includes unanswered (`chosen: null`) after early End Focus. */
+  const totalQuestions = questions.length || answers.length;
   const totalCorrect = answers.filter((a) => a.isCorrect).length;
   return {
     subject,
