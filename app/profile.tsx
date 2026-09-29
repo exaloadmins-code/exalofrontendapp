@@ -112,7 +112,6 @@ type ModalKey =
 type DraftProfile = {
   name: string;
   year: string;
-  email: string;
   school: string;
 };
 
@@ -217,7 +216,11 @@ function Row({
           {value}
         </Text>
       ) : null}
-      {right ?? <ChevronRight size={16} color={PROFILE_MUTED_FOREGROUND} />}
+      {right !== undefined ? (
+        right
+      ) : (
+        <ChevronRight size={16} color={PROFILE_MUTED_FOREGROUND} />
+      )}
     </>
   );
 
@@ -397,7 +400,6 @@ export default function ProfileScreen() {
   const [draft, setDraft] = useState<DraftProfile>({
     name: '',
     year: '',
-    email: '',
     school: '',
   });
   const [form, setForm] = useState<SupportForm>({
@@ -412,7 +414,8 @@ export default function ProfileScreen() {
   const name = profile.displayName?.trim() || PROFILE_COPY.explorer;
   const yearLabel = profile.yearGroup?.trim() || PROFILE_COPY.galaxyCadet;
   const avatarSource = resolveAvatarSource(profile.avatarId);
-  const emailDisplay = profile.email?.trim() || PROFILE_COPY.add;
+  /** Profile email is display-only — never use “Add” CTA copy here. */
+  const emailDisplay = profile.email?.trim() || '—';
   const schoolDisplay = profile.schoolName?.trim() || PROFILE_COPY.add;
 
   const dismissToast = useCallback(() => setToast(null), []);
@@ -485,7 +488,6 @@ export default function ProfileScreen() {
       setDraft({
         name: profile.displayName ?? '',
         year: profile.yearGroup ?? '',
-        email: profile.email ?? '',
         school: profile.schoolName ?? '',
       });
     }
@@ -549,14 +551,12 @@ export default function ProfileScreen() {
     const displayName = draft.name.trim() || null;
     const yearRaw = draft.year.trim();
     const yearGroup = yearRaw || null;
-    const email = draft.email.trim() || null;
     const schoolName = draft.school.trim() || null;
 
     await setProfileState({
       ...profile,
       displayName,
       yearGroup,
-      email,
       schoolName,
     });
 
@@ -567,7 +567,6 @@ export default function ProfileScreen() {
     await setOnboardingState({
       ...onboarding,
       displayName,
-      email,
       yearGroup: onboardingYear,
       schoolName,
     });
@@ -789,7 +788,7 @@ export default function ProfileScreen() {
               icon={Mail}
               label={PROFILE_COPY.email}
               value={emailDisplay}
-              onPress={() => setModal('edit-profile')}
+              right={null}
             />
             <Row
               icon={UserIcon}
@@ -920,17 +919,6 @@ export default function ProfileScreen() {
             />
           </View>
           <View>
-            <FieldLabel label="Email" />
-            <ExaloTextInput
-              value={draft.email}
-              onChangeText={(v) => setDraft({ ...draft, email: v })}
-              placeholder="parent@example.com"
-              keyboardType="email-address"
-              autoCapitalize="none"
-              containerStyle={styles.inputContainer}
-            />
-          </View>
-          <View>
             <FieldLabel label="School" />
             <ExaloTextInput
               value={draft.school}
@@ -1024,7 +1012,7 @@ export default function ProfileScreen() {
             icon={Mail}
             label={PROFILE_COPY.email}
             value={emailDisplay}
-            onPress={() => setModal('edit-profile')}
+            right={null}
           />
           <Row
             icon={ShieldCheck}
