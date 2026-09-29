@@ -12,6 +12,10 @@ import type {
   TrainAnswerRecord,
   TrainQuestionRow,
 } from '@/services/trainQuestions';
+import {
+  formatTrainOptionLabel,
+  getTrainExplanation,
+} from '@/services/trainQuestions';
 
 export type TrainResultSnapshot = {
   subject: JourneySubject;
@@ -151,4 +155,76 @@ export function trainResultPercent(result: TrainResultSnapshot): number {
     return 0;
   }
   return Math.round((result.totalCorrect / result.totalQuestions) * 100);
+}
+
+/** Summary counts — unanswered is never counted as wrong. */
+export type TrainResultSummary = {
+  correct: number;
+  wrong: number;
+  unanswered: number;
+  total: number;
+  percent: number;
+};
+
+export function summarizeTrainResult(
+  result: TrainResultSnapshot,
+): TrainResultSummary {
+  let correct = 0;
+  let wrong = 0;
+  let unanswered = 0;
+  for (const a of result.answers) {
+    if (a.chosen == null) {
+      unanswered += 1;
+    } else if (a.isCorrect) {
+      correct += 1;
+    } else {
+      wrong += 1;
+    }
+  }
+  const total =
+    result.totalQuestions > 0 ? result.totalQuestions : result.answers.length;
+  const percent = total > 0 ? Math.round((correct / total) * 100) : 0;
+  return { correct, wrong, unanswered, total, percent };
+}
+
+export type TrainReviewStatus = 'incorrect' | 'unanswered';
+
+/**
+ * Wrong + unanswered review rows only, keyed by session index.
+ * Never joins by qid alone (Train LOCAL_REPEAT_TO_FILL safety).
+ */
+export type TrainReviewItem = {
+  sessionIndex: number;
+  questionNumber: number;
+  status: TrainReviewStatus;
+  stem: string;
+  yourAnswerLabel: string;
+  correctAnswerLabel: string;
+  explanation: string | null;
+};
+
+export function buildTrainReviewItems(
+  result: TrainResultSnapshot,
+): TrainReviewItem[] {
+  const items: TrainReviewItem[] = [];
+  for (let i = 0; i < result.answers.length; i += 1) {
+    const answer = result.answers[i];
+    if (answer.chosen != null && answer.isCorrect) {
+      continue;
+    }
+    const question = result.questions[i];
+    const unanswered = answer.chosen == null;
+    items.push({
+      sessionIndex: i,
+      questionNumber: i + 1,
+      status: unanswered ? 'unanswered' : 'incorrect',
+      stem: question?.Question_Text?.trim() || 'Question text unavailable.',
+      yourAnswerLabel: unanswered
+        ? ''
+        : formatTrainOptionLabel(question, answer.chosen),
+      correctAnswerLabel: formatTrainOptionLabel(question, answer.correct),
+      explanation: getTrainExplanation(question),
+    });
+  }
+  return items;
 }

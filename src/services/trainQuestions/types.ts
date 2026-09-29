@@ -49,3 +49,31 @@ export function getTrainOptions(
     text: (q[`Option_${letter}` as keyof TrainQuestionRow] as string | null) ?? '',
   })).filter((o) => o.text && o.text.trim().length > 0);
 }
+
+/** Letter + option text when available; letter-only fallback. Never invents text. */
+export function formatTrainOptionLabel(
+  q: TrainQuestionRow | undefined,
+  letter: OptionLetter | string | null | undefined,
+): string {
+  if (letter == null) {
+    return '';
+  }
+  const normalized = letter.toString().trim().toUpperCase();
+  if (!normalized) {
+    return '';
+  }
+  if (!q) {
+    return normalized;
+  }
+  const key = `Option_${normalized}` as keyof TrainQuestionRow;
+  const text = (q[key] as string | null | undefined)?.trim();
+  return text ? `${normalized} · ${text}` : normalized;
+}
+
+/** Non-empty explanation only — null / blank / whitespace → none. */
+export function getTrainExplanation(
+  q: TrainQuestionRow | undefined,
+): string | null {
+  const text = q?.Explanation?.trim();
+  return text ? text : null;
+}

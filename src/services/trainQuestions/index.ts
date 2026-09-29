@@ -5,7 +5,7 @@ export type {
   TrainQuestionRow,
   TrainSubjectType,
 } from './types';
-export { OPTION_LETTERS, getTrainOptions } from './types';
+export { OPTION_LETTERS, getTrainOptions, formatTrainOptionLabel, getTrainExplanation } from './types';
 export {
   loadTrainQuestions,
   TRAIN_QUESTIONS_PER_RUN,

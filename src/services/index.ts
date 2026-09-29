@@ -51,5 +51,12 @@ export {
   clearArmedTrainRetry,
   consumeArmedTrainRetry,
   trainResultPercent,
+  summarizeTrainResult,
+  buildTrainReviewItems,
 } from './trainResults';
-export type { TrainResultSnapshot } from './trainResults';
+export type {
+  TrainResultSnapshot,
+  TrainResultSummary,
+  TrainReviewItem,
+  TrainReviewStatus,
+} from './trainResults';

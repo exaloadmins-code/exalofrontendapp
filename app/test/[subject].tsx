@@ -140,6 +140,7 @@ export default function TestScreen() {
           subject,
           title: quizTitle,
           answers,
+          questions,
           paperSize: questions.length,
         })
       : null;
@@ -247,9 +248,10 @@ function buildTestResultSnapshot(params: {
   subject: JourneySubject;
   title: string;
   answers: TrainAnswerRecord[];
+  questions: TrainQuestionRow[];
   paperSize: number;
 }): TrainResultSnapshot {
-  const { subject, title, answers, paperSize } = params;
+  const { subject, title, answers, questions, paperSize } = params;
   const totalQuestions = paperSize > 0 ? paperSize : answers.length;
   const totalCorrect = answers.filter((a) => a.isCorrect).length;
   return {
@@ -259,7 +261,8 @@ function buildTestResultSnapshot(params: {
     difficulty: 'easy',
     title,
     answers,
-    questions: [],
+    /** Retain paper questions for index-safe Results review (stem/options/explanation). */
+    questions,
     totalQuestions,
     totalCorrect,
     completedAt: Date.now(),
