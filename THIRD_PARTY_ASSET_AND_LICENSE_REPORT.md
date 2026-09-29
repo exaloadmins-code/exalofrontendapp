@@ -3,7 +3,7 @@
 **Project:** `C:\projects\exalofrontendapp`  
 **Companion:** `THIRD_PARTY_APPROVAL_REQUEST.md`  
 **Nature:** PERMANENT CUMULATIVE governance register (not milestone-only)  
-**Last updated:** 2026-09-27 (Focus dedicated artboards TP-075 / TP-076 — independent Focus-specific derivative compositions referenced from TP-073 / TP-074; not runtime-patched Train)
+**Last updated:** 2026-09-29 (minor current-state audit: Focus/Test implemented; interactive Results Mission Review; Profile email read-only; M9C audio did not ship; Lucide Results usage map refreshed)
 
 > Manual product-owner **APPROVAL** authorizes specified product use only.  
 > It does **not** establish Exalo ownership, open-source license, or completed legal terms review.  
@@ -20,7 +20,7 @@
 
 ---
 
-## CURRENT FRONTEND MILESTONE STATUS (2026-09-22)
+## CURRENT FRONTEND MILESTONE STATUS (2026-09-29)
 
 | Milestone | Status (repository evidence) |
 | --- | --- |
@@ -28,14 +28,16 @@
 | M2 Journey | Implemented (runtime TP-071) |
 | M3 Train Selection | Implemented (`/train/:subject`; TP-073 / TP-074) |
 | M4 Train Gameplay | **Implemented** (`/train/[subject]/[topic]`; local question seam; Lucide + LinearGradient) |
-| M5 Train Results | **Implemented** (`/train/[subject]/[topic]/results`; `TrainResultsView`) |
-| M6 Focus | **In progress** — dedicated Focus artboards TP-075 / TP-076; multi-topic setup + M9A timer; PO visual review pending |
-| M7 Test | **Not complete** — placeholder route only (`app/test/[subject].tsx`) |
-| M8 Streak / Badges / Score / Profile / Parents | Implemented (utility/profile screens) |
+| M5 Train Results | **Implemented** — shared `TrainResultsView` (Train / Focus / Test); interactive Mission Review (topic cards + question-detail modal); software UI only |
+| M6 Focus | **Implemented** — dedicated Focus artboards TP-075 / TP-076; multi-topic setup + M9A timer; shared Results |
+| M7 Test | **Implemented** — timed paper gameplay + shared `TrainResultsView` (`app/test/[subject].tsx`); **no Test artboard TP** (software/theme Results UI) |
+| M8 Streak / Badges / Score / Profile / Parents | Implemented (utility/profile screens); Profile email is display-only (2026-09-29) |
 | M9A Focus elapsed timer | Implemented (committed) |
 | M9B School searchable free-text combobox | Implemented (committed) |
 
 Backend `/train/*` APIs remain **parked** for frontend Train. This register is **frontend-only** (not question-bank generation).
+
+**M9C audio (historical):** Experimental app-entry sound / `expo-audio` proposal **did not ship**. Current repo: no `expo-audio` dependency, no `assets/sounds/`, no `app-entry.wav` / Freesound 728520 material, no `appSound` / `appEntryGate` / `m9cAudioLatencyDiag`. Do **not** treat historical M9C audio proposals as current TP entries. (TP-075 / TP-076 IDs are Focus artboards, not audio.)
 
 ---
 
@@ -64,6 +66,10 @@ Backend `/train/*` APIs remain **parked** for frontend Train. This register is *
 | 2026-09-21+ | **M5 Train Results:** Implemented `TrainResultsView` on `/train/[subject]/[topic]/results`. Reuses TP-004 Lucide. No new visual TP assets / packages. |
 | 2026-09-22 | **Register remediation (docs only):** Corrected Train artboard dimensions to **848×1264**; expanded TP-004 usage map through M4/M5 + utility screens; documented JFIF→PNG format conversion for TP-058/059/060 and TP-025…030; clarified root LICENSE vs product/asset IP; added unused/preloaded/rejected distinction; app icon/splash provenance; NOTICE follow-up. |
 | 2026-09-27 | **Focus dedicated artboards (architecture):** TP-075 / TP-076 rebuilt as independent Focus-specific derivative compositions referenced from TP-073 / TP-074 via `scripts/derive_focus_artboards.py` (Pillow + bundled Fredoka). Static PNG contains FOCUS MODE, Focus instruction, Train-geometry topic cards without 1–10 badges, clean action region (Train promo never copied into Focus), Train-position footer. Runtime UI is checkboxes + START FOCUS + profile/difficulty only — no Train artboard rendering, no promo/title repair masks. **Not EXALO ORIGINAL** — inherits THIRD-PARTY LICENSE UNKNOWN / **LICENSE REVIEW REQUIRED**. Source Train PNGs unmodified. |
+| 2026-09-29 | **Interactive Mission Review Results (docs):** Completed colorful Mission Complete + topic-card / chip / question-detail modal Results redesign shared by Train / Focus / Test. Uses existing TP-004 Lucide, existing `react-native-svg`, and React Native / code-generated UI. **NEW RASTER ASSETS: NONE. NEW THIRD-PARTY ASSETS: NONE. NEW DEPENDENCIES: NONE.** |
+| 2026-09-29 | **Profile email read-only (docs):** Profile displays email as read-only account information; edit-profile no longer edits email. **NEW ASSET / DEPENDENCY / FONT / THIRD-PARTY MATERIAL: NONE.** |
+| 2026-09-29 | **M9C audio closure (docs):** Experimental M9C app-entry sound / `expo-audio` proposal **did not ship** and is **not present** in the current repository (see milestone M9C note above). No TP entry added. |
+| 2026-09-29 | **Register minor current-state update (docs only):** Milestone Focus/Test implemented; Lucide Results usage map refreshed; onboarding/avatar dirty working-tree binaries noted for SHA re-verification; LICENSE REVIEW REQUIRED list unchanged. |
 
 ---
 
@@ -103,11 +109,34 @@ Questions: temporary local frontend seam only — **not** covered by this fronte
 ## M5 TRAIN RESULTS — GOVERNANCE NOTE
 
 NEW VISUAL TP ASSETS: NONE  
-NEW PACKAGES: NONE (reuses TP-004 Lucide)  
+NEW PACKAGES: NONE (reuses TP-004 Lucide + peer `react-native-svg`)  
+NEW OPEN-SOURCE VISUAL ASSETS: NONE  
+
 Results background is software/theme (`#070421` / results tokens).  
 In-memory result handoff only — no AsyncStorage result history; no backend results APIs.
 
+**Interactive Mission Review redesign (2026-09-29):** Mission Complete hero, performance stars, accuracy donut/medallion, result pods, encouragement banner, topic-grouped wrong+unanswered review chips, question-detail modal (stem / Your Answer / Correct Answer / LET’S LEARN), Previous/Next, perfect-score state. Presentation uses:
+
+- existing `lucide-react-native` (TP-004) — no per-icon TP IDs  
+- existing `react-native-svg` (donut / decorative orbits)  
+- React Native Views / code-generated shapes  
+
+**NEW RASTER ASSETS: NONE. NEW THIRD-PARTY ASSETS: NONE. NEW DEPENDENCIES: NONE.**
+
+Shared by Train, Focus, and Test Results surfaces.
+
 **Native device verification:** NOT YET DEVICE-VERIFIED (web manual verification reported PASS by product owner; native matrix still open)
+
+---
+
+## PROFILE EMAIL READ-ONLY — GOVERNANCE NOTE
+
+NEW VISUAL TP ASSETS: NONE  
+NEW PACKAGES: NONE  
+NEW FONTS: NONE  
+NEW THIRD-PARTY MATERIAL: NONE  
+
+Profile email remains visible as read-only account information; Profile no longer offers email edit TextInput / change-email actions. Name / year / school / avatar editing unchanged. Onboarding and identity storage architecture unchanged beyond preventing Profile email edits.
 
 ---
 
@@ -211,6 +240,7 @@ REVIEWED — NO NEW MATERIAL INTRODUCED BY HOME LANDSCAPE CORRECTION.
 | Destination | `assets/onboarding/onb-rocket.png` |
 | Screens | Email, Year |
 | Format conversion | Lovable file is **JPEG/JFIF** binary despite `.png` extension (`FF D8 FF E0…`). Expo destination is **true PNG** (`89 50 4E 47…`). **FORMAT CONVERSION only** — does **not** establish new ownership or change underlying provenance/licensing. |
+| Working-tree note | Uncommitted binary modifications may exist on this path in a dirty tree. **Current working-tree binary modifications require re-verification before any updated byte-identical/SHA claim is recorded.** Do not treat dirty binaries as new product assets. |
 | Provenance | UNKNOWN (Lovable asset lineage; no AI meta found in prior audit) |
 | Classification | **PROVENANCE UNKNOWN** |
 | License | UNKNOWN — LICENSE REVIEW REQUIRED |
@@ -225,6 +255,7 @@ REVIEWED — NO NEW MATERIAL INTRODUCED BY HOME LANDSCAPE CORRECTION.
 | Destination | `assets/onboarding/onb-astronaut-wave.png` |
 | Screens | Name |
 | Format conversion | Same JFIF-as-`.png` → true PNG lineage as TP-058 (FORMAT CONVERSION; no new ownership) |
+| Working-tree note | Uncommitted binary modifications may exist on this path in a dirty tree. **Current working-tree binary modifications require re-verification before any updated byte-identical/SHA claim is recorded.** Do not treat dirty binaries as new product assets. |
 | Provenance | UNKNOWN |
 | Classification | **PROVENANCE UNKNOWN** |
 | License | UNKNOWN — LICENSE REVIEW REQUIRED |
@@ -239,7 +270,8 @@ REVIEWED — NO NEW MATERIAL INTRODUCED BY HOME LANDSCAPE CORRECTION.
 | Destination | `assets/onboarding/onb-astronaut-goal.png` (+ `assets/astronauts/onb-astronaut-goal.png` byte-identical duplicate retained) |
 | Screens | School (runtime uses `OnboardingAssets.goalAstronaut`) |
 | Format conversion | Same JFIF-as-`.png` → true PNG lineage as TP-058 (FORMAT CONVERSION; no new ownership) |
-| Intra-Expo duplicate | `assets/astronauts/onb-astronaut-goal.png` ≡ `assets/onboarding/onb-astronaut-goal.png` (SHA256) — provenance traceability only; do not treat as cleanup |
+| Intra-Expo duplicate | `assets/astronauts/onb-astronaut-goal.png` ≡ `assets/onboarding/onb-astronaut-goal.png` (SHA256 at last provenance audit) — provenance traceability only; do not treat as cleanup. **Current working-tree binary modifications require re-verification before any updated byte-identical/SHA claim is recorded.** |
+| Working-tree note | Uncommitted binary modifications may exist on these paths in a dirty tree. Do not treat dirty binaries as new product assets. |
 | Provenance | UNKNOWN |
 | Classification | **PROVENANCE UNKNOWN** |
 | License | UNKNOWN — LICENSE REVIEW REQUIRED |
@@ -262,6 +294,7 @@ REVIEWED — NO NEW MATERIAL INTRODUCED BY HOME LANDSCAPE CORRECTION.
 | Source | `C:\projects\exalo\src\assets\avatar-*.png` |
 | Screens | Avatar onboarding; ProfilePill / selected-avatar display |
 | Format conversion | Lovable counterparts are **JPEG/JFIF** despite `.png` names; Expo copies are **true PNG**. **FORMAT CONVERSION only** — no new ownership; LICENSE REVIEW REQUIRED unchanged |
+| Working-tree note | Uncommitted binary modifications may exist on avatar paths in a dirty tree. **Current working-tree binary modifications require re-verification before any updated byte-identical/SHA claim is recorded.** Do not treat dirty binaries as new product assets. Classifications and approvals unchanged. |
 | Provenance | UNKNOWN |
 | Classification | **PROVENANCE UNKNOWN** |
 | License | UNKNOWN — LICENSE REVIEW REQUIRED |
@@ -387,8 +420,8 @@ REVIEWED — NO NEW MATERIAL INTRODUCED BY HOME LANDSCAPE CORRECTION.
 | Peer | `react-native-svg` **15.15.4** (MIT) |
 | License | **ISC** (`node_modules/lucide-react-native/package.json`) |
 | Classification | **OPEN SOURCE** |
-| Manual use status | **REOPEN APPROVED / USE APPROVED** — Streak and shared UI where Lovable uses Lucide; expanded production usage through M4/M5 and utility screens |
-| Current usage map (verified imports, 2026-09-22) | See section F |
+| Manual use status | **REOPEN APPROVED / USE APPROVED** — Streak and shared UI where Lovable uses Lucide; expanded production usage through M4/M5/Focus/Test Results and utility screens |
+| Current usage map (verified imports, 2026-09-29) | See section F |
 
 ### TP-072 — `expo-linear-gradient`
 
@@ -467,18 +500,20 @@ Approved items remain **THIRD-PARTY — LICENSE UNKNOWN** or **PROVENANCE UNKNOW
 
 ## F. ICONS / ICON SYSTEMS
 
-### TP-004 Lucide — current usage map (verified 2026-09-22)
+### TP-004 Lucide — current usage map (verified 2026-09-29)
 
 | Screen / module | Import evidence | Icons |
 | --- | --- | --- |
 | Home `app/home/index.tsx` | lucide-react-native | ChevronDown |
 | Train Gameplay `src/components/train/TrainQuizPlayer.tsx` | lucide-react-native | ArrowLeft, Check, ChevronRight, Lightbulb, X |
-| Train Results `src/components/train/TrainResultsView.tsx` | lucide-react-native | Check, Home, RotateCcw, X |
+| Train Results `src/components/train/TrainResultsView.tsx` | lucide-react-native | Check, ChevronLeft, ChevronRight, Home, Lightbulb, RotateCcw, Sparkles, Star, Telescope, Trophy, X |
 | Streak `app/streak.tsx` | lucide-react-native | AlertTriangle, ArrowLeft, ChevronDown, ChevronRight, Clock, Flame, HeartCrack, Palmtree, Rocket, Shield, Sparkles, Star, TrendingUp |
 | Badges `app/badges.tsx` | lucide-react-native | ArrowLeft, Award, ChevronDown, Hourglass, Lock, Sparkles |
 | Score `app/score.tsx` | lucide-react-native | ArrowLeft, ChevronDown, Mountain, Repeat, Target, Zap |
 | Profile `app/profile.tsx` | lucide-react-native | AlertTriangle, Bell, Bug, Check, ChevronDown, ChevronRight, CreditCard, Download, FileText, Flame, HelpCircle, LifeBuoy, Lightbulb, LogOut, Mail, Moon, Palette, Send, Settings, ShieldCheck, User, UserCog, Volume2, X |
 | Parents `app/parents.tsx` | lucide-react-native | AlertTriangle, ArrowLeft, Award, BarChart3, BookOpen, Brain, Calculator, Calendar, ChevronDown, Clock, Download, FileText, History, Lightbulb, Sparkles, Target, TreePalm, Trophy |
+
+Individual Lucide glyphs remain governed by **TP-004** (`lucide-react-native` ISC) — **no per-icon TP IDs**.
 
 | Item | Status |
 | --- | --- |
@@ -510,11 +545,12 @@ Approved items remain **THIRD-PARTY — LICENSE UNKNOWN** or **PROVENANCE UNKNOW
 | Focus Selection English | TP-076 derivative of TP-074 (848×1264) | 4 + LRR |
 | Onboarding | TP-058 / TP-059 / TP-060 heroes + theme wash | 5 + LRR; wash = 6 |
 | Train Gameplay | Theme `#070421` + software UI (no artboard TP) | 6 / software |
-| Train Results | Theme `#070421` + software UI | 6 / software |
+| Train / Focus / Test Results | Theme `#070421` + software UI (interactive Mission Review; Lucide TP-004 + `react-native-svg`; no Results artboard TP) | 6 / software |
 | Streak / Badges / Score | Theme + LinearGradient (TP-072) + Lucide (TP-004) | 2 |
 | Profile / Parents | Theme + LinearGradient + Lucide | 2 |
 | Gallery / `SpaceBackground` | `background planets.png` (+ optional planet overlays) | 5 + LRR |
-| Focus / Test | Focus: TP-075 / TP-076; Test: placeholders — **no final Test visual materials claimed** | Focus 4 + LRR |
+| Focus Selection | TP-075 / TP-076 | 4 + LRR |
+| Test gameplay | Software/theme paper UI — **no Test artboard TP claimed** | 6 / software |
 
 | Asset | TP | Lovable/source | Expo dest | Screens | Provenance | License | Approval |
 | --- | --- | --- | --- | --- | --- | --- | --- |
@@ -536,7 +572,7 @@ Evidence: `src/constants/assets.ts` registry; UI `require`/component references;
 
 ### A. USED IN PRODUCT UI
 
-Home artboard (TP-003); Journey clean (TP-071); Train Selection artboards (TP-073/074); Focus Selection artboards (TP-075/076); onboarding heroes (TP-058/059/060); avatars (TP-025…030); nav `home_icon` / `parents_icon`; SpaceBackground planets (gallery/`Screen` path); Fredoka; Lucide; LinearGradient.
+Home artboard (TP-003); Journey clean (TP-071); Train Selection artboards (TP-073/074); Focus Selection artboards (TP-075/076); onboarding heroes (TP-058/059/060); avatars (TP-025…030); nav `home_icon` / `parents_icon`; SpaceBackground planets (gallery/`Screen` path); Fredoka; Lucide (including interactive Results Mission Review); LinearGradient; Results software UI (Train/Focus/Test — no Results raster TP).
 
 ### B. PRESENT / PRELOADED BUT APPARENTLY UNUSED IN CURRENT UI
 
@@ -582,7 +618,7 @@ AI-generated provenance ≠ copyright ownership, commercial rights, or redistrib
 
 ## I. UNKNOWN PROVENANCE
 
-- TP-058, TP-059, TP-060, TP-025…TP-030 — Lovable lineage + JFIF→PNG conversion; approved for specified use; license unknown  
+- TP-058, TP-059, TP-060, TP-025…TP-030 — Lovable lineage + JFIF→PNG conversion; approved for specified use; license unknown. Uncommitted dirty working-tree binaries on these paths (if present) are **not** new assets and require SHA re-verification before updating historical byte-identical claims.  
 - Pack assets (branding logo, rockets, subjects, gamification, decorative, miscellaneous avatar, planets background)  
 - Custom navigation PNG icons  
 - App icon / adaptive icons / splash / favicon (section I2)  
