@@ -1,0 +1,29 @@
+{
+  "id": 51732,
+  "diagram_data": {
+    "result": {
+      "numerator": 3,
+      "denominator": 8
+    },
+    "operand_a": {
+      "numerator": 1,
+      "denominator": 10
+    },
+    "operand_b": {
+      "numerator": 3,
+      "denominator": 8
+    },
+    "operation": "comparison",
+    "visual_type": "shaded_rectangle",
+    "schema_version": "2.0",
+    "common_denominator": 40,
+    "operand_a_equivalent": {
+      "numerator": 4,
+      "denominator": 40
+    },
+    "operand_b_equivalent": {
+      "numerator": 15,
+      "denominator": 40
+    }
+  }
+}

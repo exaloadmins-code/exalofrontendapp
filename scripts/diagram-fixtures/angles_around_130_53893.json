@@ -1,0 +1,209 @@
+{
+  "id": 53893,
+  "stem": "Angles around a point are 130\u00b0, 100\u00b0, 55\u00b0 and x. What is the size of angle x?",
+  "diagram_data": {
+    "rays": [
+      {
+        "id": "r0",
+        "length": 267.9065095641565,
+        "origin": "O",
+        "angle_deg_display": 25.0
+      },
+      {
+        "id": "r1",
+        "length": 267.9065095641565,
+        "origin": "O",
+        "angle_deg_display": 155.0
+      },
+      {
+        "id": "r2",
+        "length": 267.9065095641565,
+        "origin": "O",
+        "angle_deg_display": 255.0
+      },
+      {
+        "id": "r3",
+        "length": 267.9065095641565,
+        "origin": "O",
+        "angle_deg_display": 310.0
+      }
+    ],
+    "topology": {
+      "polygons": [],
+      "point_groups": [
+        [
+          "a",
+          "b",
+          "c",
+          "x"
+        ]
+      ],
+      "vertical_pairs": [],
+      "straight_groups": []
+    },
+    "vertices": [
+      {
+        "x": 360.0,
+        "y": 197.22218338102198,
+        "id": "O"
+      }
+    ],
+    "visual_type": "angles_missing_angle_semantic_a7",
+    "not_to_scale": true,
+    "point_labels": [],
+    "angle_sectors": [
+      {
+        "id": "s_a",
+        "label": "130\u00b0",
+        "ray_to": "r1",
+        "vertex": "O",
+        "angle_id": "a",
+        "draw_arc": true,
+        "ray_from": "r0",
+        "arc_radius": 46.88363917372739,
+        "label_radius": 48.0,
+        "bounding_rays": [
+          "r0",
+          "r1"
+        ]
+      },
+      {
+        "id": "s_b",
+        "label": "100\u00b0",
+        "ray_to": "r2",
+        "vertex": "O",
+        "angle_id": "b",
+        "draw_arc": true,
+        "ray_from": "r1",
+        "arc_radius": 46.88363917372739,
+        "label_radius": 48.0,
+        "bounding_rays": [
+          "r1",
+          "r2"
+        ]
+      },
+      {
+        "id": "s_c",
+        "label": "55\u00b0",
+        "ray_to": "r3",
+        "vertex": "O",
+        "angle_id": "c",
+        "draw_arc": true,
+        "ray_from": "r2",
+        "arc_radius": 46.88363917372739,
+        "label_radius": 48.0,
+        "bounding_rays": [
+          "r2",
+          "r3"
+        ]
+      },
+      {
+        "id": "s_x",
+        "label": "x\u00b0",
+        "ray_to": "r0",
+        "vertex": "O",
+        "angle_id": "x",
+        "draw_arc": true,
+        "ray_from": "r3",
+        "arc_radius": 46.88363917372739,
+        "label_radius": 48.0,
+        "bounding_rays": [
+          "r3",
+          "r0"
+        ]
+      }
+    ],
+    "math_model_ref": "angles_math_v1",
+    "schema_version": "angles_diagram_v1",
+    "collision_flags": [],
+    "equal_side_marks": [],
+    "layout_transform": {
+      "pivot": [
+        0.0,
+        0.0
+      ],
+      "scale": 1.1162771231839854,
+      "translate": [
+        0.0,
+        -72.77781661897802
+      ],
+      "rotation_deg": 0.0
+    },
+    "polygons_display": [],
+    "ray_endpoint_labels": {},
+    "right_angle_markers": [],
+    "declared_implications": [],
+    "not_to_scale_required": true,
+    "semantic_presentation": {
+      "family": "ANGLES_AROUND_POINT",
+      "objects": [
+        {
+          "id": "O",
+          "kind": "Vertex",
+          "role": "hub"
+        },
+        {
+          "id": "r0",
+          "kind": "Ray"
+        },
+        {
+          "id": "r1",
+          "kind": "Ray"
+        },
+        {
+          "id": "r2",
+          "kind": "Ray"
+        },
+        {
+          "id": "r3",
+          "kind": "Ray"
+        },
+        {
+          "id": "a",
+          "kind": "AngleSector"
+        },
+        {
+          "id": "b",
+          "kind": "AngleSector"
+        },
+        {
+          "id": "c",
+          "kind": "AngleSector"
+        },
+        {
+          "id": "x",
+          "kind": "AngleSector"
+        }
+      ],
+      "schema_version": "angles_semantic_presentation_v1",
+      "template_version": "a7_v1",
+      "orientation_policy": "FREE",
+      "fallback_prohibited": true
+    },
+    "polygon_stroke_suppressed": true,
+    "owned_straight_line_strokes": [],
+    "visual_implications_detected": [],
+    "authoritative_sector_bindings": {
+      "a": {
+        "ray_to": "r1",
+        "vertex": "O",
+        "ray_from": "r0"
+      },
+      "b": {
+        "ray_to": "r2",
+        "vertex": "O",
+        "ray_from": "r1"
+      },
+      "c": {
+        "ray_to": "r3",
+        "vertex": "O",
+        "ray_from": "r2"
+      },
+      "x": {
+        "ray_to": "r0",
+        "vertex": "O",
+        "ray_from": "r3"
+      }
+    }
+  }
+}

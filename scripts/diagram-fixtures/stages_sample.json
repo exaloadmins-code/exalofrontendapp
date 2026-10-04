@@ -1,0 +1,27 @@
+{
+  "id": 51565,
+  "diagram_data": {
+    "stages": [
+      {
+        "type": "loss",
+        "label": "spent 2/7 of whole",
+        "region": "stage1",
+        "fraction": "2/7"
+      },
+      {
+        "type": "gain",
+        "label": "gained 1/3 of remainder",
+        "region": "remainder_base",
+        "fraction": "1/3"
+      }
+    ],
+    "foa_task": "hard_compound_reverse",
+    "operation": "fraction_of_amount",
+    "visual_type": "bar_model",
+    "changing_base": true,
+    "hide_original": true,
+    "schema_version": "2.0",
+    "final_amount_label": 40,
+    "hard_visual_architecture": "hard_vis_mixed_gain_loss_bar"
+  }
+}

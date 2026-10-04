@@ -1,0 +1,126 @@
+{
+  "source": "read-only inventory snapshot",
+  "active_diagram_total": 611,
+  "keys": [
+    {
+      "schema_version": "2.0",
+      "visual_type": "array_model",
+      "active_count": 7,
+      "renderer_family": "FractionDiagram2"
+    },
+    {
+      "schema_version": "2.0",
+      "visual_type": "bar_model",
+      "active_count": 55,
+      "renderer_family": "FractionDiagram2"
+    },
+    {
+      "schema_version": "2.0",
+      "visual_type": "circle_model",
+      "active_count": 46,
+      "renderer_family": "FractionDiagram2"
+    },
+    {
+      "schema_version": "2.0",
+      "visual_type": "fraction_strip",
+      "active_count": 42,
+      "renderer_family": "FractionDiagram2"
+    },
+    {
+      "schema_version": "2.0",
+      "visual_type": "magnitude_bar",
+      "active_count": 4,
+      "renderer_family": "NumberDiagram2"
+    },
+    {
+      "schema_version": "2.0",
+      "visual_type": "number_line",
+      "active_count": 43,
+      "renderer_family": "NumberDiagram2|FractionDiagram2 (payload-routed)"
+    },
+    {
+      "schema_version": "2.0",
+      "visual_type": "pictorial_quantity",
+      "active_count": 3,
+      "renderer_family": "NumberDiagram2"
+    },
+    {
+      "schema_version": "2.0",
+      "visual_type": "set_model",
+      "active_count": 10,
+      "renderer_family": "FractionDiagram2"
+    },
+    {
+      "schema_version": "2.0",
+      "visual_type": "shaded_rectangle",
+      "active_count": 34,
+      "renderer_family": "FractionDiagram2"
+    },
+    {
+      "schema_version": "angles_diagram_v1",
+      "visual_type": "angles_missing_angle_semantic_a7",
+      "active_count": 200,
+      "renderer_family": "AnglesDiagramV1"
+    },
+    {
+      "schema_version": "area_diagram_v1",
+      "visual_type": "labelled_rectangle",
+      "active_count": 11,
+      "renderer_family": "AreaDiagramV1"
+    },
+    {
+      "schema_version": "area_diagram_v1",
+      "visual_type": "labelled_square",
+      "active_count": 8,
+      "renderer_family": "AreaDiagramV1"
+    },
+    {
+      "schema_version": "area_diagram_v1",
+      "visual_type": "labelled_triangle_base_height",
+      "active_count": 6,
+      "renderer_family": "AreaDiagramV1"
+    },
+    {
+      "schema_version": "area_diagram_v1",
+      "visual_type": "multi_rectangle_composite",
+      "active_count": 30,
+      "renderer_family": "AreaDiagramV1"
+    },
+    {
+      "schema_version": "area_diagram_v1",
+      "visual_type": "outer_inner_nested_rectangles",
+      "active_count": 5,
+      "renderer_family": "AreaDiagramV1"
+    },
+    {
+      "schema_version": "area_diagram_v1",
+      "visual_type": "rectangle_with_rectangular_cutout",
+      "active_count": 4,
+      "renderer_family": "AreaDiagramV1"
+    },
+    {
+      "schema_version": "area_diagram_v1",
+      "visual_type": "rectilinear_l_shape",
+      "active_count": 36,
+      "renderer_family": "AreaDiagramV1"
+    },
+    {
+      "schema_version": "area_diagram_v1",
+      "visual_type": "shaded_remaining_region",
+      "active_count": 25,
+      "renderer_family": "AreaDiagramV1"
+    },
+    {
+      "schema_version": "area_diagram_v1",
+      "visual_type": "triangle_on_unit_grid",
+      "active_count": 6,
+      "renderer_family": "AreaDiagramV1"
+    },
+    {
+      "schema_version": "area_diagram_v1",
+      "visual_type": "unit_square_grid",
+      "active_count": 36,
+      "renderer_family": "AreaDiagramV1"
+    }
+  ]
+}

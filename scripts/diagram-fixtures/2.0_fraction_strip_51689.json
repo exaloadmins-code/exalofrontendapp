@@ -1,0 +1,29 @@
+{
+  "id": 51689,
+  "diagram_data": {
+    "result": {
+      "numerator": 1,
+      "denominator": 5
+    },
+    "operand_a": {
+      "numerator": 1,
+      "denominator": 5
+    },
+    "operand_b": {
+      "numerator": 1,
+      "denominator": 12
+    },
+    "operation": "comparison",
+    "visual_type": "fraction_strip",
+    "schema_version": "2.0",
+    "common_denominator": 60,
+    "operand_a_equivalent": {
+      "numerator": 12,
+      "denominator": 60
+    },
+    "operand_b_equivalent": {
+      "numerator": 5,
+      "denominator": 60
+    }
+  }
+}

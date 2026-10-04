@@ -1,0 +1,45 @@
+{
+  "id": 51504,
+  "diagram_data": {
+    "result": {
+      "numerator": 20,
+      "denominator": 1
+    },
+    "foa_task": "comparison",
+    "operation": "fraction_of_amount",
+    "foa_panels": [
+      {
+        "panel_id": "A",
+        "operand_a": {
+          "numerator": 1,
+          "denominator": 2
+        },
+        "visual_type": "bar_model",
+        "amount_total": 40,
+        "groups_total": 2,
+        "groups_shaded": 1,
+        "selected_count": 20,
+        "amount_per_group": 20
+      },
+      {
+        "panel_id": "B",
+        "operand_a": {
+          "numerator": 3,
+          "denominator": 8
+        },
+        "visual_type": "bar_model",
+        "amount_total": 48,
+        "groups_total": 8,
+        "groups_shaded": 3,
+        "selected_count": 18,
+        "amount_per_group": 6
+      }
+    ],
+    "target_role": "COMPARISON",
+    "visual_type": "bar_model",
+    "schema_version": "2.0",
+    "comparison_winner": "A",
+    "cognitive_operation": "comparison",
+    "comparison_relation": "greater"
+  }
+}

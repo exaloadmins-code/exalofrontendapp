@@ -1,0 +1,29 @@
+{
+  "id": 51654,
+  "diagram_data": {
+    "result": {
+      "numerator": 1,
+      "denominator": 4
+    },
+    "operand_a": {
+      "numerator": 1,
+      "denominator": 12
+    },
+    "operand_b": {
+      "numerator": 1,
+      "denominator": 4
+    },
+    "operation": "comparison",
+    "visual_type": "circle_model",
+    "schema_version": "2.0",
+    "common_denominator": 12,
+    "operand_a_equivalent": {
+      "numerator": 1,
+      "denominator": 12
+    },
+    "operand_b_equivalent": {
+      "numerator": 3,
+      "denominator": 12
+    }
+  }
+}

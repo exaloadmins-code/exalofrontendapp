@@ -1,0 +1,20 @@
+{
+  "id": 35941,
+  "diagram_data": {
+    "result": {
+      "numerator": 4,
+      "denominator": 6
+    },
+    "operand_a": {
+      "numerator": 2,
+      "denominator": 6
+    },
+    "operand_b": {
+      "numerator": 2,
+      "denominator": 6
+    },
+    "operation": "addition",
+    "visual_type": "number_line",
+    "schema_version": "2.0"
+  }
+}

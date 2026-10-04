@@ -22,7 +22,6 @@ import {
   trainTopicHotspotPercent,
 } from '@/artboard';
 import { ComingSoonPlaceholder } from '@/components/placeholder/ComingSoonPlaceholder';
-import { TrainQuestionCountModal } from '@/components/train';
 import { TrainAssets } from '@/constants/assets';
 import {
   JOURNEY_PROFILE_PILL_STYLE,
@@ -51,12 +50,12 @@ import { colors, fonts } from '@/theme';
 type SurfaceBox = { width: number; height: number };
 
 /**
- * M3 Train Selection — Lovable `TrainMode` (`/train/:subject`) parity.
+ * Train Selection — Lovable `TrainMode` (`/train/:subject`) parity.
  *
  * Artboards: TP-073 maths / TP-074 english (843×1264). Hotspots from TrainMode.tsx.
  * Catalogue: `src/constants/train.ts` (TEMPORARY frontend-only).
  * Difficulty starts unselected (`null`) — no automatic Easy default.
- * Topic tap (with difficulty) opens Number-of-Questions modal — then gameplay.
+ * Flow: Subject → Difficulty → Topic → Start (no question-count prompt).
  */
 export default function TrainSelectionScreen() {
   const router = useRouter();
@@ -77,9 +76,6 @@ export default function TrainSelectionScreen() {
       }
       return null;
     });
-  /** Pending topic while the question-count modal is open. */
-  const [pendingTopic, setPendingTopic] = useState<TrainTopic | null>(null);
-  const [countModalVisible, setCountModalVisible] = useState(false);
   const [starting, setStarting] = useState(false);
 
   // Remount / subject switch: restore only when handoff explicitly preserved a difficulty.
@@ -94,12 +90,6 @@ export default function TrainSelectionScreen() {
     }
     setSelectedDifficulty(null);
   }, [subject]);
-
-  const closeCountModal = useCallback(() => {
-    setCountModalVisible(false);
-    setPendingTopic(null);
-    setStarting(false);
-  }, []);
 
   const name = profile.displayName?.trim() || 'Explorer';
   const avatarSource = resolveAvatarSource(profile.avatarId);
@@ -157,7 +147,7 @@ export default function TrainSelectionScreen() {
       percent: h.percent,
       minTouch,
       onPress: () => {
-        if (countModalVisible) {
+        if (starting) {
           return;
         }
         const route = resolveTrainChromeRoute(h.route, subject);
@@ -172,7 +162,7 @@ export default function TrainSelectionScreen() {
         router.push(route as Href);
       },
     }));
-  }, [router, artboard, subject, countModalVisible]);
+  }, [router, artboard, subject, starting]);
 
   const difficultyHotspots = useMemo(() => {
     const minTouch = artboard && artboard.scale < 0.42 ? 52 : 44;
@@ -182,7 +172,7 @@ export default function TrainSelectionScreen() {
       percent: h.percent,
       minTouch,
       onPress: () => {
-        if (countModalVisible) {
+        if (starting) {
           return;
         }
         setSelectedDifficulty(h.id);
@@ -191,7 +181,32 @@ export default function TrainSelectionScreen() {
         }
       },
     }));
-  }, [artboard, subject, countModalVisible]);
+  }, [artboard, subject, starting]);
+
+  const startTraining = useCallback(
+    (topic: TrainTopic) => {
+      if (!subject || selectedDifficulty == null || starting) {
+        return;
+      }
+      setStarting(true);
+      setTrainSelection({
+        subject,
+        topicSlug: topic.slug,
+        topicLabel: topic.label,
+        difficulty: selectedDifficulty,
+      });
+      router.push({
+        pathname: '/train/[subject]/[topic]',
+        params: {
+          subject,
+          topic: topic.slug,
+          difficulty: selectedDifficulty,
+        },
+      } as Href);
+      setStarting(false);
+    },
+    [subject, selectedDifficulty, starting, router],
+  );
 
   const topicHotspots = useMemo(() => {
     if (!subject) {
@@ -204,54 +219,17 @@ export default function TrainSelectionScreen() {
       percent: trainTopicHotspotPercent(index),
       minTouch,
       onPress: () => {
-        // ONE difficulty + ONE topic — refuse without difficulty; open count modal.
-        if (selectedDifficulty == null || countModalVisible) {
+        if (selectedDifficulty == null || starting) {
           return;
         }
-        setPendingTopic(topic);
-        setStarting(false);
-        setCountModalVisible(true);
+        startTraining(topic);
       },
     }));
-  }, [artboard, subject, topics, selectedDifficulty, countModalVisible]);
+  }, [artboard, subject, topics, selectedDifficulty, starting, startTraining]);
 
   const hotspots = useMemo(
     () => [...chromeHotspots, ...difficultyHotspots, ...topicHotspots],
     [chromeHotspots, difficultyHotspots, topicHotspots],
-  );
-
-  const startTraining = useCallback(
-    (questionCount: number) => {
-      if (
-        !subject ||
-        selectedDifficulty == null ||
-        pendingTopic == null ||
-        starting
-      ) {
-        return;
-      }
-      setStarting(true);
-      setTrainSelection({
-        subject,
-        topicSlug: pendingTopic.slug,
-        topicLabel: pendingTopic.label,
-        difficulty: selectedDifficulty,
-        questionCount,
-      });
-      setCountModalVisible(false);
-      setPendingTopic(null);
-      router.push({
-        pathname: '/train/[subject]/[topic]',
-        params: {
-          subject,
-          topic: pendingTopic.slug,
-          difficulty: selectedDifficulty,
-          count: String(questionCount),
-        },
-      } as Href);
-      setStarting(false);
-    },
-    [subject, selectedDifficulty, pendingTopic, starting, router],
   );
 
   const profileBox = artboard
@@ -281,15 +259,6 @@ export default function TrainSelectionScreen() {
   const title = trainScreenTitle(subject);
   const artboardSource =
     subject === 'english' ? TrainAssets.english : TrainAssets.maths;
-  const difficultyLabel =
-    selectedDifficulty === 'hard'
-      ? 'Hard'
-      : selectedDifficulty === 'medium'
-        ? 'Medium'
-        : selectedDifficulty === 'easy'
-          ? 'Easy'
-          : '';
-
   return (
     <View
       style={[styles.root, { backgroundColor: colors.background }]}
@@ -446,23 +415,6 @@ export default function TrainSelectionScreen() {
         </>
       ) : null}
 
-      <TrainQuestionCountModal
-        visible={
-          countModalVisible &&
-          pendingTopic != null &&
-          selectedDifficulty != null
-        }
-        topicLabel={pendingTopic?.label ?? ''}
-        difficultyLabel={difficultyLabel}
-        resetKey={
-          pendingTopic && selectedDifficulty
-            ? `${pendingTopic.slug}-${selectedDifficulty}`
-            : 'idle'
-        }
-        starting={starting}
-        onCancel={closeCountModal}
-        onStart={startTraining}
-      />
     </View>
   );
 }

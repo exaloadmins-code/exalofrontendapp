@@ -1,0 +1,24 @@
+{
+  "id": 52935,
+  "diagram_data": {
+    "groups": [
+      {
+        "value": 3970,
+        "clusters": 397,
+        "per_cluster": 10
+      },
+      {
+        "value": 3350,
+        "clusters": 335,
+        "per_cluster": 10
+      }
+    ],
+    "labels": [
+      "3970",
+      "3350"
+    ],
+    "operation": "integer_comparison",
+    "visual_type": "pictorial_quantity",
+    "schema_version": "2.0"
+  }
+}

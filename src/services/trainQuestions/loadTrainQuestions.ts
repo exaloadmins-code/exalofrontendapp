@@ -1,26 +1,9 @@
 /**
- * Train question loader seam (M4).
+ * Train question loader seam.
  *
- * UI / QuizPlayer must call this function — never import `questionBank` directly.
- * Current implementation is LOCAL / TEMPORARY only (Lovable bank port).
- * Future backend integration replaces this module's body without redesigning gameplay UI.
- *
- * No network. No session IDs. No `/train/start`.
- *
- * ---------------------------------------------------------------------------
- * LOCAL FILL POLICY (temporary — remove when backend integration resumes)
- * ---------------------------------------------------------------------------
- * When `limit` exceeds the unique local pool for topic+difficulty:
- *   1. Prefer unique questions first (maths uniqueness loop; english shuffled seeds).
- *   2. THEN repeat / cycle until `limit` is reached so the session length equals
- *      the learner's requested questionCount.
- *
- * FUTURE BACKEND INTENT (not implemented here):
- *   - Request desired count from the API.
- *   - Use only unique backend questions.
- *   - NEVER repeat backend questions merely to pad count.
- *   - If fewer unique questions exist, cap session size to what the backend provides.
- * Do NOT modify exam-prep-api in this milestone.
+ * English (and Focus/Test via their own loaders) still use the local bank.
+ * Maths Train gameplay uses `startMathsTrainSession` / API — do NOT call this
+ * for Maths API sessions (no LOCAL_REPEAT_TO_FILL on the API path).
  */
 
 import type { JourneySubject } from '@/constants/journey';

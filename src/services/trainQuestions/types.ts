@@ -1,9 +1,9 @@
 /**
- * TEMPORARY frontend-only Train question types (M4).
+ * TEMPORARY frontend Train question types (M4 + B1.3 API adapter fields).
  *
- * Aligned with Lovable `lib/questionBank.ts` / `lib/subjects.ts` for UX parity.
- * Not a production question-bank schema. Replace via `loadTrainQuestions` when
- * backend integration unparks — do not couple UI to this module's internals.
+ * Local English / Focus / Test still use Lovable-shaped rows.
+ * Maths API sessions populate Option_* from backend options[] and may include
+ * diagram_* fields. Correct_Option is unknown during API gameplay.
  */
 
 export type TrainSubjectType = 'Maths' | 'English';
@@ -24,8 +24,20 @@ export type TrainQuestionRow = {
   Option_C: string | null;
   Option_D: string | null;
   Option_E: string | null;
+  /**
+   * Known for local banks. For Maths API gameplay this is a placeholder and
+   * must not be treated as authoritative — Results come from the backend.
+   */
   Correct_Option: OptionLetter | string;
   Explanation: string | null;
+  /** Backend options[] preserved for answer TEXT posting (Maths API). */
+  backendOptions?: string[];
+  /** 1-based backend question_number when from API. */
+  backendQuestionNumber?: number;
+  has_diagram?: boolean;
+  diagram_type?: string | null;
+  diagram_prompt?: string | null;
+  diagram_data?: Record<string, unknown> | null;
 };
 
 export type TrainAnswerRecord = {

@@ -1,0 +1,116 @@
+{
+  "id": 52179,
+  "diagram_data": {
+    "grid": null,
+    "notes": [],
+    "units": "cm",
+    "cutouts": [
+      {
+        "id": "CUT",
+        "math": {
+          "width": 3,
+          "length": 4
+        },
+        "labels": [
+          {
+            "side": "bottom",
+            "value": 4,
+            "visible": true
+          },
+          {
+            "side": "left",
+            "value": 3,
+            "visible": true
+          }
+        ],
+        "display": {
+          "h": 60,
+          "w": 80,
+          "x": 60,
+          "y": 60
+        },
+        "placement": {
+          "mode": "SEMANTIC_PLACEMENT"
+        }
+      }
+    ],
+    "figures": [
+      {
+        "id": "OUTER",
+        "kind": "rectangle",
+        "math": {
+          "width": 8,
+          "length": 12
+        },
+        "labels": [
+          {
+            "side": "left",
+            "value": 8,
+            "visible": true
+          },
+          {
+            "side": "bottom",
+            "value": "P=40",
+            "visible": true
+          }
+        ],
+        "shaded": true,
+        "display": {
+          "h": 160,
+          "w": 240,
+          "x": 40,
+          "y": 40
+        }
+      }
+    ],
+    "operation": "cutout_area",
+    "math_model": {
+      "ask": {
+        "of": "figure",
+        "quantity": "unshaded_area"
+      },
+      "meta": {
+        "derive_outer_then_subtract": true
+      },
+      "units": "cm",
+      "composite": {
+        "mode": "difference",
+        "parts": [
+          "OUTER"
+        ],
+        "subtract": [
+          "CUT"
+        ]
+      },
+      "components": [
+        {
+          "id": "OUTER",
+          "type": "rectangle",
+          "width": 8,
+          "length": null
+        },
+        {
+          "id": "CUT",
+          "type": "cutout",
+          "width": 3,
+          "length": 4,
+          "parent": "OUTER"
+        }
+      ],
+      "constraints": [
+        {
+          "of": "OUTER",
+          "type": "perimeter_equals",
+          "equals": 40
+        }
+      ],
+      "schema_version": "area_math_v1"
+    },
+    "shaded_ask": "remaining",
+    "visual_type": "shaded_remaining_region",
+    "not_to_scale": true,
+    "schema_version": "area_diagram_v1",
+    "scale_consistency_required": false,
+    "do_not_reuse_fraction_shaded_rectangle": true
+  }
+}

@@ -1,0 +1,260 @@
+{
+  "id": 53888,
+  "stem": "In quadrilateral ABCD, three interior angles are 50\u00b0, 130\u00b0 and 65\u00b0. What is the size of the remaining angle x?",
+  "diagram_data": {
+    "rays": [
+      {
+        "id": "AB",
+        "length": 386.68202265545494,
+        "origin": "A",
+        "angle_deg_display": 24.999999999999993
+      },
+      {
+        "id": "BC",
+        "length": 215.07253353958833,
+        "origin": "B",
+        "angle_deg_display": 75.00000000000001
+      },
+      {
+        "id": "CD",
+        "length": 327.07619184529295,
+        "origin": "C",
+        "angle_deg_display": 190.0
+      },
+      {
+        "id": "DA",
+        "length": 325.0593895629521,
+        "origin": "D",
+        "angle_deg_display": 255.0
+      },
+      {
+        "id": "BA",
+        "length": 386.68202265545494,
+        "origin": "B",
+        "angle_deg_display": 205.0
+      },
+      {
+        "id": "CB",
+        "length": 215.07253353958833,
+        "origin": "C",
+        "angle_deg_display": 255.0
+      },
+      {
+        "id": "DC",
+        "length": 327.07619184529295,
+        "origin": "D",
+        "angle_deg_display": 10.000000000000005
+      },
+      {
+        "id": "AD",
+        "length": 325.0593895629521,
+        "origin": "A",
+        "angle_deg_display": 75.00000000000001
+      }
+    ],
+    "topology": {
+      "polygons": [
+        {
+          "type": "quadrilateral",
+          "angles": [
+            "a",
+            "b",
+            "c",
+            "x"
+          ]
+        }
+      ],
+      "point_groups": [],
+      "vertical_pairs": [],
+      "straight_groups": []
+    },
+    "vertices": [
+      {
+        "x": 157.77811210941712,
+        "y": 454.5119276803004,
+        "id": "A",
+        "pupil_label": "A",
+        "label_offset": [
+          10,
+          -12
+        ]
+      },
+      {
+        "x": 506.8348135434023,
+        "y": 291.7441146713103,
+        "id": "B",
+        "pupil_label": "B",
+        "label_offset": [
+          10,
+          -12
+        ]
+      },
+      {
+        "x": 562.1009535255557,
+        "y": 85.48807231969965,
+        "id": "C",
+        "pupil_label": "C",
+        "label_offset": [
+          10,
+          -12
+        ]
+      },
+      {
+        "x": 241.51094514136605,
+        "y": 142.0167405433853,
+        "id": "D",
+        "pupil_label": "D",
+        "label_offset": [
+          10,
+          -12
+        ]
+      }
+    ],
+    "visual_type": "angles_missing_angle_semantic_a7",
+    "not_to_scale": true,
+    "point_labels": [],
+    "angle_sectors": [
+      {
+        "id": "s_a",
+        "label": "50\u00b0",
+        "ray_to": "AB",
+        "vertex": "A",
+        "angle_id": "a",
+        "draw_arc": true,
+        "ray_from": "AD",
+        "arc_radius": 64.7037647471279,
+        "label_radius": 48.0,
+        "bounding_rays": [
+          "AD",
+          "AB"
+        ]
+      },
+      {
+        "id": "s_b",
+        "label": "130\u00b0",
+        "ray_to": "BC",
+        "vertex": "B",
+        "angle_id": "b",
+        "draw_arc": true,
+        "ray_from": "BA",
+        "arc_radius": 64.7037647471279,
+        "label_radius": 48.0,
+        "bounding_rays": [
+          "BA",
+          "BC"
+        ]
+      },
+      {
+        "id": "s_c",
+        "label": "65\u00b0",
+        "ray_to": "CD",
+        "vertex": "C",
+        "angle_id": "c",
+        "draw_arc": true,
+        "ray_from": "CB",
+        "arc_radius": 64.7037647471279,
+        "label_radius": 48.0,
+        "bounding_rays": [
+          "CB",
+          "CD"
+        ]
+      },
+      {
+        "id": "s_x",
+        "label": "x\u00b0",
+        "ray_to": "DA",
+        "vertex": "D",
+        "angle_id": "x",
+        "draw_arc": true,
+        "ray_from": "DC",
+        "arc_radius": 64.7037647471279,
+        "label_radius": 48.0,
+        "bounding_rays": [
+          "DC",
+          "DA"
+        ]
+      }
+    ],
+    "math_model_ref": "angles_math_v1",
+    "schema_version": "angles_diagram_v1",
+    "collision_flags": [],
+    "equal_side_marks": [],
+    "layout_transform": {
+      "pivot": [
+        0.0,
+        0.0
+      ],
+      "scale": 1.5405658273125693,
+      "translate": [
+        -8.788747936467928,
+        40.44942829782457
+      ],
+      "rotation_deg": 0.0
+    },
+    "polygons_display": [
+      {
+        "vertices": [
+          "A",
+          "B",
+          "C",
+          "D"
+        ]
+      }
+    ],
+    "ray_endpoint_labels": {},
+    "right_angle_markers": [],
+    "declared_implications": [],
+    "not_to_scale_required": true,
+    "required_point_labels": [
+      "A",
+      "B",
+      "C",
+      "D"
+    ],
+    "semantic_presentation": {
+      "family": "QUADRILATERAL_ANGLE_SUM",
+      "objects": [
+        {
+          "id": "Q1",
+          "kind": "Quadrilateral",
+          "vertices": [
+            "A",
+            "B",
+            "C",
+            "D"
+          ]
+        }
+      ],
+      "schema_version": "angles_semantic_presentation_v1",
+      "template_version": "a7_v1",
+      "orientation_policy": "FREE",
+      "fallback_prohibited": true
+    },
+    "polygon_stroke_suppressed": true,
+    "require_stem_point_labels": true,
+    "owned_straight_line_strokes": [],
+    "visual_implications_detected": [],
+    "authoritative_sector_bindings": {
+      "a": {
+        "ray_to": "AB",
+        "vertex": "A",
+        "ray_from": "AD"
+      },
+      "b": {
+        "ray_to": "BC",
+        "vertex": "B",
+        "ray_from": "BA"
+      },
+      "c": {
+        "ray_to": "CD",
+        "vertex": "C",
+        "ray_from": "CB"
+      },
+      "x": {
+        "ray_to": "DA",
+        "vertex": "D",
+        "ray_from": "DC"
+      }
+    }
+  }
+}

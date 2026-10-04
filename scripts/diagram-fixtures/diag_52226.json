@@ -1,0 +1,359 @@
+{
+  "id": 52226,
+  "stem": "Region A is a 7 by 7 block of unit squares. Region B is a 4 by 6 block. How many more unit squares does region A have than region B?",
+  "diagram_data": {
+    "grid": {
+      "cols": 14,
+      "rows": 8,
+      "cell_px": 26,
+      "region_a": [
+        7,
+        7
+      ],
+      "region_b": [
+        4,
+        6
+      ],
+      "label_policy": "GRID_COUNT_STRUCTURE_HIDDEN",
+      "occupied_cells": [
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          1
+        ],
+        [
+          0,
+          2
+        ],
+        [
+          0,
+          3
+        ],
+        [
+          0,
+          4
+        ],
+        [
+          0,
+          5
+        ],
+        [
+          0,
+          6
+        ],
+        [
+          1,
+          0
+        ],
+        [
+          1,
+          1
+        ],
+        [
+          1,
+          2
+        ],
+        [
+          1,
+          3
+        ],
+        [
+          1,
+          4
+        ],
+        [
+          1,
+          5
+        ],
+        [
+          1,
+          6
+        ],
+        [
+          2,
+          0
+        ],
+        [
+          2,
+          1
+        ],
+        [
+          2,
+          2
+        ],
+        [
+          2,
+          3
+        ],
+        [
+          2,
+          4
+        ],
+        [
+          2,
+          5
+        ],
+        [
+          2,
+          6
+        ],
+        [
+          3,
+          0
+        ],
+        [
+          3,
+          1
+        ],
+        [
+          3,
+          2
+        ],
+        [
+          3,
+          3
+        ],
+        [
+          3,
+          4
+        ],
+        [
+          3,
+          5
+        ],
+        [
+          3,
+          6
+        ],
+        [
+          4,
+          0
+        ],
+        [
+          4,
+          1
+        ],
+        [
+          4,
+          2
+        ],
+        [
+          4,
+          3
+        ],
+        [
+          4,
+          4
+        ],
+        [
+          4,
+          5
+        ],
+        [
+          4,
+          6
+        ],
+        [
+          5,
+          0
+        ],
+        [
+          5,
+          1
+        ],
+        [
+          5,
+          2
+        ],
+        [
+          5,
+          3
+        ],
+        [
+          5,
+          4
+        ],
+        [
+          5,
+          5
+        ],
+        [
+          5,
+          6
+        ],
+        [
+          6,
+          0
+        ],
+        [
+          6,
+          1
+        ],
+        [
+          6,
+          2
+        ],
+        [
+          6,
+          3
+        ],
+        [
+          6,
+          4
+        ],
+        [
+          6,
+          5
+        ],
+        [
+          6,
+          6
+        ],
+        [
+          0,
+          8
+        ],
+        [
+          0,
+          9
+        ],
+        [
+          0,
+          10
+        ],
+        [
+          0,
+          11
+        ],
+        [
+          0,
+          12
+        ],
+        [
+          0,
+          13
+        ],
+        [
+          1,
+          8
+        ],
+        [
+          1,
+          9
+        ],
+        [
+          1,
+          10
+        ],
+        [
+          1,
+          11
+        ],
+        [
+          1,
+          12
+        ],
+        [
+          1,
+          13
+        ],
+        [
+          2,
+          8
+        ],
+        [
+          2,
+          9
+        ],
+        [
+          2,
+          10
+        ],
+        [
+          2,
+          11
+        ],
+        [
+          2,
+          12
+        ],
+        [
+          2,
+          13
+        ],
+        [
+          3,
+          8
+        ],
+        [
+          3,
+          9
+        ],
+        [
+          3,
+          10
+        ],
+        [
+          3,
+          11
+        ],
+        [
+          3,
+          12
+        ],
+        [
+          3,
+          13
+        ]
+      ]
+    },
+    "notes": [],
+    "units": "unit",
+    "cutouts": [],
+    "figures": [],
+    "operation": "grid_area",
+    "math_model": {
+      "ask": {
+        "of": "figure",
+        "quantity": "unshaded_area"
+      },
+      "meta": {
+        "grid_construction": "GRID_TWO_REGION_AREA_RELATION"
+      },
+      "units": "unit",
+      "composite": {
+        "mode": "difference",
+        "parts": [
+          "A"
+        ],
+        "subtract": [
+          "B"
+        ]
+      },
+      "components": [
+        {
+          "id": "A",
+          "cols": 7,
+          "rows": 7,
+          "type": "grid_region"
+        },
+        {
+          "id": "B",
+          "cols": 6,
+          "rows": 4,
+          "type": "grid_region"
+        }
+      ],
+      "schema_version": "area_math_v1"
+    },
+    "shaded_ask": null,
+    "visual_type": "unit_square_grid",
+    "not_to_scale": true,
+    "schema_version": "area_diagram_v1",
+    "scale_consistency_required": false,
+    "do_not_reuse_fraction_shaded_rectangle": true
+  }
+}

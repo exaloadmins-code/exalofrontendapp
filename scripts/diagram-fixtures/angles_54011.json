@@ -1,0 +1,287 @@
+{
+  "id": 54011,
+  "diagram_data": {
+    "rays": [
+      {
+        "id": "AB",
+        "length": 487.8093335567691,
+        "origin": "A",
+        "angle_deg_display": 0.0
+      },
+      {
+        "id": "AC",
+        "length": 286.39697631068634,
+        "origin": "A",
+        "angle_deg_display": 20.0
+      },
+      {
+        "id": "BA",
+        "length": 487.8093335567691,
+        "origin": "B",
+        "angle_deg_display": 180.0
+      },
+      {
+        "id": "BC",
+        "length": 241.12528776582855,
+        "origin": "B",
+        "angle_deg_display": 156.0
+      },
+      {
+        "id": "CA",
+        "length": 286.39697631068634,
+        "origin": "C",
+        "angle_deg_display": 200.0
+      },
+      {
+        "id": "CB",
+        "length": 241.12528776582855,
+        "origin": "C",
+        "angle_deg_display": 336.0
+      },
+      {
+        "id": "CD",
+        "length": 300.9092057572406,
+        "origin": "C",
+        "angle_deg_display": 20.0
+      }
+    ],
+    "topology": {
+      "polygons": [
+        {
+          "type": "triangle",
+          "angles": [
+            "a",
+            "b",
+            "t"
+          ]
+        }
+      ],
+      "point_groups": [],
+      "vertical_pairs": [],
+      "straight_groups": [
+        [
+          "t",
+          "x"
+        ]
+      ],
+      "collinear_points": [
+        [
+          "A",
+          "C",
+          "D"
+        ]
+      ]
+    },
+    "vertices": [
+      {
+        "x": 85.86900127799538,
+        "y": 369.73555858811585,
+        "id": "A",
+        "pupil_label": "A",
+        "label_offset": [
+          10,
+          -12
+        ]
+      },
+      {
+        "x": 571.8093335567692,
+        "y": 369.73555858811585,
+        "id": "B",
+        "pupil_label": "B",
+        "label_offset": [
+          10,
+          -12
+        ]
+      },
+      {
+        "x": 353.2378398233723,
+        "y": 272.42125978727256,
+        "id": "C",
+        "pupil_label": "C",
+        "label_offset": [
+          10,
+          -12
+        ]
+      },
+      {
+        "x": 634.2437132908284,
+        "y": 170.14348619114378,
+        "id": "D",
+        "pupil_label": "D",
+        "label_offset": [
+          10,
+          -12
+        ]
+      }
+    ],
+    "visual_type": "angles_missing_angle_semantic_a7",
+    "not_to_scale": true,
+    "point_labels": [],
+    "angle_sectors": [
+      {
+        "id": "s_a",
+        "label": "20\u00b0",
+        "ray_to": "AC",
+        "vertex": "A",
+        "angle_id": "a",
+        "draw_arc": true,
+        "ray_from": "AB",
+        "arc_radius": 78.49805367580193,
+        "label_radius": 72.0,
+        "bounding_rays": [
+          "AB",
+          "AC"
+        ]
+      },
+      {
+        "id": "s_b",
+        "label": "24\u00b0",
+        "ray_to": "BC",
+        "vertex": "B",
+        "angle_id": "b",
+        "draw_arc": true,
+        "ray_from": "BA",
+        "arc_radius": 78.49805367580193,
+        "label_radius": 78.0,
+        "bounding_rays": [
+          "BA",
+          "BC"
+        ]
+      },
+      {
+        "id": "s_t",
+        "label": "",
+        "ray_to": "CB",
+        "vertex": "C",
+        "angle_id": "t",
+        "draw_arc": false,
+        "ray_from": "CA",
+        "arc_radius": 78.49805367580193,
+        "label_radius": 130.83008945966986,
+        "bounding_rays": [
+          "CA",
+          "CB"
+        ]
+      },
+      {
+        "id": "s_x",
+        "label": "x\u00b0",
+        "ray_to": "CD",
+        "vertex": "C",
+        "angle_id": "x",
+        "draw_arc": true,
+        "ray_from": "CB",
+        "arc_radius": 78.49805367580193,
+        "label_radius": 84.0,
+        "bounding_rays": [
+          "CB",
+          "CD"
+        ]
+      }
+    ],
+    "math_model_ref": "angles_math_v1",
+    "schema_version": "angles_diagram_v1",
+    "collision_flags": [],
+    "equal_side_marks": [],
+    "layout_transform": {
+      "pivot": [
+        0.0,
+        0.0
+      ],
+      "scale": 1.8690012779952838,
+      "translate": [
+        7.17507193843187,
+        -14.776458478639597
+      ],
+      "rotation_deg": 0.0
+    },
+    "polygons_display": [
+      {
+        "vertices": [
+          "A",
+          "B",
+          "C"
+        ]
+      }
+    ],
+    "ray_endpoint_labels": {},
+    "right_angle_markers": [],
+    "declared_implications": [],
+    "not_to_scale_required": true,
+    "required_point_labels": [
+      "A",
+      "B",
+      "C",
+      "D"
+    ],
+    "semantic_presentation": {
+      "family": "TRIANGLE_WITH_SIDE_EXTENSION",
+      "objects": [
+        {
+          "id": "T1",
+          "kind": "Triangle",
+          "vertices": [
+            "A",
+            "B",
+            "C"
+          ]
+        },
+        {
+          "id": "E1",
+          "kind": "SideExtension",
+          "through": "C",
+          "owned_side": [
+            "A",
+            "C"
+          ],
+          "extension_point": "D"
+        },
+        {
+          "id": "L1",
+          "kind": "StraightLine",
+          "ray_a": "CA",
+          "ray_b": "CD"
+        }
+      ],
+      "schema_version": "angles_semantic_presentation_v1",
+      "template_version": "a7_v1",
+      "orientation_policy": "FAMILY_CONSTRAINED",
+      "fallback_prohibited": true
+    },
+    "polygon_stroke_suppressed": true,
+    "require_stem_point_labels": true,
+    "owned_straight_line_strokes": [
+      {
+        "id": "sl_CA_CD",
+        "ray_a": "CA",
+        "ray_b": "CD",
+        "reason": "REQUIRED_STRAIGHT_LINE",
+        "vertex": "C",
+        "relationship_id": "c2_opp"
+      }
+    ],
+    "visual_implications_detected": [],
+    "authoritative_sector_bindings": {
+      "a": {
+        "ray_to": "AC",
+        "vertex": "A",
+        "ray_from": "AB"
+      },
+      "b": {
+        "ray_to": "BC",
+        "vertex": "B",
+        "ray_from": "BA"
+      },
+      "t": {
+        "ray_to": "CB",
+        "vertex": "C",
+        "ray_from": "CA"
+      },
+      "x": {
+        "ray_to": "CD",
+        "vertex": "C",
+        "ray_from": "CB"
+      }
+    }
+  }
+}

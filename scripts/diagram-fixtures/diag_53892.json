@@ -1,0 +1,149 @@
+{
+  "id": 53892,
+  "stem": "A right angle is split into two parts by a ray. One part is 68\u00b0. What is the size of the other part, angle x?",
+  "diagram_data": {
+    "rays": [
+      {
+        "id": "rH",
+        "length": 372.0,
+        "origin": "O",
+        "angle_deg_display": 270.0
+      },
+      {
+        "id": "rV",
+        "length": 372.0,
+        "origin": "O",
+        "angle_deg_display": 0.0
+      },
+      {
+        "id": "rC",
+        "length": 228.92307692307693,
+        "origin": "O",
+        "angle_deg_display": 338.0
+      }
+    ],
+    "topology": {
+      "polygons": [],
+      "point_groups": [],
+      "vertical_pairs": [],
+      "straight_groups": []
+    },
+    "vertices": [
+      {
+        "x": 174.0,
+        "y": 84.0,
+        "id": "O"
+      }
+    ],
+    "visual_type": "angles_missing_angle_semantic_a7",
+    "not_to_scale": true,
+    "point_labels": [],
+    "angle_sectors": [
+      {
+        "id": "s_a",
+        "label": "68\u00b0",
+        "ray_to": "rC",
+        "vertex": "O",
+        "angle_id": "a",
+        "draw_arc": true,
+        "ray_from": "rH",
+        "arc_radius": 60.09230769230769,
+        "label_radius": 48.0,
+        "bounding_rays": [
+          "rH",
+          "rC"
+        ]
+      },
+      {
+        "id": "s_x",
+        "label": "x\u00b0",
+        "ray_to": "rV",
+        "vertex": "O",
+        "angle_id": "x",
+        "draw_arc": true,
+        "ray_from": "rC",
+        "arc_radius": 60.09230769230769,
+        "label_radius": 48.0,
+        "bounding_rays": [
+          "rC",
+          "rV"
+        ]
+      }
+    ],
+    "math_model_ref": "angles_math_v1",
+    "schema_version": "angles_diagram_v1",
+    "collision_flags": [],
+    "equal_side_marks": [],
+    "layout_transform": {
+      "pivot": [
+        0.0,
+        0.0
+      ],
+      "scale": 1.4307692307692308,
+      "translate": [
+        -186.0,
+        -186.0
+      ],
+      "rotation_deg": 0.0
+    },
+    "polygons_display": [],
+    "ray_endpoint_labels": {},
+    "right_angle_markers": [
+      {
+        "size": 31.47692307692308,
+        "ray_a": "rH",
+        "ray_b": "rV",
+        "vertex": "O"
+      }
+    ],
+    "declared_implications": [],
+    "not_to_scale_required": true,
+    "semantic_presentation": {
+      "family": "RIGHT_ANGLE_SPLIT",
+      "objects": [
+        {
+          "id": "rH",
+          "kind": "Ray",
+          "role": "right_arm"
+        },
+        {
+          "id": "rV",
+          "kind": "Ray",
+          "role": "right_arm"
+        },
+        {
+          "id": "rC",
+          "kind": "Ray",
+          "role": "subordinate_splitter"
+        },
+        {
+          "id": "ra",
+          "kind": "RightAngleMarker",
+          "rays": [
+            "rH",
+            "rV"
+          ]
+        }
+      ],
+      "schema_version": "angles_semantic_presentation_v1",
+      "template_version": "a7_v1",
+      "orientation_policy": "AXIS_SALIENT",
+      "fallback_prohibited": true
+    },
+    "polygon_stroke_suppressed": true,
+    "owned_straight_line_strokes": [],
+    "visual_implications_detected": [],
+    "authoritative_sector_bindings": {
+      "a": {
+        "ray_to": "rC",
+        "vertex": "O",
+        "ray_from": "rH"
+      },
+      "x": {
+        "ray_to": "rV",
+        "vertex": "O",
+        "ray_from": "rC"
+      }
+    }
+  }
+}

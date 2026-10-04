@@ -1,0 +1,124 @@
+{
+  "id": 52193,
+  "diagram_data": {
+    "grid": null,
+    "notes": [],
+    "units": "cm",
+    "cutouts": [
+      {
+        "id": "INNER",
+        "math": {
+          "width": 3,
+          "length": 11
+        },
+        "labels": [
+          {
+            "side": "bottom",
+            "value": 1,
+            "visible": true
+          }
+        ],
+        "display": {
+          "h": 54,
+          "w": 198,
+          "x": 58,
+          "y": 48
+        },
+        "placement": {
+          "mode": "SEMANTIC_PLACEMENT"
+        }
+      }
+    ],
+    "figures": [
+      {
+        "id": "OUTER",
+        "kind": "rectangle",
+        "math": {
+          "width": 5,
+          "length": 13
+        },
+        "labels": [
+          {
+            "side": "left",
+            "value": 5,
+            "visible": true
+          },
+          {
+            "side": "bottom",
+            "value": "P=36",
+            "visible": true
+          }
+        ],
+        "shaded": true,
+        "display": {
+          "h": 90,
+          "w": 234,
+          "x": 40,
+          "y": 30
+        }
+      }
+    ],
+    "operation": "cutout_area",
+    "math_model": {
+      "ask": {
+        "of": "figure",
+        "quantity": "unshaded_area"
+      },
+      "meta": {
+        "nested_rectangular": true,
+        "frame_outer_derived": true
+      },
+      "units": "cm",
+      "composite": {
+        "mode": "difference",
+        "parts": [
+          "OUTER"
+        ],
+        "subtract": [
+          "INNER"
+        ]
+      },
+      "components": [
+        {
+          "id": "OUTER",
+          "type": "rectangle",
+          "width": 5,
+          "length": null
+        },
+        {
+          "id": "INNER",
+          "type": "cutout",
+          "width": null,
+          "length": null,
+          "parent": "OUTER"
+        }
+      ],
+      "constraints": [
+        {
+          "of": "OUTER",
+          "type": "perimeter_equals",
+          "equals": 36
+        },
+        {
+          "of": "INNER",
+          "from": "OUTER",
+          "type": "length_difference",
+          "subtract": 2
+        },
+        {
+          "of": "INNER",
+          "from": "OUTER",
+          "type": "width_difference",
+          "subtract": 2
+        }
+      ],
+      "schema_version": "area_math_v1"
+    },
+    "shaded_ask": "remaining",
+    "visual_type": "outer_inner_nested_rectangles",
+    "not_to_scale": true,
+    "schema_version": "area_diagram_v1",
+    "scale_consistency_required": false,
+    "do_not_reuse_fraction_shaded_rectangle": true
+  }
+}

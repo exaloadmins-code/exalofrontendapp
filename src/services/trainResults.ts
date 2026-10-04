@@ -1,9 +1,8 @@
 /**
- * TEMPORARY frontend-only Train result handoff (M4 → M5).
+ * Train result handoff + Maths API session fields.
  *
- * Holds the last completed Train run for the Results screen and optional
- * Lovable-parity "Try again" restart (same question set). Not persisted.
- * Not a backend session.
+ * Holds the last completed Train run for the Results screen.
+ * Try Again is navigation-only (subject Train setup) — no backend retry.
  */
 
 import type { JourneySubject } from '@/constants/journey';
@@ -39,11 +38,15 @@ export type TrainResultSnapshot = {
   totalCorrect: number;
   /** Local wall-clock ms — handoff only. */
   completedAt: number;
+  /** Maths API session id when results came from the backend. */
+  sessionId?: number;
+  /** Distinguishes local English/Focus/Test snapshots from Maths API. */
+  source?: 'local' | 'api';
 };
 
 let lastResult: TrainResultSnapshot | null = null;
 
-/** Armed by Results "Try again" — consumed once by Gameplay on mount. */
+/** Armed by Results "Try again" — consumed once by Gameplay on mount (local). */
 let armedRetryQuestions: TrainQuestionRow[] | null = null;
 let armedRetryKey: string | null = null;
 
@@ -66,6 +69,8 @@ export function setTrainResult(
     totalQuestions?: number;
     title?: string;
     questionCount?: number;
+    sessionId?: number;
+    source?: 'local' | 'api';
   },
 ): TrainResultSnapshot {
   // A new completion supersedes any pending Try-again arm.
@@ -91,6 +96,8 @@ export function setTrainResult(
     totalQuestions,
     totalCorrect,
     completedAt: snapshot.completedAt ?? Date.now(),
+    sessionId: snapshot.sessionId,
+    source: snapshot.source ?? (snapshot.sessionId != null ? 'api' : 'local'),
   };
   return lastResult;
 }
@@ -109,9 +116,8 @@ export function clearArmedTrainRetry(): void {
 }
 
 /**
- * Lovable QuizPlayer `restart()` keeps the same question array in memory.
- * Expo remounts Gameplay — arm the completed run's questions for one consume.
- * Same subject + topic + difficulty + questionCount + same question set.
+ * Legacy local-arm helpers retained for Focus/Test callers if any.
+ * Train Results Try Again must NOT call these — navigation only.
  */
 export function armTrainRetry(result: TrainResultSnapshot): void {
   if (!result.questions.length) {

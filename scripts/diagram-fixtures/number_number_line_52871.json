@@ -1,0 +1,30 @@
+{
+  "id": 52871,
+  "diagram_data": {
+    "end": 4909,
+    "step": 199,
+    "start": 4113,
+    "ticks": [
+      4113,
+      4312,
+      4511,
+      4710,
+      4909
+    ],
+    "labels": [
+      "4710",
+      "4909"
+    ],
+    "operation": "integer_comparison",
+    "visual_type": "number_line",
+    "marked_values": [
+      4710,
+      4909
+    ],
+    "schema_version": "2.0",
+    "marked_positions": {
+      "4710": 3,
+      "4909": 4
+    }
+  }
+}

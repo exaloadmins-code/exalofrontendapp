@@ -1,0 +1,39 @@
+{
+  "id": 52071,
+  "stem": "Work out the area of the shape shown on the grid.",
+  "diagram_data": {
+    "grid": {
+      "cols": 8,
+      "rows": 7,
+      "cell_px": 28,
+      "label_policy": "GRID_COUNT_STRUCTURE_HIDDEN"
+    },
+    "notes": [],
+    "units": "unit",
+    "cutouts": [],
+    "figures": [],
+    "operation": "grid_area",
+    "math_model": {
+      "ask": {
+        "of": "G1",
+        "quantity": "area"
+      },
+      "units": "unit",
+      "components": [
+        {
+          "id": "G1",
+          "cols": 8,
+          "rows": 7,
+          "type": "grid_region"
+        }
+      ],
+      "schema_version": "area_math_v1"
+    },
+    "shaded_ask": null,
+    "visual_type": "unit_square_grid",
+    "not_to_scale": true,
+    "schema_version": "area_diagram_v1",
+    "scale_consistency_required": false,
+    "do_not_reuse_fraction_shaded_rectangle": true
+  }
+}

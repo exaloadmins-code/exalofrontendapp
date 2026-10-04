@@ -25,6 +25,7 @@ import {
   type TrainAnswerRecord,
   type TrainQuestionRow,
 } from '@/services/trainQuestions';
+import { TrainQuestionDiagram } from '@/components/train/TrainQuestionDiagram';
 import { fonts } from '@/theme';
 
 export type TrainQuizPlayerProps = {
@@ -58,6 +59,41 @@ export type TrainQuizPlayerProps = {
    * Focus only — shows END FOCUS (with confirmation). Never enable for Train/Test.
    */
   showEndFocus?: boolean;
+  /**
+   * Maths API mode: do not treat Correct_Option as authoritative during play.
+   * Local isCorrect stays false until Results are hydrated from the backend.
+   */
+  deferCorrectness?: boolean;
+  /** Fired whenever the learner changes the selection for a session index. */
+  onAnswerChange?: (
+    sessionIndex: number,
+    letter: OptionLetter,
+    record: TrainAnswerRecord,
+  ) => void;
+  /**
+   * Optional async gate before calling onSeeResults (e.g. drain answer writes +
+   * complete Maths API session). Errors should be handled by the caller.
+   */
+  onBeforeSeeResults?: (
+    answers: TrainAnswerRecord[],
+  ) => void | Promise<void>;
+  /**
+   * Continuous Maths Train: at each loaded-page boundary show a checkpoint
+   * instead of auto-completing. Optional — omit for English / Focus / Test.
+   */
+  continuousTrain?: boolean;
+  /** Whether another server page may still be appended. */
+  hasMore?: boolean;
+  /**
+   * Drain answers + continue session. Must append questions via parent state
+   * and return the 0-based index of the first newly loaded question.
+   */
+  onPageContinue?: () => Promise<{ nextIndex: number }>;
+  /**
+   * When true, header shows "Question N" (cumulative) without implying a
+   * preselected final denominator. Default false preserves Focus/Test/English.
+   */
+  absoluteQuestionLabel?: boolean;
 };
 
 /**
@@ -109,6 +145,13 @@ export function TrainQuizPlayer({
   onTimeExpired,
   sessionStartedAtMs,
   showEndFocus = false,
+  deferCorrectness = false,
+  onAnswerChange,
+  onBeforeSeeResults,
+  continuousTrain = false,
+  hasMore = false,
+  onPageContinue,
+  absoluteQuestionLabel = false,
 }: TrainQuizPlayerProps) {
   const insets = useSafeAreaInsets();
   const { width: windowWidth } = useWindowDimensions();
@@ -118,6 +161,7 @@ export function TrainQuizPlayer({
   const [answerSlots, setAnswerSlots] = useState<(TrainAnswerRecord | null)[]>(
     () => Array.from({ length: questions.length }, () => null),
   );
+  const [finalizeError, setFinalizeError] = useState<string | null>(null);
   const [remainingSec, setRemainingSec] = useState<number | null>(() =>
     sessionEndsAtMs != null
       ? Math.max(0, Math.ceil((sessionEndsAtMs - Date.now()) / 1000))
@@ -130,6 +174,8 @@ export function TrainQuizPlayer({
   );
   /** Focus End Focus confirmation — in-tree Modal (reliable on Android vs Alert). */
   const [endFocusConfirmVisible, setEndFocusConfirmVisible] = useState(false);
+  const [checkpointVisible, setCheckpointVisible] = useState(false);
+  const [continuing, setContinuing] = useState(false);
 
   const answerSlotsRef = useRef(answerSlots);
   answerSlotsRef.current = answerSlots;
@@ -141,6 +187,31 @@ export function TrainQuizPlayer({
   onTimeExpiredRef.current = onTimeExpired;
   const onSeeResultsRef = useRef(onSeeResults);
   onSeeResultsRef.current = onSeeResults;
+  const onBeforeSeeResultsRef = useRef(onBeforeSeeResults);
+  onBeforeSeeResultsRef.current = onBeforeSeeResults;
+  const onAnswerChangeRef = useRef(onAnswerChange);
+  onAnswerChangeRef.current = onAnswerChange;
+  const onPageContinueRef = useRef(onPageContinue);
+  onPageContinueRef.current = onPageContinue;
+  const [finalizing, setFinalizing] = useState(false);
+
+  // Keep answer slots aligned when continuous Train appends a page.
+  useEffect(() => {
+    setAnswerSlots((prev) => {
+      if (prev.length === questions.length) {
+        return prev;
+      }
+      if (prev.length > questions.length) {
+        return prev.slice(0, questions.length);
+      }
+      const next = prev.slice();
+      while (next.length < questions.length) {
+        next.push(null);
+      }
+      answerSlotsRef.current = next;
+      return next;
+    });
+  }, [questions.length]);
 
   const timed = sessionEndsAtMs != null;
   const locked =
@@ -155,7 +226,26 @@ export function TrainQuizPlayer({
   const finalizeOnce = (slots: readonly (TrainAnswerRecord | null)[]) => {
     if (finalizedRef.current) return;
     finalizedRef.current = true;
-    onSeeResultsRef.current(slotsToResults(slots, questionsRef.current));
+    const answers = slotsToResults(slots, questionsRef.current);
+    const before = onBeforeSeeResultsRef.current;
+    if (!before) {
+      onSeeResultsRef.current(answers);
+      return;
+    }
+    setFinalizing(true);
+    Promise.resolve(before(answers))
+      .then(() => {
+        onSeeResultsRef.current(answers);
+      })
+      .catch((err: unknown) => {
+        finalizedRef.current = false;
+        setFinalizing(false);
+        const message =
+          err instanceof Error ? err.message : 'Failed to finish Train session.';
+        // Surface via empty-state style by reusing onExit path is awkward;
+        // throw to Error boundary alternative: store local error below.
+        setFinalizeError(message);
+      });
   };
 
   /**
@@ -256,7 +346,7 @@ export function TrainQuizPlayer({
       qid: q.Question_ID,
       chosen: letter,
       correct,
-      isCorrect: letter === correct,
+      isCorrect: deferCorrectness ? false : letter === correct,
     };
     setAnswerSlots((prev) => {
       const next = prev.slice();
@@ -267,6 +357,7 @@ export function TrainQuizPlayer({
       answerSlotsRef.current = next;
       return next;
     });
+    onAnswerChangeRef.current?.(idx, letter, record);
   };
 
   const goPrevious = () => {
@@ -277,15 +368,58 @@ export function TrainQuizPlayer({
   };
 
   const goNext = () => {
-    if (expiredRef.current || locked || finalizedRef.current) return;
+    if (
+      expiredRef.current ||
+      locked ||
+      finalizedRef.current ||
+      finalizing ||
+      continuing ||
+      checkpointVisible
+    ) {
+      return;
+    }
     if (selected == null) return;
+    setFinalizeError(null);
     if (idx + 1 >= questions.length) {
+      if (continuousTrain) {
+        setCheckpointVisible(true);
+        return;
+      }
       finalizeOnce(answerSlotsRef.current);
       return;
     }
     const nextIdx = idx + 1;
     setIdx(nextIdx);
     setSelected(answerSlots[nextIdx]?.chosen ?? null);
+  };
+
+  const confirmCheckpointResults = () => {
+    if (continuing || finalizing) return;
+    setCheckpointVisible(false);
+    finalizeOnce(answerSlotsRef.current);
+  };
+
+  const confirmCheckpointContinue = () => {
+    if (!hasMore || continuing || finalizing || !onPageContinueRef.current) {
+      return;
+    }
+    setContinuing(true);
+    setFinalizeError(null);
+    Promise.resolve(onPageContinueRef.current())
+      .then(({ nextIndex }) => {
+        setCheckpointVisible(false);
+        setContinuing(false);
+        setIdx(nextIndex);
+        setSelected(null);
+      })
+      .catch((err: unknown) => {
+        setContinuing(false);
+        const message =
+          err instanceof Error
+            ? err.message
+            : 'Failed to load more Train questions.';
+        setFinalizeError(message);
+      });
   };
 
   const requestEndFocus = () => {
@@ -383,7 +517,9 @@ export function TrainQuizPlayer({
               <View style={styles.timerSpacer} />
             )}
             <Text style={styles.counter}>
-              {idx + 1} / {questions.length}
+              {absoluteQuestionLabel
+                ? `Question ${idx + 1}`
+                : `${idx + 1} / ${questions.length}`}
             </Text>
           </View>
 
@@ -442,6 +578,14 @@ export function TrainQuizPlayer({
             </Text>
             <Text style={styles.stem}>{q.Question_Text}</Text>
 
+            <TrainQuestionDiagram
+              hasDiagram={q.has_diagram}
+              diagramType={q.diagram_type}
+              diagramPrompt={q.diagram_prompt}
+              diagramData={q.diagram_data}
+              width={contentWidth - 40}
+            />
+
             <View style={styles.options}>
               {opts.map(({ letter, text }) => {
                 const chosen = selected === letter;
@@ -466,22 +610,97 @@ export function TrainQuizPlayer({
               })}
             </View>
 
-            {selected !== null && !locked && !finalizedRef.current ? (
+            {selected !== null &&
+            !locked &&
+            !finalizedRef.current &&
+            !checkpointVisible ? (
               <Pressable
                 accessibilityRole="button"
-                accessibilityLabel={isLast ? COPY.seeResults : COPY.nextQuestion}
+                accessibilityLabel={
+                  isLast && !continuousTrain
+                    ? COPY.seeResults
+                    : COPY.nextQuestion
+                }
+                disabled={finalizing || continuing}
                 onPress={goNext}
-                style={styles.nextBtn}
+                style={[
+                  styles.nextBtn,
+                  (finalizing || continuing) && { opacity: 0.6 },
+                ]}
               >
                 <Text style={styles.ctaLabel}>
-                  {isLast ? COPY.seeResults : COPY.nextQuestion}
+                  {finalizing
+                    ? 'Saving…'
+                    : isLast && !continuousTrain
+                      ? COPY.seeResults
+                      : COPY.nextQuestion}
                 </Text>
                 <ChevronRight size={16} color="#FFFFFF" strokeWidth={2.5} />
               </Pressable>
             ) : null}
+            {finalizeError ? (
+              <Text style={styles.finalizeError}>{finalizeError}</Text>
+            ) : null}
           </LinearGradient>
         </View>
       </ScrollView>
+
+      {continuousTrain ? (
+        <Modal
+          visible={checkpointVisible}
+          transparent
+          animationType="fade"
+          onRequestClose={() => {
+            if (!continuing && !finalizing) {
+              setCheckpointVisible(false);
+            }
+          }}
+        >
+          <View style={styles.confirmBackdrop}>
+            <View style={styles.confirmCard} accessibilityViewIsModal>
+              <Text style={styles.confirmTitle}>{COPY.checkpointTitle}</Text>
+              <Text style={styles.confirmMessage}>
+                {hasMore
+                  ? COPY.checkpointDone(questions.length)
+                  : COPY.checkpointExhausted(questions.length)}
+              </Text>
+              <Pressable
+                accessibilityRole="button"
+                accessibilityLabel={COPY.viewResults}
+                disabled={continuing || finalizing}
+                onPress={confirmCheckpointResults}
+                style={[
+                  styles.confirmKeepBtn,
+                  (continuing || finalizing) && { opacity: 0.6 },
+                ]}
+              >
+                <Text style={styles.confirmKeepLabel}>
+                  {finalizing ? 'Saving…' : COPY.viewResults}
+                </Text>
+              </Pressable>
+              {hasMore ? (
+                <Pressable
+                  accessibilityRole="button"
+                  accessibilityLabel={COPY.continueTraining}
+                  disabled={continuing || finalizing}
+                  onPress={confirmCheckpointContinue}
+                  style={[
+                    styles.confirmEndBtn,
+                    (continuing || finalizing) && { opacity: 0.6 },
+                  ]}
+                >
+                  <Text style={styles.confirmEndLabel}>
+                    {continuing ? COPY.loadingMore : COPY.continueTraining}
+                  </Text>
+                </Pressable>
+              ) : null}
+              {finalizeError ? (
+                <Text style={styles.finalizeError}>{finalizeError}</Text>
+              ) : null}
+            </View>
+          </View>
+        </Modal>
+      ) : null}
 
       {showEndFocus ? (
         <Modal
@@ -801,6 +1020,14 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     borderRadius: 16,
     backgroundColor: T.cta,
+  },
+  finalizeError: {
+    marginTop: 12,
+    fontFamily: fonts.display,
+    fontSize: 13,
+    fontWeight: '500',
+    color: '#FCA5A5',
+    textAlign: 'center',
   },
   cta: {
     alignSelf: 'center',

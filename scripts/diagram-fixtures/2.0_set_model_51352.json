@@ -1,0 +1,22 @@
+{
+  "id": 51352,
+  "diagram_data": {
+    "result": {
+      "numerator": 6,
+      "denominator": 1
+    },
+    "operand_a": {
+      "numerator": 1,
+      "denominator": 3
+    },
+    "operation": "fraction_of_amount",
+    "arrangement": "grouped",
+    "visual_type": "set_model",
+    "amount_total": 18,
+    "groups_total": 3,
+    "groups_shaded": 1,
+    "schema_version": "2.0",
+    "selected_count": 6,
+    "amount_per_group": 6
+  }
+}

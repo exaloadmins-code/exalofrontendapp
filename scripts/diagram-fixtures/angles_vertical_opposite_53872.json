@@ -1,0 +1,170 @@
+{
+  "id": 53872,
+  "diagram_data": {
+    "rays": [
+      {
+        "id": "r0",
+        "length": 276.67396387040344,
+        "origin": "O",
+        "angle_deg_display": 20.0
+      },
+      {
+        "id": "r1",
+        "length": 276.67396387040344,
+        "origin": "O",
+        "angle_deg_display": 176.0
+      },
+      {
+        "id": "r2",
+        "length": 276.67396387040344,
+        "origin": "O",
+        "angle_deg_display": 200.0
+      },
+      {
+        "id": "r3",
+        "length": 276.67396387040344,
+        "origin": "O",
+        "angle_deg_display": 356.0
+      }
+    ],
+    "topology": {
+      "polygons": [],
+      "point_groups": [],
+      "vertical_pairs": [
+        [
+          "a",
+          "x"
+        ]
+      ],
+      "straight_groups": []
+    },
+    "vertices": [
+      {
+        "x": 360.0,
+        "y": 270.0,
+        "id": "O"
+      }
+    ],
+    "visual_type": "angles_missing_angle_semantic_a7",
+    "not_to_scale": true,
+    "point_labels": [],
+    "angle_sectors": [
+      {
+        "id": "s_a",
+        "label": "156\u00b0",
+        "ray_to": "r1",
+        "vertex": "O",
+        "angle_id": "a",
+        "draw_arc": true,
+        "ray_from": "r0",
+        "arc_radius": 44.693486471372864,
+        "label_radius": 48.0,
+        "bounding_rays": [
+          "r0",
+          "r1"
+        ]
+      },
+      {
+        "id": "s_x",
+        "label": "x\u00b0",
+        "ray_to": "r3",
+        "vertex": "O",
+        "angle_id": "x",
+        "draw_arc": true,
+        "ray_from": "r2",
+        "arc_radius": 44.693486471372864,
+        "label_radius": 48.0,
+        "bounding_rays": [
+          "r2",
+          "r3"
+        ]
+      }
+    ],
+    "math_model_ref": "angles_math_v1",
+    "schema_version": "angles_diagram_v1",
+    "collision_flags": [],
+    "equal_side_marks": [],
+    "layout_transform": {
+      "pivot": [
+        0.0,
+        0.0
+      ],
+      "scale": 1.0641306302707825,
+      "translate": [
+        0.0,
+        0.0
+      ],
+      "rotation_deg": 0.0
+    },
+    "polygons_display": [],
+    "ray_endpoint_labels": {},
+    "right_angle_markers": [],
+    "declared_implications": [],
+    "not_to_scale_required": true,
+    "semantic_presentation": {
+      "family": "VERTICALLY_OPPOSITE",
+      "objects": [
+        {
+          "id": "X1",
+          "kind": "CrossingLines",
+          "line_a": [
+            "r0",
+            "r2"
+          ],
+          "line_b": [
+            "r1",
+            "r3"
+          ]
+        },
+        {
+          "id": "L1",
+          "kind": "StraightLine",
+          "ray_a": "r0",
+          "ray_b": "r2"
+        },
+        {
+          "id": "L2",
+          "kind": "StraightLine",
+          "ray_a": "r1",
+          "ray_b": "r3"
+        }
+      ],
+      "schema_version": "angles_semantic_presentation_v1",
+      "template_version": "a7_v1",
+      "orientation_policy": "FREE",
+      "fallback_prohibited": true
+    },
+    "polygon_stroke_suppressed": true,
+    "owned_straight_line_strokes": [
+      {
+        "id": "sl_r0_r2",
+        "ray_a": "r0",
+        "ray_b": "r2",
+        "reason": "REQUIRED_VO_LINE",
+        "vertex": "O",
+        "relationship_id": "vo_a"
+      },
+      {
+        "id": "sl_r1_r3",
+        "ray_a": "r1",
+        "ray_b": "r3",
+        "reason": "REQUIRED_VO_LINE",
+        "vertex": "O",
+        "relationship_id": "vo_b"
+      }
+    ],
+    "visual_implications_detected": [],
+    "authoritative_sector_bindings": {
+      "a": {
+        "ray_to": "r1",
+        "vertex": "O",
+        "ray_from": "r0"
+      },
+      "x": {
+        "ray_to": "r3",
+        "vertex": "O",
+        "ray_from": "r2"
+      }
+    }
+  }
+}

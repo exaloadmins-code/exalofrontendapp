@@ -1,0 +1,24 @@
+{
+  "id": 51365,
+  "diagram_data": {
+    "result": {
+      "numerator": 11,
+      "denominator": 1
+    },
+    "operand_a": {
+      "numerator": 1,
+      "denominator": 4
+    },
+    "operation": "fraction_of_amount",
+    "array_cols": 11,
+    "array_rows": 4,
+    "visual_type": "array_model",
+    "amount_total": 44,
+    "groups_total": 4,
+    "groups_shaded": 1,
+    "partition_axis": "rows",
+    "schema_version": "2.0",
+    "selected_count": 11,
+    "amount_per_group": 11
+  }
+}

@@ -13,16 +13,14 @@ import {
 } from '@/constants/trainResults';
 import { setTrainDifficulty } from '@/services/trainSelection';
 import {
-  armTrainRetry,
   clearArmedTrainRetry,
   getTrainResult,
 } from '@/services/trainResults';
 import { fonts } from '@/theme';
+
 /**
- * M5 Train Results — Lovable QuizPlayer finished-state parity on the native
- * `/train/[subject]/[topic]/results` route.
- *
- * Frontend-only: uses `getTrainResult()` in-memory handoff from M4. No API.
+ * Train Results — cumulative continuous-session results.
+ * Try Again is navigation-only (subject Train setup). Home → Exalo Home.
  */
 export default function TrainResultsScreen() {
   const router = useRouter();
@@ -31,7 +29,6 @@ export default function TrainResultsScreen() {
     subject: string;
     topic: string;
     difficulty?: string;
-    count?: string;
   }>();
 
   const subject = normalizeJourneySubject(params.subject);
@@ -46,7 +43,7 @@ export default function TrainResultsScreen() {
     result.subject === subject &&
     result.topicSlug === topicSlug;
 
-  const goTrainSelection = () => {
+  const goSubjectTrainSetup = () => {
     clearArmedTrainRetry();
     if (subject) {
       setTrainDifficulty(subject, difficulty);
@@ -61,29 +58,13 @@ export default function TrainResultsScreen() {
   };
 
   const onTryAgain = () => {
-    if (!subject || !topicSlug || !resultMatchesRoute || !result) {
-      goTrainSelection();
-      return;
-    }
-    // Lovable restart() keeps the same question array; arm it for Gameplay remount.
-    // Same subject + topic + difficulty + questionCount + same question set.
-    const retryCount = result.questionCount || result.questions.length;
-    armTrainRetry(result);
-    setTrainDifficulty(subject, result.difficulty);
-    router.replace({
-      pathname: '/train/[subject]/[topic]',
-      params: {
-        subject,
-        topic: topicSlug,
-        difficulty: result.difficulty,
-        count: String(retryCount),
-      },
-    } as Href);
+    // Navigation only — no retry API, no new session, no armed replay.
+    goSubjectTrainSetup();
   };
 
   const onHome = () => {
-    // Lovable Results "Home" calls onExit — TrainGameplay wires that to /train/:subject.
-    goTrainSelection();
+    clearArmedTrainRetry();
+    router.replace(Routes.Home as Href);
   };
 
   if (!resultMatchesRoute || !result || result.answers.length === 0) {
@@ -104,7 +85,7 @@ export default function TrainResultsScreen() {
           <Pressable
             accessibilityRole="button"
             accessibilityLabel={COPY.goBack}
-            onPress={goTrainSelection}
+            onPress={goSubjectTrainSetup}
             style={styles.missingCta}
           >
             <Text style={styles.missingCtaLabel}>{COPY.goBack}</Text>

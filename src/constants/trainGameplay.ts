@@ -45,7 +45,10 @@ export const TRAIN_GAMEPLAY_COPY = {
   nextQuestion: 'Next question',
   previousQuestion: 'Previous question',
   seeResults: 'See results',
+  viewResults: 'View Results',
+  continueTraining: 'Continue',
   loading: 'Loading questions…',
+  loadingMore: 'Loading more questions…',
   emptyTitle: 'No questions found',
   emptyBody:
     'The Questions table returned no rows for this selection. Check that `Subject_Type`, `Subject` and `Difficulty` values match exactly.',
@@ -57,4 +60,11 @@ export const TRAIN_GAMEPLAY_COPY = {
   endFocusTitle: 'End Focus?',
   endFocusMessage: 'Are you sure you want to end this Focus session?',
   keepFocusing: 'Keep Focusing',
+  checkpointTitle: 'Checkpoint',
+  checkpointDone: (n: number) =>
+    n === 20
+      ? "Great work! You've completed 20 questions."
+      : `You've completed ${n} questions.`,
+  checkpointExhausted: (n: number) =>
+    `You've completed all ${n} available questions for this topic.`,
 } as const;

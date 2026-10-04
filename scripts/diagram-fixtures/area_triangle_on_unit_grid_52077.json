@@ -1,0 +1,103 @@
+{
+  "id": 52077,
+  "diagram_data": {
+    "grid": {
+      "cols": 8,
+      "rows": 4,
+      "cell_px": 28,
+      "label_policy": "GRID_COUNT_STRUCTURE_HIDDEN",
+      "triangle_overlay": true,
+      "show_count_structure": false,
+      "show_rows_cols_caption": false
+    },
+    "notes": [],
+    "units": "unit",
+    "cutouts": [],
+    "figures": [
+      {
+        "id": "T",
+        "kind": "triangle",
+        "math": {
+          "base": 8,
+          "width": 4,
+          "height": 4,
+          "length": 8
+        },
+        "labels": [],
+        "shaded": true,
+        "display": {
+          "points": [
+            {
+              "x": 0,
+              "y": 112
+            },
+            {
+              "x": 224,
+              "y": 112
+            },
+            {
+              "x": 0,
+              "y": 0
+            }
+          ]
+        }
+      }
+    ],
+    "operation": "triangle_grid_area",
+    "math_model": {
+      "ask": {
+        "of": "T",
+        "quantity": "area"
+      },
+      "meta": {
+        "construction": "TRIANGLE_GRID_HALF_CELLS",
+        "shape_family": "TRIANGLE",
+        "expected_area": 16,
+        "geometric_root_family": "NON_RECTILINEAR"
+      },
+      "units": "unit",
+      "composite": {
+        "mode": "single",
+        "parts": [
+          "T"
+        ],
+        "subtract": []
+      },
+      "components": [
+        {
+          "id": "T",
+          "base": 8,
+          "meta": {
+            "construction": "TRIANGLE_GRID_HALF_CELLS",
+            "perpendicular_height": true
+          },
+          "type": "triangle",
+          "width": 4,
+          "height": 4,
+          "length": 8,
+          "grid_cols": 8,
+          "grid_rows": 4,
+          "construction": "TRIANGLE_GRID_HALF_CELLS",
+          "vertices_grid": [
+            [
+              4,
+              0
+            ],
+            [
+              4,
+              8
+            ],
+            [
+              0,
+              0
+            ]
+          ]
+        }
+      ],
+      "schema_version": "area_math_v1"
+    },
+    "visual_type": "triangle_on_unit_grid",
+    "not_to_scale": false,
+    "schema_version": "area_diagram_v1"
+  }
+}

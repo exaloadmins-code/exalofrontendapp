@@ -1,0 +1,22 @@
+{
+  "id": 52928,
+  "diagram_data": {
+    "labels": [
+      "1602",
+      "1803"
+    ],
+    "values": [
+      1602,
+      1803
+    ],
+    "max_value": 1803,
+    "operation": "integer_comparison",
+    "bar_lengths": [
+      89,
+      100
+    ],
+    "visual_type": "magnitude_bar",
+    "shared_scale": true,
+    "schema_version": "2.0"
+  }
+}

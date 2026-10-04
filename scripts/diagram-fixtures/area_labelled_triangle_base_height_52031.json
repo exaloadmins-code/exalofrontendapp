@@ -1,0 +1,103 @@
+{
+  "id": 52031,
+  "diagram_data": {
+    "grid": null,
+    "notes": [],
+    "units": "cm",
+    "cutouts": [],
+    "figures": [
+      {
+        "id": "T",
+        "kind": "triangle",
+        "math": {
+          "base": 12,
+          "width": 4,
+          "height": 4,
+          "length": 12
+        },
+        "labels": [
+          {
+            "role": "base",
+            "side": "bottom",
+            "value": 12,
+            "visible": true
+          },
+          {
+            "role": "height",
+            "side": "left",
+            "value": 4,
+            "visible": true
+          }
+        ],
+        "shaded": true,
+        "display": {
+          "points": [
+            {
+              "x": 40,
+              "y": 112
+            },
+            {
+              "x": 256,
+              "y": 112
+            },
+            {
+              "x": 40,
+              "y": 40
+            }
+          ],
+          "height_marker": {
+            "to": {
+              "x": 40,
+              "y": 112
+            },
+            "from": {
+              "x": 40,
+              "y": 40
+            },
+            "perpendicular_to_base": true
+          }
+        }
+      }
+    ],
+    "operation": "triangle_area",
+    "math_model": {
+      "ask": {
+        "of": "T",
+        "quantity": "area"
+      },
+      "meta": {
+        "construction": "TRIANGLE_BASE_HEIGHT_DIRECT",
+        "shape_family": "TRIANGLE",
+        "expected_area": 24,
+        "geometric_root_family": "NON_RECTILINEAR"
+      },
+      "units": "cm",
+      "composite": {
+        "mode": "single",
+        "parts": [
+          "T"
+        ],
+        "subtract": []
+      },
+      "components": [
+        {
+          "id": "T",
+          "base": 12,
+          "meta": {
+            "construction": "TRIANGLE_BASE_HEIGHT_DIRECT",
+            "perpendicular_height": true
+          },
+          "type": "triangle",
+          "width": 4,
+          "height": 4,
+          "length": 12,
+          "construction": "TRIANGLE_BASE_HEIGHT_DIRECT"
+        }
+      ],
+      "schema_version": "area_math_v1"
+    },
+    "visual_type": "labelled_triangle_base_height",
+    "not_to_scale": true,
+    "schema_version": "area_diagram_v1"
+  }
+}

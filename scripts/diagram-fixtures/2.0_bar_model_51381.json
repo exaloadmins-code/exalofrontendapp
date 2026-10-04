@@ -1,0 +1,21 @@
+{
+  "id": 51381,
+  "diagram_data": {
+    "result": {
+      "numerator": 15,
+      "denominator": 1
+    },
+    "operand_a": {
+      "numerator": 1,
+      "denominator": 4
+    },
+    "operation": "fraction_of_amount",
+    "visual_type": "bar_model",
+    "amount_total": 60,
+    "groups_total": 4,
+    "groups_shaded": 1,
+    "schema_version": "2.0",
+    "selected_count": 15,
+    "amount_per_group": 15
+  }
+}

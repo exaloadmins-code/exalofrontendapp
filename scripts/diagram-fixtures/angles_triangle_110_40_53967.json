@@ -1,0 +1,219 @@
+{
+  "id": 53967,
+  "stem": "In triangle ABC, two angles are 110\u00b0 and 40\u00b0. What is the size of the third angle?",
+  "diagram_data": {
+    "rays": [
+      {
+        "id": "AB",
+        "length": 307.2811431952658,
+        "origin": "A",
+        "angle_deg_display": 0.0
+      },
+      {
+        "id": "AC",
+        "length": 394.696808973318,
+        "origin": "A",
+        "angle_deg_display": 110.0
+      },
+      {
+        "id": "BA",
+        "length": 307.2811431952658,
+        "origin": "B",
+        "angle_deg_display": 180.0
+      },
+      {
+        "id": "BC",
+        "length": 576.4643256021645,
+        "origin": "B",
+        "angle_deg_display": 140.0
+      },
+      {
+        "id": "CA",
+        "length": 394.696808973318,
+        "origin": "C",
+        "angle_deg_display": 290.0
+      },
+      {
+        "id": "CB",
+        "length": 576.4643256021645,
+        "origin": "C",
+        "angle_deg_display": 320.0
+      }
+    ],
+    "topology": {
+      "polygons": [
+        {
+          "type": "triangle",
+          "angles": [
+            "a",
+            "b",
+            "x"
+          ]
+        }
+      ],
+      "point_groups": [],
+      "vertical_pairs": [],
+      "straight_groups": []
+    },
+    "vertices": [
+      {
+        "x": 274.1061646405285,
+        "y": 454.89367883997227,
+        "id": "A",
+        "pupil_label": "A",
+        "label_offset": [
+          10,
+          -12
+        ]
+      },
+      {
+        "x": 580.209985448073,
+        "y": 454.89367883997227,
+        "id": "B",
+        "pupil_label": "B",
+        "label_offset": [
+          10,
+          -12
+        ]
+      },
+      {
+        "x": 139.51457343707915,
+        "y": 85.10632116002779,
+        "id": "C",
+        "pupil_label": "C",
+        "label_offset": [
+          10,
+          -12
+        ]
+      }
+    ],
+    "visual_type": "angles_missing_angle_semantic_a7",
+    "not_to_scale": true,
+    "point_labels": [],
+    "angle_sectors": [
+      {
+        "id": "s_a",
+        "label": "110\u00b0",
+        "ray_to": "AC",
+        "vertex": "A",
+        "angle_id": "a",
+        "draw_arc": true,
+        "ray_from": "AB",
+        "arc_radius": 49.44754028429565,
+        "label_radius": 48.0,
+        "bounding_rays": [
+          "AB",
+          "AC"
+        ]
+      },
+      {
+        "id": "s_b",
+        "label": "40\u00b0",
+        "ray_to": "BC",
+        "vertex": "B",
+        "angle_id": "b",
+        "draw_arc": true,
+        "ray_from": "BA",
+        "arc_radius": 49.44754028429565,
+        "label_radius": 48.0,
+        "bounding_rays": [
+          "BA",
+          "BC"
+        ]
+      },
+      {
+        "id": "s_x",
+        "label": "x\u00b0",
+        "ray_to": "CB",
+        "vertex": "C",
+        "angle_id": "x",
+        "draw_arc": true,
+        "ray_from": "CA",
+        "arc_radius": 49.44754028429565,
+        "label_radius": 48.0,
+        "bounding_rays": [
+          "CA",
+          "CB"
+        ]
+      }
+    ],
+    "math_model_ref": "angles_math_v1",
+    "schema_version": "angles_diagram_v1",
+    "collision_flags": [],
+    "equal_side_marks": [],
+    "layout_transform": {
+      "pivot": [
+        0.0,
+        0.0
+      ],
+      "scale": 1.177322387721325,
+      "translate": [
+        52.71693497667229,
+        86.32850702953348
+      ],
+      "rotation_deg": 0.0
+    },
+    "polygons_display": [
+      {
+        "vertices": [
+          "A",
+          "B",
+          "C"
+        ]
+      }
+    ],
+    "ray_endpoint_labels": {},
+    "right_angle_markers": [],
+    "declared_implications": [],
+    "not_to_scale_required": true,
+    "required_point_labels": [
+      "A",
+      "B",
+      "C"
+    ],
+    "semantic_presentation": {
+      "family": "TRIANGLE_ANGLE_SUM",
+      "objects": [
+        {
+          "id": "T1",
+          "kind": "Triangle",
+          "vertices": [
+            "A",
+            "B",
+            "C"
+          ]
+        },
+        {
+          "id": "none",
+          "kind": "EqualSideMarker",
+          "present": false
+        }
+      ],
+      "schema_version": "angles_semantic_presentation_v1",
+      "template_version": "a7_v1",
+      "orientation_policy": "FREE",
+      "fallback_prohibited": true
+    },
+    "polygon_stroke_suppressed": true,
+    "require_stem_point_labels": true,
+    "owned_straight_line_strokes": [],
+    "visual_implications_detected": [],
+    "authoritative_sector_bindings": {
+      "a": {
+        "ray_to": "AC",
+        "vertex": "A",
+        "ray_from": "AB"
+      },
+      "b": {
+        "ray_to": "BC",
+        "vertex": "B",
+        "ray_from": "BA"
+      },
+      "x": {
+        "ray_to": "CB",
+        "vertex": "C",
+        "ray_from": "CA"
+      }
+    }
+  }
+}

@@ -27,3 +27,23 @@ export type {
   LoadTestQuestionsParams,
   LoadTestQuestionsResult,
 } from './loadTestQuestions';
+export {
+  letteredOptionsFromBackend,
+  optionTextForLetter,
+  letterForOptionText,
+  formatBackendOptionLabel,
+} from './optionAdapter';
+export {
+  toBackendQuestionNumber,
+  toFrontendQuestionIndex,
+} from './numbering';
+export {
+  startMathsTrainSession,
+  continueMathsTrainSession,
+} from './loadMathsTrainSession';
+export type {
+  MathsTrainSessionLoad,
+  MathsTrainContinueLoad,
+} from './loadMathsTrainSession';
+export { hydrateTrainResultFromApi } from './resultsHydrator';
+export { TrainAnswerWriteQueue } from './answerWriteQueue';

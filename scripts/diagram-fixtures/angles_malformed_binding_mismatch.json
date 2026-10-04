@@ -1,0 +1,40 @@
+{
+  "id": "malformed_angles_binding_mismatch",
+  "diagram_data": {
+    "schema_version": "angles_diagram_v1",
+    "visual_type": "angles_missing_angle_semantic_a7",
+    "vertices": [{ "id": "O", "x": 100, "y": 100, "pupil_label": "O", "label_offset": [8, -8] }],
+    "rays": [
+      { "id": "r0", "origin": "O", "angle_deg_display": 0, "length": 80 },
+      { "id": "r1", "origin": "O", "angle_deg_display": 90, "length": 80 },
+      { "id": "r2", "origin": "O", "angle_deg_display": 180, "length": 80 }
+    ],
+    "angle_sectors": [
+      {
+        "id": "s_a",
+        "angle_id": "a",
+        "label": "40°",
+        "vertex": "O",
+        "ray_from": "r0",
+        "ray_to": "r1",
+        "draw_arc": true,
+        "arc_radius": 30,
+        "label_radius": 36
+      }
+    ],
+    "authoritative_sector_bindings": {
+      "a": { "vertex": "O", "ray_from": "r0", "ray_to": "r2" }
+    },
+    "layout_transform": {
+      "pivot": [0, 0],
+      "scale": 1,
+      "translate": [0, 0],
+      "rotation_deg": 0
+    },
+    "owned_straight_line_strokes": [],
+    "polygons_display": [],
+    "right_angle_markers": [],
+    "equal_side_marks": [],
+    "required_point_labels": ["O"]
+  }
+}

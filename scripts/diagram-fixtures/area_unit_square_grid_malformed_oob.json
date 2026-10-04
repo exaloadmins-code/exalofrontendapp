@@ -1,0 +1,26 @@
+{
+  "id": "malformed_unit_grid_oob",
+  "diagram_data": {
+    "grid": {
+      "cols": 3,
+      "rows": 2,
+      "cell_px": 24,
+      "occupied_cells": [[0, 0], [9, 9]]
+    },
+    "notes": [],
+    "units": "unit",
+    "cutouts": [],
+    "figures": [],
+    "operation": "grid_area",
+    "math_model": {
+      "ask": { "of": "G1", "quantity": "area" },
+      "units": "unit",
+      "components": [{ "id": "G1", "cols": 3, "rows": 2, "type": "grid_region" }],
+      "schema_version": "area_math_v1"
+    },
+    "shaded_ask": null,
+    "visual_type": "unit_square_grid",
+    "not_to_scale": true,
+    "schema_version": "area_diagram_v1"
+  }
+}

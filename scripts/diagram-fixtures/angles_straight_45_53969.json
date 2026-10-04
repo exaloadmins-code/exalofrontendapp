@@ -1,0 +1,167 @@
+{
+  "id": 53969,
+  "stem": "The diagram shows two angles on a straight line. One angle is 45\u00b0. What is the size of angle x?",
+  "diagram_data": {
+    "rays": [
+      {
+        "id": "rL",
+        "length": 285.73622579318294,
+        "origin": "O",
+        "angle_deg_display": 195.0
+      },
+      {
+        "id": "rR",
+        "length": 285.73622579318294,
+        "origin": "O",
+        "angle_deg_display": 15.0
+      },
+      {
+        "id": "rM",
+        "length": 153.85796773479083,
+        "origin": "O",
+        "angle_deg_display": 60.0
+      }
+    ],
+    "topology": {
+      "polygons": [],
+      "point_groups": [],
+      "vertical_pairs": [],
+      "straight_groups": [
+        [
+          "a",
+          "x"
+        ]
+      ]
+    },
+    "vertices": [
+      {
+        "x": 360.0,
+        "y": 299.64546576099275,
+        "id": "O"
+      }
+    ],
+    "visual_type": "angles_missing_angle_semantic_a7",
+    "not_to_scale": true,
+    "point_labels": [],
+    "angle_sectors": [
+      {
+        "id": "s_a",
+        "label": "45\u00b0",
+        "ray_to": "rM",
+        "vertex": "O",
+        "angle_id": "a",
+        "draw_arc": true,
+        "ray_from": "rR",
+        "arc_radius": 46.157390320437244,
+        "label_radius": 48.0,
+        "bounding_rays": [
+          "rR",
+          "rM"
+        ]
+      },
+      {
+        "id": "s_x",
+        "label": "x\u00b0",
+        "ray_to": "rL",
+        "vertex": "O",
+        "angle_id": "x",
+        "draw_arc": true,
+        "ray_from": "rM",
+        "arc_radius": 46.157390320437244,
+        "label_radius": 48.0,
+        "bounding_rays": [
+          "rM",
+          "rL"
+        ]
+      }
+    ],
+    "math_model_ref": "angles_math_v1",
+    "schema_version": "angles_diagram_v1",
+    "collision_flags": [],
+    "equal_side_marks": [],
+    "layout_transform": {
+      "pivot": [
+        0.0,
+        0.0
+      ],
+      "scale": 1.0989854838199344,
+      "translate": [
+        0.0,
+        29.64546576099275
+      ],
+      "rotation_deg": 0.0
+    },
+    "polygons_display": [],
+    "ray_endpoint_labels": {},
+    "right_angle_markers": [],
+    "declared_implications": [],
+    "not_to_scale_required": true,
+    "semantic_presentation": {
+      "family": "STRAIGHT_LINE_SPLIT",
+      "objects": [
+        {
+          "id": "L1",
+          "kind": "StraightLine",
+          "ray_a": "rL",
+          "ray_b": "rR",
+          "vertex": "O",
+          "dominant": true
+        },
+        {
+          "id": "rM",
+          "kind": "Ray",
+          "role": "subordinate_splitter",
+          "vertex": "O"
+        },
+        {
+          "id": "O",
+          "kind": "Vertex"
+        },
+        {
+          "id": "a",
+          "kind": "AngleSector",
+          "rays": [
+            "rR",
+            "rM"
+          ]
+        },
+        {
+          "id": "x",
+          "kind": "AngleSector",
+          "rays": [
+            "rM",
+            "rL"
+          ]
+        }
+      ],
+      "schema_version": "angles_semantic_presentation_v1",
+      "template_version": "a7_v1",
+      "orientation_policy": "FAMILY_CONSTRAINED",
+      "fallback_prohibited": true
+    },
+    "polygon_stroke_suppressed": true,
+    "owned_straight_line_strokes": [
+      {
+        "id": "sl_rL_rR",
+        "ray_a": "rL",
+        "ray_b": "rR",
+        "reason": "REQUIRED_STRAIGHT_LINE",
+        "vertex": "O",
+        "relationship_id": "c1_opp"
+      }
+    ],
+    "visual_implications_detected": [],
+    "authoritative_sector_bindings": {
+      "a": {
+        "ray_to": "rM",
+        "vertex": "O",
+        "ray_from": "rR"
+      },
+      "x": {
+        "ray_to": "rL",
+        "vertex": "O",
+        "ray_from": "rM"
+      }
+    }
+  }
+}

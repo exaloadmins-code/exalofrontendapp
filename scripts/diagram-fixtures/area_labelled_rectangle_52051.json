@@ -1,0 +1,60 @@
+{
+  "id": 52051,
+  "diagram_data": {
+    "grid": null,
+    "notes": [],
+    "units": "cm",
+    "cutouts": [],
+    "figures": [
+      {
+        "id": "R",
+        "kind": "rectangle",
+        "math": {
+          "width": 2,
+          "length": 4
+        },
+        "labels": [
+          {
+            "side": "top",
+            "value": 4,
+            "visible": true
+          },
+          {
+            "side": "left",
+            "value": 2,
+            "visible": true
+          }
+        ],
+        "display": {
+          "h": 44,
+          "w": 88,
+          "x": 80,
+          "y": 60
+        }
+      }
+    ],
+    "operation": "rectangle_area",
+    "math_model": {
+      "ask": {
+        "of": "R",
+        "quantity": "area"
+      },
+      "units": "cm",
+      "components": [
+        {
+          "id": "R",
+          "type": "rectangle",
+          "width": 2,
+          "length": 4
+        }
+      ],
+      "schema_version": "area_math_v1"
+    },
+    "shaded_ask": null,
+    "visual_type": "labelled_rectangle",
+    "not_to_scale": true,
+    "schema_version": "area_diagram_v1",
+    "scale_consistency_required": false,
+    "do_not_reuse_fraction_shaded_rectangle": true
+  }
+}
