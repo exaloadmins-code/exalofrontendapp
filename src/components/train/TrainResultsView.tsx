@@ -1,7 +1,8 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { createElement, useCallback, useEffect, useMemo, useState } from 'react';
 import {
   BackHandler,
   Modal,
+  Platform,
   Pressable,
   ScrollView,
   StyleSheet,
@@ -32,6 +33,7 @@ import {
 } from '@/constants/trainResults';
 import {
   buildTrainReviewItems,
+  isTrainResultPerfect,
   summarizeTrainResult,
   type TrainResultSnapshot,
   type TrainResultSummary,
@@ -39,6 +41,24 @@ import {
   type TrainReviewStatus,
 } from '@/services/trainResults';
 import { fonts } from '@/theme';
+import { TrainQuestionDiagram } from '@/components/train/TrainQuestionDiagram';
+
+/** Scoped web id — hide Mission Review scrollbar without global CSS. */
+const MISSION_REVIEW_SCROLL_NATIVE_ID = 'exalo-mission-review-detail-scroll';
+
+/** Web-only: hide browser scrollbar on the Mission Review detail ScrollView. */
+function MissionReviewWebScrollbarHide() {
+  if (Platform.OS !== 'web') {
+    return null;
+  }
+  return createElement('style', {
+    // Unique key so React replaces rather than stacking duplicate rules.
+    key: MISSION_REVIEW_SCROLL_NATIVE_ID,
+    dangerouslySetInnerHTML: {
+      __html: `#${MISSION_REVIEW_SCROLL_NATIVE_ID}{-ms-overflow-style:none;scrollbar-width:none}#${MISSION_REVIEW_SCROLL_NATIVE_ID}::-webkit-scrollbar{display:none;width:0;height:0}`,
+    },
+  });
+}
 
 export type TrainResultsViewProps = {
   result: TrainResultSnapshot;
@@ -86,7 +106,9 @@ export function TrainResultsView({
   );
 
   const reviewCount = reviewEntries.length;
-  const isPerfect = reviewCount === 0;
+  /** Perfect only when wrong=0 AND unanswered=0 — not merely empty review. */
+  const isPerfect = isTrainResultPerfect(summary);
+  const showNoWrongReview = !isPerfect && reviewCount === 0;
   const wide = windowWidth >= 760;
   const landscape = windowWidth > windowHeight;
   const donutSize = wide
@@ -221,6 +243,8 @@ export function TrainResultsView({
 
           {isPerfect ? (
             <PerfectMissionState />
+          ) : showNoWrongReview ? (
+            <NoWrongReviewState />
           ) : (
             <View style={styles.reviewSection}>
               <View style={styles.missionReviewHeader}>
@@ -238,7 +262,7 @@ export function TrainResultsView({
                 <View
                   style={styles.reviewLegend}
                   accessibilityRole="text"
-                  accessibilityLabel={`${COPY.legendWrong}, ${COPY.legendUnanswered}`}
+                  accessibilityLabel={COPY.legendWrong}
                 >
                   <View style={styles.legendItem}>
                     <Text style={[styles.legendMark, styles.legendMarkWrong]}>
@@ -246,18 +270,6 @@ export function TrainResultsView({
                     </Text>
                     <Text style={[styles.legendText, styles.legendTextWrong]}>
                       {COPY.legendWrong}
-                    </Text>
-                  </View>
-                  <View style={styles.legendItem}>
-                    <Text
-                      style={[styles.legendMark, styles.legendMarkUnanswered]}
-                    >
-                      ?
-                    </Text>
-                    <Text
-                      style={[styles.legendText, styles.legendTextUnanswered]}
-                    >
-                      {COPY.legendUnanswered}
                     </Text>
                   </View>
                 </View>
@@ -330,7 +342,7 @@ export function TrainResultsView({
 }
 
 /**
- * Flat wrong+unanswered list in session order.
+ * Flat incorrect-answered list in session order (unanswered excluded).
  * Topic from questions[i].Subject (actual bank topic label).
  * Never joins by qid.
  */
@@ -703,6 +715,21 @@ function PerfectMissionState() {
   );
 }
 
+/** Wrong=0 with unanswered remaining — not a perfect mission. */
+function NoWrongReviewState() {
+  return (
+    <View
+      style={styles.noWrongCard}
+      accessibilityRole="text"
+      accessibilityLabel={`${COPY.noWrongReviewTitle}. ${COPY.noWrongReviewBody}`}
+    >
+      <Telescope size={18} color={R.cyanAccent} strokeWidth={2.25} />
+      <Text style={styles.noWrongTitle}>{COPY.noWrongReviewTitle}</Text>
+      <Text style={styles.noWrongBody}>{COPY.noWrongReviewBody}</Text>
+    </View>
+  );
+}
+
 function TopicCard({
   group,
   accent,
@@ -922,16 +949,30 @@ function QuestionDetailModal({
               {entry.topicLabel}
             </Text>
 
+            <MissionReviewWebScrollbarHide />
             <ScrollView
+              nativeID={MISSION_REVIEW_SCROLL_NATIVE_ID}
               style={styles.modalScroll}
               contentContainerStyle={styles.modalScrollContent}
-              showsVerticalScrollIndicator
+              showsVerticalScrollIndicator={false}
               keyboardShouldPersistTaps="handled"
             >
               <View style={styles.stemBox}>
                 <Text style={styles.stemLabel}>{COPY.questionLabel}</Text>
                 <Text style={styles.stem}>{entry.stem}</Text>
               </View>
+
+              {entry.diagram?.hasDiagram ? (
+                <View style={styles.reviewDiagramWrap}>
+                  <TrainQuestionDiagram
+                    hasDiagram={entry.diagram.hasDiagram}
+                    diagramType={entry.diagram.diagramType}
+                    diagramPrompt={entry.diagram.diagramPrompt}
+                    diagramData={entry.diagram.diagramData}
+                    width={Math.max(200, cardMaxWidth - 40)}
+                  />
+                </View>
+              ) : null}
 
               <View style={styles.answerBlock}>
                 <AnswerPanel
@@ -1366,6 +1407,32 @@ const styles = StyleSheet.create({
     color: R.scoreColor,
     textAlign: 'center',
   },
+  noWrongCard: {
+    borderRadius: 20,
+    borderWidth: 1,
+    borderColor: R.panelBorder,
+    backgroundColor: 'rgba(26, 23, 72, 0.55)',
+    paddingVertical: 28,
+    paddingHorizontal: 20,
+    alignItems: 'center',
+    gap: 8,
+    marginBottom: 28,
+  },
+  noWrongTitle: {
+    fontFamily: fonts.display,
+    fontSize: 18,
+    fontWeight: '700',
+    color: R.cyanAccent,
+    textAlign: 'center',
+  },
+  noWrongBody: {
+    fontFamily: fonts.display,
+    fontSize: 14,
+    fontWeight: '500',
+    color: R.scoreColor,
+    textAlign: 'center',
+    lineHeight: 20,
+  },
   reviewSection: {
     marginBottom: 28,
     gap: 12,
@@ -1532,6 +1599,12 @@ const styles = StyleSheet.create({
     paddingHorizontal: 14,
     gap: 6,
   },
+  reviewDiagramWrap: {
+    width: '100%',
+    alignItems: 'center',
+    marginTop: 4,
+    marginBottom: 4,
+  },
   stemLabel: {
     fontFamily: fonts.display,
     fontSize: 10,
@@ -1652,6 +1725,13 @@ const styles = StyleSheet.create({
   modalScroll: {
     flexGrow: 0,
     flexShrink: 1,
+    // RN Web: hide Firefox / modern Chromium scrollbars (WebKit via scoped <style>).
+    ...(Platform.OS === 'web'
+      ? ({
+          scrollbarWidth: 'none',
+          msOverflowStyle: 'none',
+        } as object)
+      : null),
   },
   modalScrollContent: {
     gap: 12,

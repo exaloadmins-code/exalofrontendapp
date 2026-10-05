@@ -196,7 +196,29 @@ export function summarizeTrainResult(
 export type TrainReviewStatus = 'incorrect' | 'unanswered';
 
 /**
- * Wrong + unanswered review rows only, keyed by session index.
+ * True only when every question was answered correctly.
+ * Empty Mission Review alone is NOT sufficient (unanswered may remain).
+ */
+export function isTrainResultPerfect(summary: TrainResultSummary): boolean {
+  return (
+    summary.total > 0 && summary.wrong === 0 && summary.unanswered === 0
+  );
+}
+
+/**
+ * Optional diagram payload for Mission Review (authoritative backend/local fields).
+ * Present only when the source question claims a diagram.
+ */
+export type TrainReviewDiagram = {
+  hasDiagram: boolean;
+  diagramType: string | null;
+  diagramPrompt: string | null;
+  diagramData: Record<string, unknown> | null;
+};
+
+/**
+ * Mission Review rows: answered AND incorrect only.
+ * Unanswered are excluded from review cards but remain in summary counts.
  * Never joins by qid alone (Train LOCAL_REPEAT_TO_FILL safety).
  */
 export type TrainReviewItem = {
@@ -207,7 +229,24 @@ export type TrainReviewItem = {
   yourAnswerLabel: string;
   correctAnswerLabel: string;
   explanation: string | null;
+  /** Present only for wrong questions that carry diagram fields. */
+  diagram?: TrainReviewDiagram;
 };
+
+/** Preserve authoritative diagram fields; do not invent geometry. */
+export function reviewDiagramFromQuestion(
+  question: TrainQuestionRow | undefined,
+): TrainReviewDiagram | undefined {
+  if (!question?.has_diagram) {
+    return undefined;
+  }
+  return {
+    hasDiagram: true,
+    diagramType: question.diagram_type ?? null,
+    diagramPrompt: question.diagram_prompt ?? null,
+    diagramData: question.diagram_data ?? null,
+  };
+}
 
 export function buildTrainReviewItems(
   result: TrainResultSnapshot,
@@ -215,21 +254,21 @@ export function buildTrainReviewItems(
   const items: TrainReviewItem[] = [];
   for (let i = 0; i < result.answers.length; i += 1) {
     const answer = result.answers[i];
-    if (answer.chosen != null && answer.isCorrect) {
+    // Review filter: answered + incorrect. Unanswered must not appear.
+    if (answer.chosen == null || answer.isCorrect) {
       continue;
     }
     const question = result.questions[i];
-    const unanswered = answer.chosen == null;
+    const diagram = reviewDiagramFromQuestion(question);
     items.push({
       sessionIndex: i,
       questionNumber: i + 1,
-      status: unanswered ? 'unanswered' : 'incorrect',
+      status: 'incorrect',
       stem: question?.Question_Text?.trim() || 'Question text unavailable.',
-      yourAnswerLabel: unanswered
-        ? ''
-        : formatTrainOptionLabel(question, answer.chosen),
+      yourAnswerLabel: formatTrainOptionLabel(question, answer.chosen),
       correctAnswerLabel: formatTrainOptionLabel(question, answer.correct),
       explanation: getTrainExplanation(question),
+      ...(diagram ? { diagram } : {}),
     });
   }
   return items;

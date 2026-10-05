@@ -15,6 +15,7 @@ import {
   normalizeJourneySubject,
   type JourneySubject,
 } from '@/constants/journey';
+import { Routes } from '@/constants/routes';
 import { trainTopicsFor } from '@/constants/train';
 import {
   loadFocusQuestions,
@@ -33,8 +34,8 @@ type FocusPhase = 'setup' | 'play' | 'results';
  * Intentional Exalo departure from Lovable default-all / multi-difficulty Focus.
  *
  * M9A: in-memory Focus elapsed timer via `sessionStartedAtMs` (count-up).
- * No AsyncStorage / resumability. Session state remains in-memory only;
- * Home on results returns to Focus setup.
+ * No AsyncStorage / resumability. Session state remains in-memory only.
+ * Results: Home → Exalo Home; Try Again → Focus setup for this subject.
  */
 export default function FocusScreen() {
   const router = useRouter();
@@ -131,10 +132,13 @@ export default function FocusScreen() {
   };
 
   const onTryAgain = () => {
-    setAnswers([]);
-    setSessionStartedAtMs(Date.now());
-    setSessionKey((k) => k + 1);
-    setPhase('play');
+    // Navigation-equivalent: return to Focus setup for this subject (same route).
+    // Do not auto-restart gameplay or replay the previous set.
+    returnToSetup();
+  };
+
+  const onHome = () => {
+    router.replace(Routes.Home as Href);
   };
 
   const quizTitle = `Focus Mode · ${subjectTypeLabel}`;
@@ -185,7 +189,7 @@ export default function FocusScreen() {
       <TrainResultsView
         result={resultsSnapshot}
         onTryAgain={onTryAgain}
-        onHome={returnToSetup}
+        onHome={onHome}
       />
     );
   }

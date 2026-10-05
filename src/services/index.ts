@@ -52,11 +52,14 @@ export {
   consumeArmedTrainRetry,
   trainResultPercent,
   summarizeTrainResult,
+  isTrainResultPerfect,
+  reviewDiagramFromQuestion,
   buildTrainReviewItems,
 } from './trainResults';
 export type {
   TrainResultSnapshot,
   TrainResultSummary,
   TrainReviewItem,
+  TrainReviewDiagram,
   TrainReviewStatus,
 } from './trainResults';

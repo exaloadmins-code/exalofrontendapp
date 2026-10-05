@@ -59,6 +59,13 @@ export const TRAIN_RESULTS_COPY = {
   encourageLow: 'Keep going!',
   perfectTitle: 'Perfect mission!',
   perfectBody: 'Nothing to review — fantastic work!',
+  /**
+   * Wrong = 0 but unanswered remain — Mission Review has no cards,
+   * but this is NOT a perfect result.
+   */
+  noWrongReviewTitle: 'Nothing incorrect to review',
+  noWrongReviewBody:
+    'Unanswered questions still count in your score — see the summary above.',
   nextMissionHeading: 'Ready for another mission?',
   tryAgain: 'Try again',
   home: 'Home',

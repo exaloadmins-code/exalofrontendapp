@@ -18,6 +18,16 @@ export const TEST_DURATION_MINUTES = 5;
 export const TEST_DURATION_SECONDS = TEST_DURATION_MINUTES * 60;
 export const TEST_DURATION_MS = TEST_DURATION_SECONDS * 1000;
 
+/**
+ * Product-spec instruction copy / display values for the Test Instructions screen.
+ * Runtime Test configuration (paper size, timer) will be updated in a separate milestone.
+ * Do NOT wire Start Test / gameplay to these numbers yet.
+ */
+export const TEST_INSTRUCTIONS_DISPLAY = {
+  questionCount: 45,
+  durationMinutes: 45,
+} as const;
+
 export const TEST_COPY = {
   loading: (subjectType: string) => `Building your ${subjectType} mock paper…`,
   errorTitle: "Couldn't load test",
@@ -28,7 +38,27 @@ export const TEST_COPY = {
   goBack: 'Go back',
   title: (subjectType: string) => `Test Mode · ${subjectType}`,
   subtitle: (loaded: number, expected: number) =>
-    `Balanced mock paper — ${loaded} of ${expected} questions across all 10 topics`,
+    `Balanced mock paper — ${loaded} of ${expected} questions across all topics`,
+  /** Pre-test instructions (shown before Start Test). */
+  instructionsEyebrow: 'Test mode',
+  instructionsHeading: 'Before you launch',
+  instructionsIntro: (subjectType: string) =>
+    `Ready for your ${subjectType} mock test?`,
+  startTest: 'Start Test',
+  startingTest: 'Starting…',
+  statQuestionsLabel: 'Questions',
+  statMinutesLabel: 'Minutes',
+  /**
+   * Behavioral bullets only — match current Test gameplay.
+   * Question count / duration are shown separately via TEST_INSTRUCTIONS_DISPLAY.
+   */
+  instructionBullets: [
+    'Choose one answer for each question.',
+    'You can move back and forward between questions.',
+    'Unanswered questions score 0.',
+    "When time runs out, your test ends automatically and you'll see your results.",
+    'You can finish early from the final question.',
+  ] as const,
 } as const;
 
 export const TEST = {

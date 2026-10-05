@@ -2,9 +2,11 @@ import { Href, useLocalSearchParams, useRouter } from 'expo-router';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { ActivityIndicator, Pressable, StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { TestInstructionsView } from '@/components/test';
 import { TrainQuizPlayer } from '@/components/train/TrainQuizPlayer';
 import { TrainResultsView } from '@/components/train/TrainResultsView';
 import { normalizeJourneySubject, type JourneySubject } from '@/constants/journey';
+import { Routes } from '@/constants/routes';
 import {
   TEST,
   TEST_COPY as COPY,
@@ -19,15 +21,18 @@ import {
 import type { TrainResultSnapshot } from '@/services/trainResults';
 import { fonts } from '@/theme';
 
-type TestPhase = 'loading' | 'play' | 'results' | 'error';
+type TestPhase = 'instructions' | 'loading' | 'play' | 'results' | 'error';
 
 /**
  * M7 Test — Lovable `TestMode` + shared `QuizPlayer` parity, plus an intentional
  * Exalo production countdown timer (Lovable has no Test timer).
  *
- * Temporary duration: TEST_DURATION_MINUTES (currently 5). Planned later: 20.
- * Deadline-based session timer; hard expiry → Results with unanswered = 0 score.
- * Back / Results Home → Journey. Try again → same paper + fresh countdown.
+ * Lifecycle:
+ *   instructions → (Start Test) → loading → play → results
+ *
+ * Route entry / refresh lands on instructions. The timer and paper load only
+ * after explicit Start Test. Try Again returns to instructions (same subject).
+ * Home → Exalo Home (`/home`).
  */
 export default function TestScreen() {
   const router = useRouter();
@@ -38,15 +43,23 @@ export default function TestScreen() {
   const subjectTypeLabel =
     subject === 'english' ? 'English' : subject === 'maths' ? 'Maths' : '';
 
-  const [phase, setPhase] = useState<TestPhase>('loading');
+  const [phase, setPhase] = useState<TestPhase>(() =>
+    subject ? 'instructions' : 'error',
+  );
   const [questions, setQuestions] = useState<TrainQuestionRow[]>([]);
   const [expectedTotal, setExpectedTotal] = useState(0);
   const [answers, setAnswers] = useState<TrainAnswerRecord[]>([]);
   const [sessionKey, setSessionKey] = useState(0);
   const [sessionEndsAtMs, setSessionEndsAtMs] = useState<number | null>(null);
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(() =>
+    subject ? null : COPY.missingSubjectBody,
+  );
 
   const finalizedRef = useRef(false);
+  /** Prevents double Start Test from overlapping paper loads. */
+  const startingRef = useRef(false);
+  /** Invalidates in-flight Start loads when returning to instructions. */
+  const startGenerationRef = useRef(0);
 
   const exitToJourney = () => {
     if (subject) {
@@ -58,13 +71,33 @@ export default function TestScreen() {
     }
   };
 
-  const beginTimedSession = useCallback(() => {
+  const resetToInstructions = useCallback(() => {
+    startGenerationRef.current += 1;
+    startingRef.current = false;
     finalizedRef.current = false;
+    setQuestions([]);
+    setExpectedTotal(0);
     setAnswers([]);
-    setSessionEndsAtMs(Date.now() + TEST_DURATION_MS);
-    setSessionKey((k) => k + 1);
-    setPhase('play');
+    setSessionEndsAtMs(null);
+    setError(null);
+    setPhase('instructions');
   }, []);
+
+  /** Route entry / subject change → instructions only (no paper, no timer). */
+  useEffect(() => {
+    if (!subject) {
+      startGenerationRef.current += 1;
+      startingRef.current = false;
+      finalizedRef.current = false;
+      setPhase('error');
+      setError(COPY.missingSubjectBody);
+      setQuestions([]);
+      setAnswers([]);
+      setSessionEndsAtMs(null);
+      return;
+    }
+    resetToInstructions();
+  }, [subject, resetToInstructions]);
 
   const finalizeAttempt = useCallback(
     (submitted: TrainAnswerRecord[]) => {
@@ -76,45 +109,45 @@ export default function TestScreen() {
     [questions],
   );
 
-  useEffect(() => {
-    let cancelled = false;
-
-    if (!subject) {
-      setPhase('error');
-      setError(COPY.missingSubjectBody);
+  const startTest = () => {
+    if (!subject || startingRef.current) {
       return;
     }
-
+    startingRef.current = true;
+    const generation = startGenerationRef.current + 1;
+    startGenerationRef.current = generation;
+    finalizedRef.current = false;
     setPhase('loading');
     setError(null);
     setAnswers([]);
     setSessionEndsAtMs(null);
-    finalizedRef.current = false;
 
     loadTestQuestions({ subject })
       .then((result) => {
-        if (cancelled) return;
+        if (generation !== startGenerationRef.current) {
+          return;
+        }
         setQuestions(result.questions);
         setExpectedTotal(result.expectedTotal);
-        // Start the clock only after the paper is ready (not during loading).
         finalizedRef.current = false;
         setAnswers([]);
         setSessionEndsAtMs(Date.now() + TEST_DURATION_MS);
         setSessionKey((k) => k + 1);
         setPhase('play');
+        startingRef.current = false;
       })
       .catch((err: unknown) => {
-        if (cancelled) return;
+        if (generation !== startGenerationRef.current) {
+          return;
+        }
+        startingRef.current = false;
         const message =
           err instanceof Error ? err.message : 'Failed to load test.';
         setError(message);
+        setSessionEndsAtMs(null);
         setPhase('error');
       });
-
-    return () => {
-      cancelled = true;
-    };
-  }, [subject]);
+  };
 
   const onSeeResults = (runAnswers: TrainAnswerRecord[]) => {
     finalizeAttempt(runAnswers);
@@ -125,7 +158,16 @@ export default function TestScreen() {
   };
 
   const onTryAgain = () => {
-    beginTimedSession();
+    // Same subject → Instructions. Do NOT load a paper or start the timer.
+    if (!subject) {
+      router.replace(Routes.Home as Href);
+      return;
+    }
+    resetToInstructions();
+  };
+
+  const onHome = () => {
+    router.replace(Routes.Home as Href);
   };
 
   const quizTitle = COPY.title(subjectTypeLabel || 'Subject');
@@ -167,13 +209,33 @@ export default function TestScreen() {
           <Pressable
             accessibilityRole="button"
             accessibilityLabel={COPY.back}
-            onPress={exitToJourney}
+            onPress={
+              subject
+                ? () => {
+                    resetToInstructions();
+                  }
+                : exitToJourney
+            }
             style={styles.cta}
           >
-            <Text style={styles.ctaLabel}>{COPY.back}</Text>
+            <Text style={styles.ctaLabel}>
+              {subject ? COPY.goBack : COPY.back}
+            </Text>
           </Pressable>
         </View>
       </View>
+    );
+  }
+
+  if (phase === 'instructions') {
+    return (
+      <TestInstructionsView
+        subject={subject}
+        subjectLabel={subjectTypeLabel}
+        starting={false}
+        onBack={exitToJourney}
+        onStart={startTest}
+      />
     );
   }
 
@@ -198,7 +260,7 @@ export default function TestScreen() {
       <TrainResultsView
         result={resultsSnapshot}
         onTryAgain={onTryAgain}
-        onHome={exitToJourney}
+        onHome={onHome}
       />
     );
   }
