@@ -12,10 +12,64 @@ import type { PercentRect } from '@/artboard';
 import { trainTopicHotspotPercent } from '@/artboard';
 import { TRAIN_ARTBOARD } from '@/responsive';
 
-export const FOCUS_QUESTIONS_PER_RUN = 20;
+/**
+ * Focus question-count bounds (frontend). Backend accepts any StrictInt >= 1;
+ * the learner must explicitly choose a value in this range — NO default.
+ */
+export const FOCUS_MIN_QUESTION_COUNT = 5;
+export const FOCUS_MAX_QUESTION_COUNT = 50;
 
 export const FOCUS_DIFFICULTIES = ['Easy', 'Medium', 'Hard'] as const;
 export type FocusDifficulty = (typeof FOCUS_DIFFICULTIES)[number];
+
+export const FOCUS_QUESTION_COUNT_COPY = {
+  title: 'How many questions?',
+  subtitle: "Choose how many questions you'd like to focus on.",
+  inputLabel: 'Number of questions',
+  inputPlaceholder: 'e.g. 15',
+  helper: `Enter a number from ${FOCUS_MIN_QUESTION_COUNT} to ${FOCUS_MAX_QUESTION_COUNT}.`,
+  tooLow: `Pick at least ${FOCUS_MIN_QUESTION_COUNT} questions.`,
+  tooHigh: `Pick at most ${FOCUS_MAX_QUESTION_COUNT} questions.`,
+  invalid: 'Enter a whole number.',
+} as const;
+
+/** True when `n` is a usable Focus session size (5–50 inclusive). */
+export function isValidFocusQuestionCount(n: number): boolean {
+  return (
+    Number.isInteger(n) &&
+    n >= FOCUS_MIN_QUESTION_COUNT &&
+    n <= FOCUS_MAX_QUESTION_COUNT
+  );
+}
+
+/**
+ * Parse free-text Focus question-count input.
+ * Rejects empty, decimals, signs — never silently clamps.
+ */
+export function parseFocusQuestionCountInput(
+  raw: string,
+):
+  | { ok: true; value: number }
+  | { ok: false; reason: 'empty' | 'invalid' | 'tooLow' | 'tooHigh' } {
+  const trimmed = raw.trim();
+  if (trimmed.length === 0) {
+    return { ok: false, reason: 'empty' };
+  }
+  if (!/^\d+$/.test(trimmed)) {
+    return { ok: false, reason: 'invalid' };
+  }
+  const value = Number(trimmed);
+  if (!Number.isSafeInteger(value)) {
+    return { ok: false, reason: 'invalid' };
+  }
+  if (value < FOCUS_MIN_QUESTION_COUNT) {
+    return { ok: false, reason: 'tooLow' };
+  }
+  if (value > FOCUS_MAX_QUESTION_COUNT) {
+    return { ok: false, reason: 'tooHigh' };
+  }
+  return { ok: true, value };
+}
 
 /**
  * Checkbox sits in the clean upper-left of each Focus topic card
@@ -112,6 +166,14 @@ export const FOCUS_COPY = {
   missingSubjectBody:
     'Choose Maths or English Focus from Journey to continue.',
   goBack: 'Go back',
+  /** Learner-facing generic Focus START failure (no URL/env/Http/ApiError detail). */
+  startErrorTitle: "Couldn't load questions",
+  startErrorBody:
+    "We couldn't load your Focus questions. Check your connection and try again.",
+  /** Learner-facing Focus completion / finalize network-API failure (no URL/env). */
+  finishErrorTitle: "Couldn't finish Focus",
+  finishErrorBody:
+    "We couldn't finish your Focus session. Check your connection and try again.",
 } as const;
 
 export const FOCUS = {

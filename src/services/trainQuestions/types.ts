@@ -38,6 +38,8 @@ export type TrainQuestionRow = {
   diagram_type?: string | null;
   diagram_prompt?: string | null;
   diagram_data?: Record<string, unknown> | null;
+  /** Cumulative active seconds from Focus/API Results when present. */
+  time_spent_seconds?: number | null;
 };
 
 export type TrainAnswerRecord = {

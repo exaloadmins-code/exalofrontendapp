@@ -21,6 +21,9 @@ import {
   trainTopicHotspotPercent,
 } from '@/artboard';
 import { FocusAssets } from '@/constants/assets';
+import { FocusApiErrorModal } from '@/components/focus/FocusApiErrorModal';
+import type { FocusApiErrorPrompt } from '@/components/focus/FocusApiErrorModal';
+import { FocusQuestionCountModal } from '@/components/focus/FocusQuestionCountControl';
 import {
   FOCUS,
   FOCUS_COPY,
@@ -52,12 +55,20 @@ export type FocusSetupViewProps = {
   topics: readonly TrainTopic[];
   selectedTopics: string[];
   selectedDifficulty: FocusDifficulty | null;
+  /** Bumps when returning to setup so the count modal reopens empty. */
+  setupResetKey: number;
   loading: boolean;
-  error: string | null;
+  /** Train-style API error prompt (null when none). */
+  apiError: FocusApiErrorPrompt | null;
+  onDismissApiError: () => void;
   onBack: () => void;
   onToggleTopic: (label: string) => void;
   onSelectDifficulty: (d: FocusDifficulty) => void;
-  onStart: () => void;
+  /**
+   * Called only after the start-time count prompt confirms a valid 5–50 count.
+   * Main Start Focus opens the prompt; it does not start the session itself.
+   */
+  onStart: (questionCount: number) => void;
 };
 
 type SurfaceBox = { width: number; height: number };
@@ -77,9 +88,11 @@ function toTrainDiff(d: FocusDifficulty): TrainDifficulty {
  * - topic checkboxes + full-card multi-select Pressables
  * - live profile chip
  * - START FOCUS CTA (centered in verified clean band)
- * - optional error
+ * - start-time question-count modal (not on the setup artboard)
+ * - Train-style API error modal (insufficient pool / network / etc.)
  *
  * No Train artboard. No promo/title/badge repair masks.
+ * No on-screen question-count chip/stepper.
  */
 export function FocusSetupView({
   subject,
@@ -87,8 +100,10 @@ export function FocusSetupView({
   topics,
   selectedTopics,
   selectedDifficulty,
+  setupResetKey,
   loading,
-  error,
+  apiError,
+  onDismissApiError,
   onBack,
   onToggleTopic,
   onSelectDifficulty,
@@ -98,6 +113,8 @@ export function FocusSetupView({
   const { profile } = useAppContext();
   const { width: windowWidth, height: windowHeight } = useWindowDimensions();
   const [surface, setSurface] = useState<SurfaceBox | null>(null);
+  const [countModalVisible, setCountModalVisible] = useState(false);
+  const [countModalKey, setCountModalKey] = useState(0);
 
   const name = profile.displayName?.trim() || 'Explorer';
   const avatarSource = resolveAvatarSource(profile.avatarId);
@@ -202,10 +219,19 @@ export function FocusSetupView({
   const artboardSource =
     subject === 'english' ? FocusAssets.english : FocusAssets.maths;
 
-  const canStart =
-    selectedTopics.length >= 2 &&
-    selectedDifficulty != null &&
-    !loading;
+  /** Topics + difficulty only — count is collected in the start-time prompt. */
+  const canOpenCountPrompt =
+    selectedTopics.length >= 2 && selectedDifficulty != null && !loading;
+
+  const bandSubject = subject === 'english' ? 'english' : 'maths';
+
+  const openCountPrompt = () => {
+    if (!canOpenCountPrompt) {
+      return;
+    }
+    setCountModalKey((k) => k + 1);
+    setCountModalVisible(true);
+  };
 
   return (
     <View
@@ -324,9 +350,7 @@ export function FocusSetupView({
                 {(() => {
                   const ctaBox = percentRectToLayout(
                     board,
-                    focusStartCtaPercent(
-                      subject === 'english' ? 'english' : 'maths',
-                    ),
+                    focusStartCtaPercent(bandSubject),
                   );
                   const labelSize = Math.max(14, Math.min(22, ctaBox.height * 0.42));
                   return (
@@ -334,9 +358,9 @@ export function FocusSetupView({
                       testID="focus-start-cta"
                       accessibilityRole="button"
                       accessibilityLabel={FOCUS_COPY.start}
-                      accessibilityState={{ disabled: !canStart }}
-                      disabled={!canStart}
-                      onPress={onStart}
+                      accessibilityState={{ disabled: !canOpenCountPrompt }}
+                      disabled={!canOpenCountPrompt}
+                      onPress={openCountPrompt}
                       style={({ pressed }) => [
                         styles.startCta,
                         {
@@ -345,13 +369,17 @@ export function FocusSetupView({
                           width: ctaBox.width,
                           height: ctaBox.height,
                           borderRadius: Math.max(14, ctaBox.height * 0.42),
-                          backgroundColor: canStart
+                          backgroundColor: canOpenCountPrompt
                             ? FOCUS.ctaFrom
                             : 'rgba(109, 40, 217, 0.28)',
-                          borderColor: canStart
+                          borderColor: canOpenCountPrompt
                             ? FOCUS.ctaBorder
                             : 'rgba(167, 139, 250, 0.28)',
-                          opacity: !canStart ? 0.55 : pressed ? 0.88 : 1,
+                          opacity: !canOpenCountPrompt
+                            ? 0.55
+                            : pressed
+                              ? 0.88
+                              : 1,
                         },
                       ]}
                     >
@@ -360,7 +388,7 @@ export function FocusSetupView({
                           styles.startCtaLabel,
                           {
                             fontSize: labelSize,
-                            color: canStart
+                            color: canOpenCountPrompt
                               ? '#FFFFFF'
                               : 'rgba(245, 243, 255, 0.55)',
                           },
@@ -374,6 +402,17 @@ export function FocusSetupView({
               </>
             )}
           </ResponsiveArtboard>
+
+          <FocusQuestionCountModal
+            visible={countModalVisible}
+            resetKey={setupResetKey + countModalKey}
+            starting={loading}
+            onCancel={() => setCountModalVisible(false)}
+            onConfirm={(count) => {
+              setCountModalVisible(false);
+              onStart(count);
+            }}
+          />
 
           <Text
             pointerEvents="none"
@@ -476,21 +515,10 @@ export function FocusSetupView({
             </Pressable>
           ) : null}
 
-          {error ? (
-            <View
-              pointerEvents="none"
-              style={[
-                styles.errorBox,
-                {
-                  left: artboard.x + artboard.width * 0.1,
-                  top: artboard.y + artboard.height * 0.66,
-                  width: artboard.width * 0.8,
-                },
-              ]}
-            >
-              <Text style={styles.errorText}>{error}</Text>
-            </View>
-          ) : null}
+          <FocusApiErrorModal
+            error={apiError}
+            onDismiss={onDismissApiError}
+          />
         </>
       ) : null}
     </View>
@@ -573,21 +601,5 @@ const styles = StyleSheet.create({
   },
   chevron: {
     fontFamily: fonts.display,
-  },
-  errorBox: {
-    position: 'absolute',
-    zIndex: 5,
-    borderRadius: 12,
-    backgroundColor: FOCUS.errorBg,
-    borderWidth: 1,
-    borderColor: FOCUS.errorBorder,
-    padding: 10,
-  },
-  errorText: {
-    fontFamily: fonts.display,
-    fontSize: 13,
-    fontWeight: '500',
-    color: FOCUS.errorText,
-    textAlign: 'center',
   },
 });

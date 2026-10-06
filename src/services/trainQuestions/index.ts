@@ -45,5 +45,10 @@ export type {
   MathsTrainSessionLoad,
   MathsTrainContinueLoad,
 } from './loadMathsTrainSession';
+export { startMathsFocusSession } from './loadMathsFocusSession';
+export type { MathsFocusSessionLoad } from './loadMathsFocusSession';
 export { hydrateTrainResultFromApi } from './resultsHydrator';
 export { TrainAnswerWriteQueue } from './answerWriteQueue';
+export type { AnswerWritePayload, AnswerWriter } from './answerWriteQueue';
+export { FocusQuestionTiming } from './questionTiming';
+export type { FocusQuestionTimeEntry } from './questionTiming';

@@ -1,9 +1,8 @@
 /**
- * Focus question loader seam (M6).
+ * English Focus LOCAL question loader (B2.3).
  *
- * UI must call this function — never import `questionBank` directly.
- * LOCAL / TEMPORARY only (question generation shared with Train bank).
- * Future backend integration replaces this module's body without redesigning Focus UI.
+ * Maths Focus must NOT call this — use startMathsFocusSession (API) instead.
+ * UI must call this function for English — never import `questionBank` directly.
  *
  * No network. No session IDs. No Focus API endpoints.
  *
@@ -12,11 +11,11 @@
  * - Empty / omitted difficulties → no questions (never expand to Easy+Medium+Hard).
  *
  * Invariant: every returned question's Difficulty is in the selected set.
- * The ≤20 limit is a maximum — never widen difficulties to pad the set.
+ * `limit` is required (learner-selected 5–50) — never pad by widening difficulties.
  */
 
 import type { JourneySubject } from '@/constants/journey';
-import { FOCUS_QUESTIONS_PER_RUN } from '@/constants/focus';
+import { isValidFocusQuestionCount } from '@/constants/focus';
 import { trainTopicsFor } from '@/constants/train';
 import { generateQuestions, shuffleRows } from './questionBank';
 import type {
@@ -34,8 +33,10 @@ export type LoadFocusQuestionsParams = {
    * Empty array or omitted → no questions (no all-difficulty fallback).
    */
   difficulties?: TrainBankDifficulty[];
-  /** Defaults to Lovable Focus parity (20). */
-  limit?: number;
+  /**
+   * Explicit learner-selected count (5–50). Required — no default.
+   */
+  limit: number;
 };
 
 export type LoadFocusQuestionsResult = {
@@ -89,12 +90,18 @@ function resolveSelectedDifficulties(
 export async function loadFocusQuestions(
   params: LoadFocusQuestionsParams,
 ): Promise<LoadFocusQuestionsResult> {
-  const {
-    subject,
-    topicLabels,
-    difficulties,
-    limit = FOCUS_QUESTIONS_PER_RUN,
-  } = params;
+  const { subject, topicLabels, difficulties, limit } = params;
+
+  if (subject === 'maths') {
+    throw new Error(
+      'loadFocusQuestions is English-local only. Use startMathsFocusSession for Maths Focus.',
+    );
+  }
+  if (!isValidFocusQuestionCount(limit)) {
+    throw new Error(
+      'Focus question count must be an integer from 5 to 50 inclusive.',
+    );
+  }
 
   const subjectType = toSubjectType(subject);
   const known = new Set(trainTopicsFor(subject).map((t) => t.label));

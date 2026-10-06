@@ -94,6 +94,20 @@ export type TrainQuizPlayerProps = {
    * preselected final denominator. Default false preserves Focus/Test/English.
    */
   absoluteQuestionLabel?: boolean;
+  /**
+   * Fired when the visible question index changes (mount, Back, Next, jump).
+   * `fromIndex` is null on the initial visible question.
+   */
+  onVisibleQuestionChange?: (
+    fromIndex: number | null,
+    toIndex: number,
+  ) => void;
+  /**
+   * When set, finalize/completion failures are delegated to the parent
+   * (e.g. FocusApiErrorModal) instead of rendering the raw error inline.
+   * Train omits this and keeps the existing inline finalizeError UI.
+   */
+  onFinalizeError?: (err: unknown) => void;
 };
 
 /**
@@ -148,6 +162,8 @@ export function TrainQuizPlayer({
   deferCorrectness = false,
   onAnswerChange,
   onBeforeSeeResults,
+  onVisibleQuestionChange,
+  onFinalizeError,
   continuousTrain = false,
   hasMore = false,
   onPageContinue,
@@ -191,6 +207,11 @@ export function TrainQuizPlayer({
   onBeforeSeeResultsRef.current = onBeforeSeeResults;
   const onAnswerChangeRef = useRef(onAnswerChange);
   onAnswerChangeRef.current = onAnswerChange;
+  const onVisibleQuestionChangeRef = useRef(onVisibleQuestionChange);
+  onVisibleQuestionChangeRef.current = onVisibleQuestionChange;
+  const onFinalizeErrorRef = useRef(onFinalizeError);
+  onFinalizeErrorRef.current = onFinalizeError;
+  const prevVisibleIdxRef = useRef<number | null>(null);
   const onPageContinueRef = useRef(onPageContinue);
   onPageContinueRef.current = onPageContinue;
   const [finalizing, setFinalizing] = useState(false);
@@ -240,10 +261,15 @@ export function TrainQuizPlayer({
       .catch((err: unknown) => {
         finalizedRef.current = false;
         setFinalizing(false);
+        // Focus (and similar): parent owns learner-facing error presentation.
+        // Do not render raw ApiError / URL / env text inline in the card.
+        if (onFinalizeErrorRef.current) {
+          setFinalizeError(null);
+          onFinalizeErrorRef.current(err);
+          return;
+        }
         const message =
           err instanceof Error ? err.message : 'Failed to finish Train session.';
-        // Surface via empty-state style by reusing onExit path is awkward;
-        // throw to Error boundary alternative: store local error below.
         setFinalizeError(message);
       });
   };
@@ -265,6 +291,16 @@ export function TrainQuizPlayer({
     });
     return () => sub.remove();
   }, [questions.length, endFocusConfirmVisible]);
+
+  useEffect(() => {
+    if (!questions.length) {
+      prevVisibleIdxRef.current = null;
+      return;
+    }
+    const from = prevVisibleIdxRef.current;
+    prevVisibleIdxRef.current = idx;
+    onVisibleQuestionChangeRef.current?.(from, idx);
+  }, [idx, questions.length]);
 
   useEffect(() => {
     if (sessionEndsAtMs == null) {

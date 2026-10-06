@@ -1,9 +1,12 @@
 /**
  * Hydrate existing TrainResultSnapshot fields from backend GET /results.
+ * Works for Maths Train (`/train/sessions/.../results`) and Focus
+ * (`/sessions/.../results`) — overlapping count + question fields.
  */
 
 import type { JourneySubject } from '@/constants/journey';
 import type { TrainDifficulty } from '@/constants/train';
+import type { FocusResultsResponse } from '@/services/api/focusApi';
 import type { TrainResultsResponse } from '@/services/api/trainApi';
 import { backendResultQuestionToRow } from '@/services/trainQuestions/backendAdapter';
 import { letterForOptionText } from '@/services/trainQuestions/optionAdapter';
@@ -14,8 +17,10 @@ import type {
   TrainQuestionRow,
 } from '@/services/trainQuestions/types';
 
+type ApiResultsLike = TrainResultsResponse | FocusResultsResponse;
+
 export function hydrateTrainResultFromApi(params: {
-  results: TrainResultsResponse;
+  results: ApiResultsLike;
   subject: JourneySubject;
   topicSlug: string;
   topicLabel: string;
@@ -26,6 +31,10 @@ export function hydrateTrainResultFromApi(params: {
   answers: TrainAnswerRecord[];
   totalQuestions: number;
   totalCorrect: number;
+  wrongCount: number;
+  unansweredCount: number;
+  answeredCount: number;
+  scorePercent: number;
   sessionId: number;
 } {
   const { results } = params;
@@ -57,6 +66,10 @@ export function hydrateTrainResultFromApi(params: {
     answers,
     totalQuestions: results.total_questions,
     totalCorrect: results.correct_count,
+    wrongCount: results.wrong_count,
+    unansweredCount: results.unanswered_count,
+    answeredCount: results.answered_count,
+    scorePercent: results.score_percent,
     sessionId: results.session_id,
   };
 }

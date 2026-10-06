@@ -77,6 +77,8 @@ export type TrainQuestionResult = {
   diagram_type?: string | null;
   diagram_prompt?: string | null;
   diagram_data?: Record<string, unknown> | null;
+  /** Present on Focus (and future) session Results; optional for Train. */
+  time_spent_seconds?: number | null;
 };
 
 export type TrainResultsResponse = {

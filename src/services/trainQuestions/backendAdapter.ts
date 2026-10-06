@@ -2,6 +2,7 @@
  * Map backend Train question / result payloads → existing TrainQuestionRow shape.
  */
 
+import type { FocusQuestionResult } from '@/services/api/focusApi';
 import type { TrainQuestionResponse, TrainQuestionResult } from '@/services/api/trainApi';
 import { letterForOptionText } from '@/services/trainQuestions/optionAdapter';
 import type {
@@ -11,6 +12,8 @@ import type {
   TrainSubjectType,
 } from '@/services/trainQuestions/types';
 import { OPTION_LETTERS } from '@/services/trainQuestions/types';
+
+type ResultQuestionLike = TrainQuestionResult | FocusQuestionResult;
 
 function optionsToLetterFields(options: string[]): Pick<
   TrainQuestionRow,
@@ -74,7 +77,7 @@ export function backendGameplayQuestionToRow(
 }
 
 export function backendResultQuestionToRow(
-  q: TrainQuestionResult,
+  q: ResultQuestionLike,
   meta: {
     subjectType: TrainSubjectType;
     topicLabel: string;
@@ -84,6 +87,8 @@ export function backendResultQuestionToRow(
 ): TrainQuestionRow {
   const correctLetter =
     letterForOptionText(q.options, q.correct_answer) ?? ('A' as OptionLetter);
+  const timeSpent =
+    'time_spent_seconds' in q ? q.time_spent_seconds ?? null : null;
   return {
     Question_ID: `api-${meta.sessionId}-q${q.question_number}`,
     Subject_Type: meta.subjectType,
@@ -99,5 +104,6 @@ export function backendResultQuestionToRow(
     diagram_type: q.diagram_type ?? null,
     diagram_prompt: q.diagram_prompt ?? null,
     diagram_data: (q.diagram_data as Record<string, unknown> | null) ?? null,
+    time_spent_seconds: timeSpent,
   };
 }
