@@ -1,6 +1,7 @@
 /**
- * Shared session question / results GETs (B2.2 `/sessions/...` paths).
- * Focus and Maths Test reuse these; Maths Train continues on `/train/sessions/...`.
+ * Shared session question / results GETs (`/sessions/...` paths).
+ * Focus, Maths Test, and Maths Train (B4.3) reuse getSessionResults.
+ * Maths Train gameplay questions remain on `/train/sessions/...`.
  */
 
 import { apiRequest } from '@/services/api/http';

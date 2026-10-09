@@ -12,7 +12,8 @@ import {
   normalizeTrainDifficulty,
   trainTopicLabel,
 } from '@/constants/train';
-import { completeTrain, getTrainResults } from '@/services/api/trainApi';
+import { getSessionResults } from '@/services/api/sessionApi';
+import { completeTrain } from '@/services/api/trainApi';
 import { getTrainSelection } from '@/services/trainSelection';
 import {
   loadTrainQuestions,
@@ -210,7 +211,8 @@ export default function TrainGameplayScreen() {
     // writes before complete — do not re-POST every chosen answer.
     await queue.drain();
     await completeTrain({ session_id: sessionId });
-    const results = await getTrainResults(sessionId);
+    // B4.3: canonical shared results (same Train JSON as dedicated endpoint).
+    const results = await getSessionResults(sessionId);
     if (!subject || !topicSlug || !topicLabel) {
       return;
     }

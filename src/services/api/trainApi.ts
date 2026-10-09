@@ -140,9 +140,3 @@ export function completeTrain(
     body: JSON.stringify(payload),
   });
 }
-
-export function getTrainResults(sessionId: number): Promise<TrainResultsResponse> {
-  return apiRequest<TrainResultsResponse>(
-    `/train/sessions/${sessionId}/results`,
-  );
-}

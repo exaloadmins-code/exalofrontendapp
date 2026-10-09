@@ -1,7 +1,7 @@
 /**
  * Hydrate existing TrainResultSnapshot fields from backend GET /results.
- * Works for Maths Train (`/train/sessions/.../results`) and Focus
- * (`/sessions/.../results`) — overlapping count + question fields.
+ * Works for Maths Train and Focus via canonical
+ * `GET /sessions/{id}/results` — overlapping count + question fields.
  */
 
 import type { JourneySubject } from '@/constants/journey';
