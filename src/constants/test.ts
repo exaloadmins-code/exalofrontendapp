@@ -48,17 +48,31 @@ export const TEST_COPY = {
   startingTest: 'Starting…',
   statQuestionsLabel: 'Questions',
   statMinutesLabel: 'Minutes',
+  /** Learner-safe Maths API start failure — never surface URL/env/stack. */
+  startErrorTitle: "Couldn't start test",
+  startErrorBody:
+    'We could not start your Maths test right now. Please try again in a moment.',
+  /** Learner-safe Maths API finish / results failure. */
+  finishErrorTitle: "Couldn't finish test",
+  finishErrorBody:
+    'We could not save your test results right now. Please try again.',
   /**
    * Behavioral bullets only — match current Test gameplay.
    * Question count / duration are shown separately via TEST_INSTRUCTIONS_DISPLAY.
    */
   instructionBullets: [
-    'Choose one answer for each question.',
-    'You can move back and forward between questions.',
+    'Choose one answer for each question — or skip and come back later.',
+    'Move freely with Previous, Next, or the question navigator.',
+    'Flag questions for review — flagging does not affect your score.',
     'Unanswered questions score 0.',
     "When time runs out, your test ends automatically and you'll see your results.",
-    'You can finish early from the final question.',
+    'You can finish early even if some questions are unanswered or flagged.',
   ] as const,
+  finishTest: 'Finish test',
+  flagForReviewLabel: 'Flag for review',
+  flaggedLabel: 'Flagged for review',
+  flagShort: 'Flag',
+  flaggedShort: 'Flagged',
 } as const;
 
 export const TEST = {

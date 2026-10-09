@@ -37,6 +37,11 @@ export type TrainQuestionResponse = {
   answered: boolean;
   flagged?: boolean;
   selected_answer?: string | null;
+  /** Present on Test gameplay GETs — backend-authoritative expiry. */
+  remaining_seconds?: number | null;
+  expires_at?: string | null;
+  section_order?: number | null;
+  section_name?: string | null;
   has_diagram?: boolean;
   diagram_type?: string | null;
   diagram_prompt?: string | null;

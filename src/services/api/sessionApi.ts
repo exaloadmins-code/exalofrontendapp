@@ -1,6 +1,6 @@
 /**
  * Shared session question / results GETs (B2.2 `/sessions/...` paths).
- * Focus (and future modes) reuse these; Maths Train continues on `/train/sessions/...`.
+ * Focus and Maths Test reuse these; Maths Train continues on `/train/sessions/...`.
  */
 
 import { apiRequest } from '@/services/api/http';
@@ -10,12 +10,21 @@ import type {
   TrainResultsResponse,
 } from '@/services/api/trainApi';
 
-/** Gameplay question shape — compatible with TrainQuestionResponse / adapters. */
-export type SessionQuestionResponse = TrainQuestionResponse;
+/**
+ * Gameplay question shape — compatible with TrainQuestionResponse / adapters.
+ * Test sessions may also include remaining_seconds / expires_at / section fields.
+ */
+export type SessionQuestionResponse = TrainQuestionResponse & {
+  remaining_seconds?: number | null;
+  expires_at?: string | null;
+  section_order?: number | null;
+  section_name?: string | null;
+};
 
 /**
- * Focus results extend Train counts with session_type / timing metadata.
- * Overlapping fields are intentionally TrainResultsResponse-compatible.
+ * Shared `/sessions/{id}/results` JSON.
+ * Focus returns wrong_count / score_percent; Test returns incorrect_count /
+ * score_percentage — Test callers normalize via testResultsAdapter before hydrate.
  */
 export type SessionResultsResponse = FocusResultsResponse | TrainResultsResponse;
 

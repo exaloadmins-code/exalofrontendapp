@@ -12,12 +12,12 @@ import {
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
-import { ArrowLeft, ChevronRight } from 'lucide-react-native';
+import { ArrowLeft, ChevronRight, Flag, LayoutGrid } from 'lucide-react-native';
 import {
   TRAIN_GAMEPLAY as T,
   TRAIN_GAMEPLAY_COPY as COPY,
 } from '@/constants/trainGameplay';
-import { TEST, formatTestCountdown } from '@/constants/test';
+import { TEST, TEST_COPY, formatTestCountdown } from '@/constants/test';
 import { FOCUS, formatFocusElapsed } from '@/constants/focus';
 import {
   getTrainOptions,
@@ -25,7 +25,14 @@ import {
   type TrainAnswerRecord,
   type TrainQuestionRow,
 } from '@/services/trainQuestions';
+import {
+  firstFlaggedIndex,
+  firstUnansweredIndex,
+  summarizeTestPaperState,
+} from '@/services/trainQuestions/testNavigationState';
 import { TrainQuestionDiagram } from '@/components/train/TrainQuestionDiagram';
+import { TestFinishReviewModal } from '@/components/test/TestFinishReviewModal';
+import { TestQuestionNavigator } from '@/components/test/TestQuestionNavigator';
 import { fonts } from '@/theme';
 
 export type TrainQuizPlayerProps = {
@@ -108,6 +115,35 @@ export type TrainQuizPlayerProps = {
    * Train omits this and keeps the existing inline finalizeError UI.
    */
   onFinalizeError?: (err: unknown) => void;
+  /**
+   * Optional seeded answer slots (e.g. Maths Test revisiting backend-persisted
+   * selections after a full paper fetch). Length should match `questions`.
+   */
+  initialAnswers?: (TrainAnswerRecord | null)[];
+  /**
+   * Test only — allow Next without a selected answer (skip / revisit).
+   * Default false preserves Train / Focus / prior Test gating.
+   */
+  allowUnansweredNavigation?: boolean;
+  /**
+   * Test only — make "N / total" open the Question Navigator.
+   * Default false: Train / Focus counter stays non-interactive.
+   */
+  showQuestionNavigator?: boolean;
+  /**
+   * Test only — show Flag for review control.
+   * Default false: Train / Focus never show flag UI.
+   */
+  allowFlagging?: boolean;
+  /** Seeded flag bits (same length as questions) for Maths API paper load. */
+  initialFlags?: boolean[];
+  /** Fired on optimistic flag toggle (Maths API persists via TestFlagWriteQueue). */
+  onFlagChange?: (sessionIndex: number, flagged: boolean) => void;
+  /**
+   * Test only — manual Finish opens review confirmation (answered/unanswered/flagged).
+   * Timeout auto-submit still bypasses this modal.
+   */
+  requireFinishReview?: boolean;
 };
 
 /**
@@ -168,15 +204,45 @@ export function TrainQuizPlayer({
   hasMore = false,
   onPageContinue,
   absoluteQuestionLabel = false,
+  initialAnswers,
+  allowUnansweredNavigation = false,
+  showQuestionNavigator = false,
+  allowFlagging = false,
+  initialFlags,
+  onFlagChange,
+  requireFinishReview = false,
 }: TrainQuizPlayerProps) {
   const insets = useSafeAreaInsets();
   const { width: windowWidth } = useWindowDimensions();
   const [idx, setIdx] = useState(0);
-  const [selected, setSelected] = useState<OptionLetter | null>(null);
+  const [selected, setSelected] = useState<OptionLetter | null>(() =>
+    initialAnswers?.[0]?.chosen ?? null,
+  );
   /** One slot per session position — independent of repeated Question_IDs. */
   const [answerSlots, setAnswerSlots] = useState<(TrainAnswerRecord | null)[]>(
-    () => Array.from({ length: questions.length }, () => null),
+    () => {
+      if (
+        initialAnswers &&
+        initialAnswers.length === questions.length &&
+        questions.length > 0
+      ) {
+        return initialAnswers.slice();
+      }
+      return Array.from({ length: questions.length }, () => null);
+    },
   );
+  const [flags, setFlags] = useState<boolean[]>(() => {
+    if (
+      initialFlags &&
+      initialFlags.length === questions.length &&
+      questions.length > 0
+    ) {
+      return initialFlags.map(Boolean);
+    }
+    return Array.from({ length: questions.length }, () => false);
+  });
+  const [navigatorVisible, setNavigatorVisible] = useState(false);
+  const [finishReviewVisible, setFinishReviewVisible] = useState(false);
   const [finalizeError, setFinalizeError] = useState<string | null>(null);
   const [remainingSec, setRemainingSec] = useState<number | null>(() =>
     sessionEndsAtMs != null
@@ -195,12 +261,16 @@ export function TrainQuizPlayer({
 
   const answerSlotsRef = useRef(answerSlots);
   answerSlotsRef.current = answerSlots;
+  const flagsRef = useRef(flags);
+  flagsRef.current = flags;
   const questionsRef = useRef(questions);
   questionsRef.current = questions;
   const expiredRef = useRef(false);
   const finalizedRef = useRef(false);
   const onTimeExpiredRef = useRef(onTimeExpired);
   onTimeExpiredRef.current = onTimeExpired;
+  const onFlagChangeRef = useRef(onFlagChange);
+  onFlagChangeRef.current = onFlagChange;
   const onSeeResultsRef = useRef(onSeeResults);
   onSeeResultsRef.current = onSeeResults;
   const onBeforeSeeResultsRef = useRef(onBeforeSeeResults);
@@ -230,6 +300,20 @@ export function TrainQuizPlayer({
         next.push(null);
       }
       answerSlotsRef.current = next;
+      return next;
+    });
+    setFlags((prev) => {
+      if (prev.length === questions.length) {
+        return prev;
+      }
+      if (prev.length > questions.length) {
+        return prev.slice(0, questions.length);
+      }
+      const next = prev.slice();
+      while (next.length < questions.length) {
+        next.push(false);
+      }
+      flagsRef.current = next;
       return next;
     });
   }, [questions.length]);
@@ -273,10 +357,12 @@ export function TrainQuizPlayer({
         setFinalizeError(message);
       });
   };
+  const finalizeOnceRef = useRef(finalizeOnce);
+  finalizeOnceRef.current = finalizeOnce;
 
   /**
    * Android hardware Back: consume during active gameplay — do not exit session.
-   * If End Focus confirmation is open, dismiss it first (Keep Focusing equivalent).
+   * Dismiss overlay modals first (End Focus / navigator / finish review).
    */
   useEffect(() => {
     if (!questions.length) {
@@ -287,10 +373,23 @@ export function TrainQuizPlayer({
         setEndFocusConfirmVisible(false);
         return true;
       }
+      if (finishReviewVisible) {
+        setFinishReviewVisible(false);
+        return true;
+      }
+      if (navigatorVisible) {
+        setNavigatorVisible(false);
+        return true;
+      }
       return true;
     });
     return () => sub.remove();
-  }, [questions.length, endFocusConfirmVisible]);
+  }, [
+    questions.length,
+    endFocusConfirmVisible,
+    finishReviewVisible,
+    navigatorVisible,
+  ]);
 
   useEffect(() => {
     if (!questions.length) {
@@ -316,10 +415,19 @@ export function TrainQuizPlayer({
       setRemainingSec(rem);
       if (rem <= 0 && !expiredRef.current && !finalizedRef.current) {
         expiredRef.current = true;
-        finalizedRef.current = true;
-        onTimeExpiredRef.current?.(
-          slotsToResults(answerSlotsRef.current, questionsRef.current),
-        );
+        // Timeout bypasses Finish review confirmation — auto-submit immediately.
+        setFinishReviewVisible(false);
+        setNavigatorVisible(false);
+        // Maths API Test: drain/submit/results via onBeforeSeeResults (same as Finish).
+        // Local English Test: keep onTimeExpired → local snapshot path.
+        if (onBeforeSeeResultsRef.current) {
+          finalizeOnceRef.current(answerSlotsRef.current);
+        } else {
+          finalizedRef.current = true;
+          onTimeExpiredRef.current?.(
+            slotsToResults(answerSlotsRef.current, questionsRef.current),
+          );
+        }
       }
     };
 
@@ -396,11 +504,23 @@ export function TrainQuizPlayer({
     onAnswerChangeRef.current?.(idx, letter, record);
   };
 
+  const jumpToIndex = (nextIdx: number) => {
+    if (
+      nextIdx < 0 ||
+      nextIdx >= questions.length ||
+      expiredRef.current ||
+      locked ||
+      finalizedRef.current
+    ) {
+      return;
+    }
+    setIdx(nextIdx);
+    setSelected(answerSlotsRef.current[nextIdx]?.chosen ?? null);
+  };
+
   const goPrevious = () => {
     if (!canGoPrevious) return;
-    const nextIdx = idx - 1;
-    setIdx(nextIdx);
-    setSelected(answerSlots[nextIdx]?.chosen ?? null);
+    jumpToIndex(idx - 1);
   };
 
   const goNext = () => {
@@ -410,23 +530,51 @@ export function TrainQuizPlayer({
       finalizedRef.current ||
       finalizing ||
       continuing ||
-      checkpointVisible
+      checkpointVisible ||
+      finishReviewVisible
     ) {
       return;
     }
-    if (selected == null) return;
+    // Train / Focus / default: still require a selection before Next.
+    // Test (allowUnansweredNavigation): skip freely without fabricating answers.
+    if (!allowUnansweredNavigation && selected == null) return;
     setFinalizeError(null);
     if (idx + 1 >= questions.length) {
       if (continuousTrain) {
         setCheckpointVisible(true);
         return;
       }
+      if (requireFinishReview) {
+        setFinishReviewVisible(true);
+        return;
+      }
       finalizeOnce(answerSlotsRef.current);
       return;
     }
-    const nextIdx = idx + 1;
-    setIdx(nextIdx);
-    setSelected(answerSlots[nextIdx]?.chosen ?? null);
+    jumpToIndex(idx + 1);
+  };
+
+  const toggleFlag = () => {
+    if (
+      !allowFlagging ||
+      expiredRef.current ||
+      locked ||
+      finalizedRef.current ||
+      !q
+    ) {
+      return;
+    }
+    setFlags((prev) => {
+      const next = prev.slice();
+      while (next.length < questions.length) {
+        next.push(false);
+      }
+      const flagged = !next[idx];
+      next[idx] = flagged;
+      flagsRef.current = next;
+      onFlagChangeRef.current?.(idx, flagged);
+      return next;
+    });
   };
 
   const confirmCheckpointResults = () => {
@@ -552,11 +700,31 @@ export function TrainQuizPlayer({
             ) : (
               <View style={styles.timerSpacer} />
             )}
-            <Text style={styles.counter}>
-              {absoluteQuestionLabel
-                ? `Question ${idx + 1}`
-                : `${idx + 1} / ${questions.length}`}
-            </Text>
+            {showQuestionNavigator ? (
+              <Pressable
+                accessibilityRole="button"
+                accessibilityLabel={`Open question map, question ${idx + 1} of ${questions.length}`}
+                disabled={locked || finalizedRef.current || finalizing}
+                onPress={() => setNavigatorVisible(true)}
+                hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+                style={styles.counterBtn}
+              >
+                <LayoutGrid
+                  size={14}
+                  color={T.violetText}
+                  strokeWidth={2.25}
+                />
+                <Text style={styles.counterMapText}>
+                  {`${idx + 1} / ${questions.length}`}
+                </Text>
+              </Pressable>
+            ) : (
+              <Text style={styles.counter}>
+                {absoluteQuestionLabel
+                  ? `Question ${idx + 1}`
+                  : `${idx + 1} / ${questions.length}`}
+              </Text>
+            )}
           </View>
 
           {showEndFocus ? (
@@ -609,9 +777,44 @@ export function TrainQuizPlayer({
             end={{ x: 0.5, y: 1 }}
             style={styles.card}
           >
-            <Text style={styles.chip}>
-              {q.Subject} · {q.Difficulty}
-            </Text>
+            <View style={styles.chipRow}>
+              <Text style={[styles.chip, styles.chipFlex]}>
+                {q.Subject} · {q.Difficulty}
+              </Text>
+              {allowFlagging ? (
+                <Pressable
+                  accessibilityRole="button"
+                  accessibilityLabel={
+                    flags[idx]
+                      ? TEST_COPY.flaggedLabel
+                      : TEST_COPY.flagForReviewLabel
+                  }
+                  accessibilityState={{ selected: !!flags[idx] }}
+                  disabled={locked || finalizedRef.current}
+                  onPress={toggleFlag}
+                  hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+                  style={[
+                    styles.flagBtn,
+                    flags[idx] && styles.flagBtnActive,
+                  ]}
+                >
+                  <Flag
+                    size={16}
+                    color={flags[idx] ? '#FDE68A' : 'rgba(221, 214, 254, 0.85)'}
+                    fill={flags[idx] ? '#FDE68A' : 'transparent'}
+                    strokeWidth={2.25}
+                  />
+                  <Text
+                    style={[
+                      styles.flagLabel,
+                      flags[idx] && styles.flagLabelActive,
+                    ]}
+                  >
+                    {flags[idx] ? TEST_COPY.flaggedShort : TEST_COPY.flagShort}
+                  </Text>
+                </Pressable>
+              ) : null}
+            </View>
             <Text style={styles.stem}>{q.Question_Text}</Text>
 
             <TrainQuestionDiagram
@@ -646,7 +849,7 @@ export function TrainQuizPlayer({
               })}
             </View>
 
-            {selected !== null &&
+            {(allowUnansweredNavigation || selected !== null) &&
             !locked &&
             !finalizedRef.current &&
             !checkpointVisible ? (
@@ -654,7 +857,9 @@ export function TrainQuizPlayer({
                 accessibilityRole="button"
                 accessibilityLabel={
                   isLast && !continuousTrain
-                    ? COPY.seeResults
+                    ? requireFinishReview
+                      ? TEST_COPY.finishTest
+                      : COPY.seeResults
                     : COPY.nextQuestion
                 }
                 disabled={finalizing || continuing}
@@ -668,7 +873,9 @@ export function TrainQuizPlayer({
                   {finalizing
                     ? 'Saving…'
                     : isLast && !continuousTrain
-                      ? COPY.seeResults
+                      ? requireFinishReview
+                        ? TEST_COPY.finishTest
+                        : COPY.seeResults
                       : COPY.nextQuestion}
                 </Text>
                 <ChevronRight size={16} color="#FFFFFF" strokeWidth={2.5} />
@@ -772,6 +979,55 @@ export function TrainQuizPlayer({
           </View>
         </Modal>
       ) : null}
+
+      {showQuestionNavigator ? (
+        <TestQuestionNavigator
+          visible={navigatorVisible}
+          answerSlots={answerSlots}
+          flags={flags}
+          total={questions.length}
+          currentIndex={idx}
+          onClose={() => setNavigatorVisible(false)}
+          onJump={(sessionIndex) => {
+            setNavigatorVisible(false);
+            jumpToIndex(sessionIndex);
+          }}
+        />
+      ) : null}
+
+      {requireFinishReview ? (
+        <TestFinishReviewModal
+          visible={finishReviewVisible}
+          counts={summarizeTestPaperState(
+            answerSlots,
+            flags,
+            questions.length,
+          )}
+          finishing={finalizing}
+          onKeepWorking={() => setFinishReviewVisible(false)}
+          onReviewFlagged={() => {
+            const target = firstFlaggedIndex(flags, questions.length);
+            setFinishReviewVisible(false);
+            if (target != null) {
+              jumpToIndex(target);
+            }
+          }}
+          onReviewUnanswered={() => {
+            const target = firstUnansweredIndex(
+              answerSlots,
+              questions.length,
+            );
+            setFinishReviewVisible(false);
+            if (target != null) {
+              jumpToIndex(target);
+            }
+          }}
+          onFinish={() => {
+            setFinishReviewVisible(false);
+            finalizeOnce(answerSlotsRef.current);
+          }}
+        />
+      ) : null}
     </View>
   );
 }
@@ -848,6 +1104,64 @@ const styles = StyleSheet.create({
     color: T.violetText,
     minWidth: 44,
     textAlign: 'right',
+  },
+  counterBtn: {
+    minHeight: 44,
+    minWidth: 44,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'flex-end',
+    gap: 5,
+    paddingVertical: 4,
+    paddingLeft: 8,
+    paddingRight: 2,
+    borderRadius: 999,
+    borderWidth: 1,
+    borderColor: 'rgba(167, 139, 250, 0.45)',
+    backgroundColor: 'rgba(15, 11, 52, 0.35)',
+  },
+  counterMapText: {
+    fontFamily: fonts.display,
+    fontSize: 13,
+    fontWeight: '600',
+    color: T.violetText,
+    minWidth: 40,
+    textAlign: 'right',
+  },
+  chipRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    marginBottom: 12,
+  },
+  chipFlex: {
+    flex: 1,
+    marginBottom: 0,
+  },
+  flagBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    minHeight: 36,
+    paddingHorizontal: 10,
+    paddingVertical: 6,
+    borderRadius: 999,
+    borderWidth: 1,
+    borderColor: 'rgba(167, 139, 250, 0.45)',
+    backgroundColor: 'rgba(15, 11, 52, 0.45)',
+  },
+  flagBtnActive: {
+    borderColor: 'rgba(253, 230, 138, 0.85)',
+    backgroundColor: 'rgba(120, 53, 15, 0.35)',
+  },
+  flagLabel: {
+    fontFamily: fonts.display,
+    fontSize: 12,
+    fontWeight: '600',
+    color: 'rgba(221, 214, 254, 0.9)',
+  },
+  flagLabelActive: {
+    color: '#FDE68A',
   },
   modeHeaderRow: {
     flexDirection: 'row',

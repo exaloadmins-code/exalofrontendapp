@@ -12,10 +12,22 @@ import {
   TEST_COPY as COPY,
   TEST_DURATION_MS,
 } from '@/constants/test';
+import { getSessionResults } from '@/services/api/sessionApi';
 import {
+  submitTest,
+  usesMathsTestApi,
+  type TestResultsResponse,
+} from '@/services/api/testApi';
+import {
+  TestFlagWriteQueue,
+  TrainAnswerWriteQueue,
+  hydrateTrainResultFromApi,
   loadTestQuestions,
+  startMathsTestSession,
+  testResultsToShared,
   type OptionLetter,
   type TrainAnswerRecord,
+  type TrainBankDifficulty,
   type TrainQuestionRow,
 } from '@/services/trainQuestions';
 import type { TrainResultSnapshot } from '@/services/trainResults';
@@ -24,15 +36,16 @@ import { fonts } from '@/theme';
 type TestPhase = 'instructions' | 'loading' | 'play' | 'results' | 'error';
 
 /**
- * M7 Test — Lovable `TestMode` + shared `QuizPlayer` parity, plus an intentional
- * Exalo production countdown timer (Lovable has no Test timer).
+ * B3.3 Test — Maths is API-backed; English remains local.
+ *
+ * Maths: POST /test/start → GET /sessions/.../questions → answer queue →
+ *        POST /test/submit → GET /sessions/.../results → shared Results UI.
+ * English: loadTestQuestions (local) + local timer/snapshot — unchanged.
  *
  * Lifecycle:
  *   instructions → (Start Test) → loading → play → results
  *
- * Route entry / refresh lands on instructions. The timer and paper load only
- * after explicit Start Test. Try Again returns to instructions (same subject).
- * Home → Exalo Home (`/home`).
+ * Try Again returns to instructions (fresh session; never resumes completed).
  */
 export default function TestScreen() {
   const router = useRouter();
@@ -54,12 +67,31 @@ export default function TestScreen() {
   const [error, setError] = useState<string | null>(() =>
     subject ? null : COPY.missingSubjectBody,
   );
+  const [source, setSource] = useState<'api' | 'local'>('local');
+  const [sessionId, setSessionId] = useState<number | null>(null);
+  const [apiResults, setApiResults] = useState<TrainResultSnapshot | null>(
+    null,
+  );
+  const [initialAnswers, setInitialAnswers] = useState<
+    (TrainAnswerRecord | null)[] | undefined
+  >(undefined);
+  const [initialFlags, setInitialFlags] = useState<boolean[] | undefined>(
+    undefined,
+  );
 
   const finalizedRef = useRef(false);
   /** Prevents double Start Test from overlapping paper loads. */
   const startingRef = useRef(false);
   /** Invalidates in-flight Start loads when returning to instructions. */
   const startGenerationRef = useRef(0);
+  const writeQueueRef = useRef<TrainAnswerWriteQueue | null>(null);
+  const flagQueueRef = useRef<TestFlagWriteQueue | null>(null);
+  const completingRef = useRef(false);
+  /** True after POST /test/submit succeeded — Results retry must not re-submit. */
+  const sessionSubmittedOnBackendRef = useRef(false);
+  const bankDifficultyRef = useRef<TrainBankDifficulty>('Medium');
+  const questionsRef = useRef<TrainQuestionRow[]>([]);
+  questionsRef.current = questions;
 
   const exitToJourney = () => {
     if (subject) {
@@ -75,10 +107,19 @@ export default function TestScreen() {
     startGenerationRef.current += 1;
     startingRef.current = false;
     finalizedRef.current = false;
+    completingRef.current = false;
+    sessionSubmittedOnBackendRef.current = false;
+    writeQueueRef.current = null;
+    flagQueueRef.current = null;
     setQuestions([]);
     setExpectedTotal(0);
     setAnswers([]);
     setSessionEndsAtMs(null);
+    setSessionId(null);
+    setSource('local');
+    setApiResults(null);
+    setInitialAnswers(undefined);
+    setInitialFlags(undefined);
     setError(null);
     setPhase('instructions');
   }, []);
@@ -94,12 +135,15 @@ export default function TestScreen() {
       setQuestions([]);
       setAnswers([]);
       setSessionEndsAtMs(null);
+      setSessionId(null);
+      setSource('local');
+      setApiResults(null);
       return;
     }
     resetToInstructions();
   }, [subject, resetToInstructions]);
 
-  const finalizeAttempt = useCallback(
+  const finalizeLocalAttempt = useCallback(
     (submitted: TrainAnswerRecord[]) => {
       if (finalizedRef.current) return;
       finalizedRef.current = true;
@@ -117,16 +161,64 @@ export default function TestScreen() {
     const generation = startGenerationRef.current + 1;
     startGenerationRef.current = generation;
     finalizedRef.current = false;
+    completingRef.current = false;
+    sessionSubmittedOnBackendRef.current = false;
+    writeQueueRef.current = null;
+    flagQueueRef.current = null;
     setPhase('loading');
     setError(null);
     setAnswers([]);
     setSessionEndsAtMs(null);
+    setApiResults(null);
+    setInitialAnswers(undefined);
+    setInitialFlags(undefined);
 
+    if (usesMathsTestApi(subject)) {
+      // Maths API — never use local Maths Test bank once API session starts.
+      startMathsTestSession({ subject })
+        .then((loaded) => {
+          if (generation !== startGenerationRef.current) {
+            return;
+          }
+          writeQueueRef.current = TrainAnswerWriteQueue.forTest(loaded.sessionId);
+          flagQueueRef.current = new TestFlagWriteQueue(loaded.sessionId);
+          bankDifficultyRef.current = loaded.bankDifficulty;
+          setSource('api');
+          setSessionId(loaded.sessionId);
+          setQuestions(loaded.questions);
+          setExpectedTotal(loaded.totalQuestions);
+          setInitialAnswers(loaded.initialAnswers);
+          setInitialFlags(loaded.initialFlags);
+          finalizedRef.current = false;
+          setAnswers([]);
+          setSessionEndsAtMs(loaded.expiresAtMs);
+          setSessionKey((k) => k + 1);
+          setPhase('play');
+          startingRef.current = false;
+        })
+        .catch((err: unknown) => {
+          if (generation !== startGenerationRef.current) {
+            return;
+          }
+          startingRef.current = false;
+          void err;
+          setError(COPY.startErrorBody);
+          setSessionEndsAtMs(null);
+          setSessionId(null);
+          setSource('local');
+          setPhase('error');
+        });
+      return;
+    }
+
+    // English — local only. Never call Test API.
     loadTestQuestions({ subject })
       .then((result) => {
         if (generation !== startGenerationRef.current) {
           return;
         }
+        setSource('local');
+        setSessionId(null);
         setQuestions(result.questions);
         setExpectedTotal(result.expectedTotal);
         finalizedRef.current = false;
@@ -149,16 +241,112 @@ export default function TestScreen() {
       });
   };
 
+  const onAnswerChange = (
+    sessionIndex: number,
+    letter: OptionLetter,
+  ) => {
+    if (source !== 'api' || sessionId == null) {
+      return;
+    }
+    const q = questionsRef.current[sessionIndex];
+    const options = q?.backendOptions;
+    if (!options || !writeQueueRef.current) {
+      return;
+    }
+    void writeQueueRef.current
+      .enqueue(sessionIndex, letter, options)
+      .catch(() => {
+        // Surface on finalize; keep gameplay responsive.
+      });
+  };
+
+  const onFlagChange = (sessionIndex: number, flagged: boolean) => {
+    if (source !== 'api' || sessionId == null) {
+      return;
+    }
+    const queue =
+      flagQueueRef.current ?? new TestFlagWriteQueue(sessionId);
+    flagQueueRef.current = queue;
+    void queue.enqueue(sessionIndex, flagged).catch(() => {
+      // Surface on finalize; keep gameplay responsive.
+    });
+  };
+
+  const onBeforeSeeResults = async (_runAnswers: TrainAnswerRecord[]) => {
+    if (source !== 'api' || sessionId == null || !subject) {
+      return;
+    }
+    if (completingRef.current) {
+      throw new Error(COPY.finishErrorBody);
+    }
+    completingRef.current = true;
+    try {
+      const queue =
+        writeQueueRef.current ?? TrainAnswerWriteQueue.forTest(sessionId);
+      writeQueueRef.current = queue;
+      const flagQueue =
+        flagQueueRef.current ?? new TestFlagWriteQueue(sessionId);
+      flagQueueRef.current = flagQueue;
+
+      if (!sessionSubmittedOnBackendRef.current) {
+        await queue.drain();
+        await flagQueue.drain();
+        await submitTest({ session_id: sessionId });
+        sessionSubmittedOnBackendRef.current = true;
+      }
+
+      // Test DTO uses incorrect_count / score_percentage — narrow then adapt.
+      const rawResults: unknown = await getSessionResults(sessionId);
+      if (!isTestResultsPayload(rawResults)) {
+        throw new Error('Test Results response was malformed.');
+      }
+      const shared = testResultsToShared(rawResults);
+      const hydrated = hydrateTrainResultFromApi({
+        results: shared,
+        subject,
+        topicSlug: 'test',
+        topicLabel: 'Test',
+        difficulty: 'medium',
+        bankDifficulty: bankDifficultyRef.current,
+      });
+      setApiResults({
+        subject,
+        topicSlug: 'test',
+        topicLabel: 'Test',
+        difficulty: 'medium',
+        questionCount: hydrated.totalQuestions,
+        title: COPY.title(subjectTypeLabel),
+        answers: hydrated.answers,
+        questions: hydrated.questions,
+        totalQuestions: hydrated.totalQuestions,
+        totalCorrect: hydrated.totalCorrect,
+        completedAt: Date.now(),
+        sessionId: hydrated.sessionId,
+        source: 'api',
+      });
+    } catch (err) {
+      completingRef.current = false;
+      void err;
+      throw new Error(COPY.finishErrorBody);
+    }
+  };
+
   const onSeeResults = (runAnswers: TrainAnswerRecord[]) => {
-    finalizeAttempt(runAnswers);
+    if (source === 'api') {
+      setAnswers(runAnswers);
+      setPhase('results');
+      return;
+    }
+    finalizeLocalAttempt(runAnswers);
   };
 
   const onTimeExpired = (runAnswers: TrainAnswerRecord[]) => {
-    finalizeAttempt(runAnswers);
+    // Local English only — Maths API expiry uses onBeforeSeeResults via QuizPlayer.
+    finalizeLocalAttempt(runAnswers);
   };
 
   const onTryAgain = () => {
-    // Same subject → Instructions. Do NOT load a paper or start the timer.
+    // Same subject → Instructions. Do NOT resume completed backend session.
     if (!subject) {
       router.replace(Routes.Home as Href);
       return;
@@ -177,14 +365,18 @@ export default function TestScreen() {
   );
 
   const resultsSnapshot: TrainResultSnapshot | null =
-    subject && phase === 'results'
-      ? buildTestResultSnapshot({
-          subject,
-          title: quizTitle,
-          answers,
-          questions,
-          paperSize: questions.length,
-        })
+    phase === 'results'
+      ? source === 'api' && apiResults
+        ? apiResults
+        : subject
+          ? buildTestResultSnapshot({
+              subject,
+              title: quizTitle,
+              answers,
+              questions,
+              paperSize: questions.length,
+            })
+          : null
       : null;
 
   if (!subject || phase === 'error') {
@@ -201,7 +393,13 @@ export default function TestScreen() {
       >
         <View style={styles.errorCard}>
           <Text style={styles.errorTitle}>
-            {subject ? COPY.errorTitle : COPY.missingSubjectTitle}
+            {subject
+              ? error === COPY.finishErrorBody
+                ? COPY.finishErrorTitle
+                : error === COPY.startErrorBody
+                  ? COPY.startErrorTitle
+                  : COPY.errorTitle
+              : COPY.missingSubjectTitle}
           </Text>
           <Text style={styles.errorBody}>
             {error ?? COPY.missingSubjectBody}
@@ -274,14 +472,40 @@ export default function TestScreen() {
       onExit={exitToJourney}
       onSeeResults={onSeeResults}
       sessionEndsAtMs={sessionEndsAtMs ?? undefined}
-      onTimeExpired={onTimeExpired}
+      onTimeExpired={source === 'local' ? onTimeExpired : undefined}
+      deferCorrectness={source === 'api'}
+      onAnswerChange={source === 'api' ? onAnswerChange : undefined}
+      onBeforeSeeResults={source === 'api' ? onBeforeSeeResults : undefined}
+      initialAnswers={source === 'api' ? initialAnswers : undefined}
+      initialFlags={source === 'api' ? initialFlags : undefined}
+      allowUnansweredNavigation
+      showQuestionNavigator
+      allowFlagging
+      requireFinishReview
+      onFlagChange={source === 'api' ? onFlagChange : undefined}
     />
+  );
+}
+
+function isTestResultsPayload(
+  value: unknown,
+): value is TestResultsResponse {
+  if (!value || typeof value !== 'object') {
+    return false;
+  }
+  const record = value as Record<string, unknown>;
+  return (
+    typeof record.session_id === 'number' &&
+    typeof record.incorrect_count === 'number' &&
+    typeof record.score_percentage === 'number' &&
+    Array.isArray(record.questions)
   );
 }
 
 /**
  * Expand submitted answers to the full paper: unanswered slots get
  * `chosen: null` / `isCorrect: false` — never a fabricated letter.
+ * English local Results only.
  */
 function buildPaperReview(
   questions: TrainQuestionRow[],
@@ -328,6 +552,7 @@ function buildTestResultSnapshot(params: {
     totalQuestions,
     totalCorrect,
     completedAt: Date.now(),
+    source: 'local',
   };
 }
 

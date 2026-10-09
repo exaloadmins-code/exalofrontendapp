@@ -1,11 +1,12 @@
 /**
- * Per-question serialized latest-write queue for Maths Train / Focus answer POSTs.
+ * Per-question serialized latest-write queue for Maths Train / Focus / Test answer POSTs.
  *
  * Prevents an older in-flight POST from overwriting a newer selection.
  * Default writer preserves Train `/train/answer` behaviour.
  */
 
 import { answerFocusQuestion } from '@/services/api/focusApi';
+import { answerTestQuestion } from '@/services/api/testApi';
 import { answerTrainQuestion } from '@/services/api/trainApi';
 import { toBackendQuestionNumber } from '@/services/trainQuestions/numbering';
 import { optionTextForLetter } from '@/services/trainQuestions/optionAdapter';
@@ -42,6 +43,13 @@ const focusAnswerWriter: AnswerWriter = (payload) =>
     time_spent_seconds: payload.time_spent_seconds,
   });
 
+const testAnswerWriter: AnswerWriter = (payload) =>
+  answerTestQuestion({
+    session_id: payload.session_id,
+    question_number: payload.question_number,
+    selected_answer: payload.selected_answer,
+  });
+
 export class TrainAnswerWriteQueue {
   private readonly sessionId: number;
   private readonly writer: AnswerWriter;
@@ -70,6 +78,11 @@ export class TrainAnswerWriteQueue {
       focusAnswerWriter,
       getTimeSpentSeconds,
     );
+  }
+
+  /** Factory: Test answer endpoint (no per-question timing in B3.3). */
+  static forTest(sessionId: number): TrainAnswerWriteQueue {
+    return new TrainAnswerWriteQueue(sessionId, testAnswerWriter);
   }
 
   /** Enqueue a letter selection; returns when this write attempt settles (may no-op if superseded). */

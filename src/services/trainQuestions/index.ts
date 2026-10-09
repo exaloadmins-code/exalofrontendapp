@@ -47,8 +47,30 @@ export type {
 } from './loadMathsTrainSession';
 export { startMathsFocusSession } from './loadMathsFocusSession';
 export type { MathsFocusSessionLoad } from './loadMathsFocusSession';
+export { startMathsTestSession } from './loadMathsTestSession';
+export type { MathsTestSessionLoad } from './loadMathsTestSession';
+export {
+  testResultsToShared,
+  isMissionReviewWrongAnswer,
+  isTestQuestionMissionReviewEligible,
+  countMissionReviewItems,
+} from './testResultsAdapter';
 export { hydrateTrainResultFromApi } from './resultsHydrator';
 export { TrainAnswerWriteQueue } from './answerWriteQueue';
 export type { AnswerWritePayload, AnswerWriter } from './answerWriteQueue';
+export { TestFlagWriteQueue } from './flagWriteQueue';
 export { FocusQuestionTiming } from './questionTiming';
 export type { FocusQuestionTimeEntry } from './questionTiming';
+export {
+  summarizeTestPaperState,
+  buildTestNavCells,
+  firstFlaggedIndex,
+  firstUnansweredIndex,
+  describeTestNavCell,
+  questionMapColumns,
+  questionMapCellSize,
+} from './testNavigationState';
+export type {
+  TestPaperCounts,
+  TestNavCellState,
+} from './testNavigationState';
