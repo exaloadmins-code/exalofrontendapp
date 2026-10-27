@@ -60,6 +60,11 @@ export const TRAIN_GAMEPLAY_COPY = {
   endFocusTitle: 'End Focus?',
   endFocusMessage: 'Are you sure you want to end this Focus session?',
   keepFocusing: 'Keep Focusing',
+  /** Train gameplay — End control + confirmation. Does not continue the page. */
+  endTrain: 'End Train',
+  endTrainTitle: 'End Train?',
+  endTrainMessage: 'Are you sure you want to end this Train session?',
+  cancelEndTrain: 'Cancel',
   checkpointTitle: 'Checkpoint',
   checkpointDone: (n: number) =>
     n === 20

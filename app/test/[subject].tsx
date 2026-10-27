@@ -482,6 +482,7 @@ export default function TestScreen() {
       showQuestionNavigator
       allowFlagging
       requireFinishReview
+      showEndTest
       onFlagChange={source === 'api' ? onFlagChange : undefined}
     />
   );

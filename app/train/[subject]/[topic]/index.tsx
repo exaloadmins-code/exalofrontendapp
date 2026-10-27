@@ -323,6 +323,7 @@ export default function TrainGameplayScreen() {
       hasMore={source === 'api' ? hasMore : false}
       onPageContinue={source === 'api' ? onPageContinue : undefined}
       absoluteQuestionLabel={source === 'api'}
+      showEndTrain
     />
   );
 }

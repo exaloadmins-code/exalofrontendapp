@@ -91,6 +91,63 @@ export function firstUnansweredIndex(
   return null;
 }
 
+/**
+ * Pre-submission review filter. `normal` is ordinary full-paper idx ± 1.
+ * Flagged and unanswered steps stay on absolute indexes in the original paper.
+ */
+export type FilteredReviewMode = 'flagged' | 'unanswered';
+
+function matchesFilteredReview(
+  mode: FilteredReviewMode,
+  index: number,
+  flags: readonly boolean[],
+  answerSlots: readonly (TrainAnswerRecord | null)[],
+): boolean {
+  if (mode === 'flagged') {
+    return flags[index] === true;
+  }
+  return answerSlots[index]?.chosen == null;
+}
+
+/**
+ * Next absolute index in the current live subset, strictly after `currentIndex`.
+ * Null means there is no later match (caller reopens the finish-review modal).
+ */
+export function nextFilteredIndex(
+  mode: FilteredReviewMode,
+  currentIndex: number,
+  total: number,
+  flags: readonly boolean[],
+  answerSlots: readonly (TrainAnswerRecord | null)[],
+): number | null {
+  for (let i = currentIndex + 1; i < total; i += 1) {
+    if (matchesFilteredReview(mode, i, flags, answerSlots)) {
+      return i;
+    }
+  }
+  return null;
+}
+
+/**
+ * Previous absolute index in the current live subset, strictly before `currentIndex`.
+ * Null means Previous is disabled — do not step into a non-matching question.
+ */
+export function previousFilteredIndex(
+  mode: FilteredReviewMode,
+  currentIndex: number,
+  total: number,
+  flags: readonly boolean[],
+  answerSlots: readonly (TrainAnswerRecord | null)[],
+): number | null {
+  const start = Math.min(currentIndex, total) - 1;
+  for (let i = start; i >= 0; i -= 1) {
+    if (matchesFilteredReview(mode, i, flags, answerSlots)) {
+      return i;
+    }
+  }
+  return null;
+}
+
 /** Accessibility label for a navigator cell. */
 export function describeTestNavCell(cell: TestNavCellState): string {
   const parts = [`Question ${cell.questionNumber}`];

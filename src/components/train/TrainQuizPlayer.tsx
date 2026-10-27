@@ -28,7 +28,10 @@ import {
 import {
   firstFlaggedIndex,
   firstUnansweredIndex,
+  nextFilteredIndex,
+  previousFilteredIndex,
   summarizeTestPaperState,
+  type FilteredReviewMode,
 } from '@/services/trainQuestions/testNavigationState';
 import { TrainQuestionDiagram } from '@/components/train/TrainQuestionDiagram';
 import { TestFinishReviewModal } from '@/components/test/TestFinishReviewModal';
@@ -66,6 +69,16 @@ export type TrainQuizPlayerProps = {
    * Focus only — shows END FOCUS (with confirmation). Never enable for Train/Test.
    */
   showEndFocus?: boolean;
+  /**
+   * Train only — shows End. Confirmation then uses the existing finalize path.
+   * Never enable for Focus/Test. Does not call page continue.
+   */
+  showEndTrain?: boolean;
+  /**
+   * Test only — shows End Test. Opens the pre-submission finish-review modal.
+   * Does not submit. Never enable for Train/Focus.
+   */
+  showEndTest?: boolean;
   /**
    * Maths API mode: do not treat Correct_Option as authoritative during play.
    * Local isCorrect stays false until Results are hydrated from the backend.
@@ -177,7 +190,11 @@ function slotsToResults(
  *
  * GAMEPLAY: neutral answer selection only — no correct/wrong reveal.
  * NAV: in-app Back = previous question (disabled on Q1). Next = next / See results.
+ * FILTERED REVIEW (Test, pre-submit): flagged / unanswered Next and Previous
+ * step absolute indexes in the original paper. The questions array is not replaced.
  * FOCUS: optional END FOCUS → confirm → partial Results.
+ * TRAIN: optional End → confirm → same finalize path as See results (not continue).
+ * TEST: optional End Test → existing "Ready to finish?" modal (does not submit).
  * SCORING: answer slots keyed by session position (not qid).
  * RESULTS: callers hand answers to TrainResultsView after the run.
  *
@@ -195,6 +212,8 @@ export function TrainQuizPlayer({
   onTimeExpired,
   sessionStartedAtMs,
   showEndFocus = false,
+  showEndTrain = false,
+  showEndTest = false,
   deferCorrectness = false,
   onAnswerChange,
   onBeforeSeeResults,
@@ -243,6 +262,10 @@ export function TrainQuizPlayer({
   });
   const [navigatorVisible, setNavigatorVisible] = useState(false);
   const [finishReviewVisible, setFinishReviewVisible] = useState(false);
+  /** Ordinary paper nav, or live flagged / unanswered pre-submit review. */
+  const [reviewMode, setReviewMode] = useState<'normal' | FilteredReviewMode>(
+    'normal',
+  );
   const [finalizeError, setFinalizeError] = useState<string | null>(null);
   const [remainingSec, setRemainingSec] = useState<number | null>(() =>
     sessionEndsAtMs != null
@@ -256,6 +279,8 @@ export function TrainQuizPlayer({
   );
   /** Focus End Focus confirmation — in-tree Modal (reliable on Android vs Alert). */
   const [endFocusConfirmVisible, setEndFocusConfirmVisible] = useState(false);
+  /** Train End confirmation. Confirm finalizes; it does not continue the page. */
+  const [endTrainConfirmVisible, setEndTrainConfirmVisible] = useState(false);
   const [checkpointVisible, setCheckpointVisible] = useState(false);
   const [continuing, setContinuing] = useState(false);
 
@@ -325,8 +350,19 @@ export function TrainQuizPlayer({
       finalizedRef.current ||
       (remainingSec !== null && remainingSec <= 0));
   const showElapsed = !timed && sessionStartedAtMs != null;
+  const boundaryLocked =
+    locked || finalizedRef.current || expiredRef.current;
   const canGoPrevious =
-    idx > 0 && !locked && !finalizedRef.current && !expiredRef.current;
+    !boundaryLocked &&
+    (reviewMode === 'normal'
+      ? idx > 0
+      : previousFilteredIndex(
+          reviewMode,
+          idx,
+          questions.length,
+          flags,
+          answerSlots,
+        ) != null);
 
   const finalizeOnce = (slots: readonly (TrainAnswerRecord | null)[]) => {
     if (finalizedRef.current) return;
@@ -362,7 +398,7 @@ export function TrainQuizPlayer({
 
   /**
    * Android hardware Back: consume during active gameplay — do not exit session.
-   * Dismiss overlay modals first (End Focus / navigator / finish review).
+   * Dismiss overlay modals first (End Focus / End Train / navigator / finish review).
    */
   useEffect(() => {
     if (!questions.length) {
@@ -371,6 +407,10 @@ export function TrainQuizPlayer({
     const sub = BackHandler.addEventListener('hardwareBackPress', () => {
       if (endFocusConfirmVisible) {
         setEndFocusConfirmVisible(false);
+        return true;
+      }
+      if (endTrainConfirmVisible) {
+        setEndTrainConfirmVisible(false);
         return true;
       }
       if (finishReviewVisible) {
@@ -387,6 +427,7 @@ export function TrainQuizPlayer({
   }, [
     questions.length,
     endFocusConfirmVisible,
+    endTrainConfirmVisible,
     finishReviewVisible,
     navigatorVisible,
   ]);
@@ -416,8 +457,11 @@ export function TrainQuizPlayer({
       if (rem <= 0 && !expiredRef.current && !finalizedRef.current) {
         expiredRef.current = true;
         // Timeout bypasses Finish review confirmation — auto-submit immediately.
+        // Timer is not paused while the modal or filtered review is open.
         setFinishReviewVisible(false);
         setNavigatorVisible(false);
+        setEndTrainConfirmVisible(false);
+        setReviewMode('normal');
         // Maths API Test: drain/submit/results via onBeforeSeeResults (same as Finish).
         // Local English Test: keep onTimeExpired → local snapshot path.
         if (onBeforeSeeResultsRef.current) {
@@ -518,7 +562,26 @@ export function TrainQuizPlayer({
     setSelected(answerSlotsRef.current[nextIdx]?.chosen ?? null);
   };
 
+  /** Return to the pre-submission summary and leave filtered review. */
+  const openFinishReview = () => {
+    setReviewMode('normal');
+    setFinishReviewVisible(true);
+  };
+
   const goPrevious = () => {
+    if (expiredRef.current || locked || finalizedRef.current) return;
+    if (reviewMode !== 'normal') {
+      const target = previousFilteredIndex(
+        reviewMode,
+        idx,
+        questions.length,
+        flags,
+        answerSlots,
+      );
+      if (target == null) return;
+      jumpToIndex(target);
+      return;
+    }
     if (!canGoPrevious) return;
     jumpToIndex(idx - 1);
   };
@@ -531,8 +594,27 @@ export function TrainQuizPlayer({
       finalizing ||
       continuing ||
       checkpointVisible ||
-      finishReviewVisible
+      finishReviewVisible ||
+      endTrainConfirmVisible ||
+      endFocusConfirmVisible
     ) {
+      return;
+    }
+    // Filtered pre-submit review steps the live subset on absolute indexes.
+    // No later match reopens "Ready to finish?" and clears the filter.
+    if (reviewMode !== 'normal') {
+      const target = nextFilteredIndex(
+        reviewMode,
+        idx,
+        questions.length,
+        flags,
+        answerSlots,
+      );
+      if (target == null) {
+        openFinishReview();
+        return;
+      }
+      jumpToIndex(target);
       return;
     }
     // Train / Focus / default: still require a selection before Next.
@@ -545,7 +627,7 @@ export function TrainQuizPlayer({
         return;
       }
       if (requireFinishReview) {
-        setFinishReviewVisible(true);
+        openFinishReview();
         return;
       }
       finalizeOnce(answerSlotsRef.current);
@@ -622,6 +704,43 @@ export function TrainQuizPlayer({
     setEndFocusConfirmVisible(false);
     if (finalizedRef.current || expiredRef.current) return;
     finalizeOnce(answerSlotsRef.current);
+  };
+
+  const requestEndTrain = () => {
+    if (
+      !showEndTrain ||
+      finalizedRef.current ||
+      expiredRef.current ||
+      finalizing
+    ) {
+      return;
+    }
+    setEndTrainConfirmVisible(true);
+  };
+
+  const cancelEndTrain = () => {
+    setEndTrainConfirmVisible(false);
+  };
+
+  const confirmEndTrain = () => {
+    setEndTrainConfirmVisible(false);
+    setCheckpointVisible(false);
+    if (finalizedRef.current || expiredRef.current || continuing) return;
+    // Existing Train completion (complete / local results). Never page-continue.
+    finalizeOnce(answerSlotsRef.current);
+  };
+
+  const requestEndTest = () => {
+    if (
+      !showEndTest ||
+      finalizedRef.current ||
+      expiredRef.current ||
+      finalizing
+    ) {
+      return;
+    }
+    // Pre-submission review only. Finish inside the modal submits.
+    openFinishReview();
   };
 
   if (!questions.length) {
@@ -749,6 +868,36 @@ export function TrainQuizPlayer({
                 <Text style={styles.endFocusLabel}>{COPY.endFocus}</Text>
               </Pressable>
             </View>
+          ) : showEndTrain || showEndTest ? (
+            <View style={styles.modeHeaderRow}>
+              <Text
+                style={[styles.title, styles.titleInRow]}
+                numberOfLines={2}
+              >
+                {title}
+              </Text>
+              <Pressable
+                accessibilityRole="button"
+                accessibilityLabel={
+                  showEndTest ? TEST_COPY.endTest : COPY.endTrain
+                }
+                disabled={
+                  finalizedRef.current || expiredRef.current || finalizing
+                }
+                onPress={showEndTest ? requestEndTest : requestEndTrain}
+                hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+                style={({ pressed }) => [
+                  styles.endFocusBtn,
+                  pressed && styles.endFocusBtnPressed,
+                  (finalizedRef.current || expiredRef.current || finalizing) &&
+                    styles.endSessionBtnDisabled,
+                ]}
+              >
+                <Text style={styles.endFocusLabel}>
+                  {showEndTest ? TEST_COPY.endTest : COPY.endTrain}
+                </Text>
+              </Pressable>
+            </View>
           ) : (
             <Text style={styles.title}>{title}</Text>
           )}
@@ -849,7 +998,9 @@ export function TrainQuizPlayer({
               })}
             </View>
 
-            {(allowUnansweredNavigation || selected !== null) &&
+            {(reviewMode !== 'normal' ||
+              allowUnansweredNavigation ||
+              selected !== null) &&
             !locked &&
             !finalizedRef.current &&
             !checkpointVisible ? (
@@ -980,6 +1131,44 @@ export function TrainQuizPlayer({
         </Modal>
       ) : null}
 
+      {showEndTrain ? (
+        <Modal
+          visible={endTrainConfirmVisible}
+          transparent
+          animationType="fade"
+          onRequestClose={cancelEndTrain}
+        >
+          <View style={styles.confirmBackdrop}>
+            <View style={styles.confirmCard} accessibilityViewIsModal>
+              <Text style={styles.confirmTitle}>{COPY.endTrainTitle}</Text>
+              <Text style={styles.confirmMessage}>{COPY.endTrainMessage}</Text>
+              <Pressable
+                accessibilityRole="button"
+                accessibilityLabel={COPY.cancelEndTrain}
+                onPress={cancelEndTrain}
+                style={styles.confirmKeepBtn}
+              >
+                <Text style={styles.confirmKeepLabel}>{COPY.cancelEndTrain}</Text>
+              </Pressable>
+              <Pressable
+                accessibilityRole="button"
+                accessibilityLabel={COPY.endTrain}
+                disabled={finalizing || continuing}
+                onPress={confirmEndTrain}
+                style={[
+                  styles.confirmEndBtn,
+                  (finalizing || continuing) && { opacity: 0.6 },
+                ]}
+              >
+                <Text style={styles.confirmEndLabel}>
+                  {finalizing ? 'Saving…' : COPY.endTrain}
+                </Text>
+              </Pressable>
+            </View>
+          </View>
+        </Modal>
+      ) : null}
+
       {showQuestionNavigator ? (
         <TestQuestionNavigator
           visible={navigatorVisible}
@@ -989,6 +1178,7 @@ export function TrainQuizPlayer({
           currentIndex={idx}
           onClose={() => setNavigatorVisible(false)}
           onJump={(sessionIndex) => {
+            setReviewMode('normal');
             setNavigatorVisible(false);
             jumpToIndex(sessionIndex);
           }}
@@ -1004,25 +1194,29 @@ export function TrainQuizPlayer({
             questions.length,
           )}
           finishing={finalizing}
-          onKeepWorking={() => setFinishReviewVisible(false)}
+          onKeepWorking={() => {
+            setReviewMode('normal');
+            setFinishReviewVisible(false);
+          }}
           onReviewFlagged={() => {
             const target = firstFlaggedIndex(flags, questions.length);
+            if (target == null) return;
+            setReviewMode('flagged');
             setFinishReviewVisible(false);
-            if (target != null) {
-              jumpToIndex(target);
-            }
+            jumpToIndex(target);
           }}
           onReviewUnanswered={() => {
             const target = firstUnansweredIndex(
               answerSlots,
               questions.length,
             );
+            if (target == null) return;
+            setReviewMode('unanswered');
             setFinishReviewVisible(false);
-            if (target != null) {
-              jumpToIndex(target);
-            }
+            jumpToIndex(target);
           }}
           onFinish={() => {
+            setReviewMode('normal');
             setFinishReviewVisible(false);
             finalizeOnce(answerSlotsRef.current);
           }}
@@ -1208,6 +1402,9 @@ const styles = StyleSheet.create({
   endFocusBtnPressed: {
     opacity: 0.85,
     backgroundColor: 'rgba(244, 63, 94, 0.35)',
+  },
+  endSessionBtnDisabled: {
+    opacity: 0.45,
   },
   endFocusLabel: {
     fontFamily: fonts.display,

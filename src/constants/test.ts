@@ -69,6 +69,8 @@ export const TEST_COPY = {
     'You can finish early even if some questions are unanswered or flagged.',
   ] as const,
   finishTest: 'Finish test',
+  /** Opens the pre-submission "Ready to finish?" modal. Does not submit. */
+  endTest: 'End Test',
   flagForReviewLabel: 'Flag for review',
   flaggedLabel: 'Flagged for review',
   flagShort: 'Flag',
