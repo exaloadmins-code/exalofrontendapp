@@ -1,0 +1,3117 @@
+{
+  "medium_sha256": "f62897c6fe48dbcce2e8b4648ebfcad3cadb95eaa4c597fdfb08f0367ab135e4",
+  "hard_sha256": "5442e9a938bbfa10d27c1995bce7ea33bb54b67636a7727782d5a324853a4d7f",
+  "count": 41,
+  "questions": [
+    {
+      "external_id": "MATH-NUMBER-BIDMAS-MEDIUM-007",
+      "difficulty": "medium",
+      "visual_type": "bid_group_placements",
+      "schema_version": "bidmas_1.0",
+      "diagram_data": {
+        "schema_version": "bidmas_1.0",
+        "visual_type": "bid_group_placements",
+        "operation": "bidmas_bracket_placement",
+        "fixed_tokens": [
+          "4",
+          "×",
+          "5",
+          "+",
+          "2",
+          "×",
+          "3"
+        ],
+        "placements": [
+          {
+            "option_key": "A",
+            "tree": {
+              "op_index": 5,
+              "left": {
+                "op_index": 3,
+                "left": {
+                  "op_index": 1,
+                  "left": 0,
+                  "right": 1
+                },
+                "right": 2
+              },
+              "right": 3
+            }
+          },
+          {
+            "option_key": "B",
+            "tree": {
+              "op_index": 3,
+              "left": {
+                "op_index": 1,
+                "left": 0,
+                "right": 1
+              },
+              "right": {
+                "op_index": 5,
+                "left": 2,
+                "right": 3
+              }
+            }
+          },
+          {
+            "option_key": "C",
+            "tree": {
+              "op_index": 1,
+              "left": 0,
+              "right": {
+                "op_index": 5,
+                "left": {
+                  "op_index": 3,
+                  "left": 1,
+                  "right": 2
+                },
+                "right": 3
+              }
+            }
+          },
+          {
+            "option_key": "D",
+            "tree": {
+              "op_index": 1,
+              "left": 0,
+              "right": {
+                "op_index": 3,
+                "left": 1,
+                "right": {
+                  "op_index": 5,
+                  "left": 2,
+                  "right": 3
+                }
+              }
+            }
+          }
+        ],
+        "reveal_values": false,
+        "accessibility_text": "Four ways to bracket 4 × 5 + 2 × 3. Choose the one that equals 44."
+      }
+    },
+    {
+      "external_id": "MATH-NUMBER-BIDMAS-MEDIUM-008",
+      "difficulty": "medium",
+      "visual_type": "bid_group_placements",
+      "schema_version": "bidmas_1.0",
+      "diagram_data": {
+        "schema_version": "bidmas_1.0",
+        "visual_type": "bid_group_placements",
+        "operation": "bidmas_bracket_placement",
+        "fixed_tokens": [
+          "3",
+          "×",
+          "12",
+          "−",
+          "9",
+          "÷",
+          "3"
+        ],
+        "placements": [
+          {
+            "option_key": "A",
+            "tree": {
+              "op_index": 5,
+              "left": {
+                "op_index": 3,
+                "left": {
+                  "op_index": 1,
+                  "left": 0,
+                  "right": 1
+                },
+                "right": 2
+              },
+              "right": 3
+            }
+          },
+          {
+            "option_key": "B",
+            "tree": {
+              "op_index": 3,
+              "left": {
+                "op_index": 1,
+                "left": 0,
+                "right": 1
+              },
+              "right": {
+                "op_index": 5,
+                "left": 2,
+                "right": 3
+              }
+            }
+          },
+          {
+            "option_key": "C",
+            "tree": {
+              "op_index": 1,
+              "left": 0,
+              "right": {
+                "op_index": 5,
+                "left": {
+                  "op_index": 3,
+                  "left": 1,
+                  "right": 2
+                },
+                "right": 3
+              }
+            }
+          },
+          {
+            "option_key": "D",
+            "tree": {
+              "op_index": 1,
+              "left": 0,
+              "right": {
+                "op_index": 3,
+                "left": 1,
+                "right": {
+                  "op_index": 5,
+                  "left": 2,
+                  "right": 3
+                }
+              }
+            }
+          }
+        ],
+        "reveal_values": false,
+        "accessibility_text": "Four ways to bracket 3 × 12 − 9 ÷ 3. Choose the one that equals 27."
+      }
+    },
+    {
+      "external_id": "MATH-NUMBER-BIDMAS-MEDIUM-009",
+      "difficulty": "medium",
+      "visual_type": "bid_group_placements",
+      "schema_version": "bidmas_1.0",
+      "diagram_data": {
+        "schema_version": "bidmas_1.0",
+        "visual_type": "bid_group_placements",
+        "operation": "bidmas_bracket_placement",
+        "fixed_tokens": [
+          "10",
+          "+",
+          "9",
+          "×",
+          "2",
+          "+",
+          "9"
+        ],
+        "placements": [
+          {
+            "option_key": "A",
+            "tree": {
+              "op_index": 5,
+              "left": {
+                "op_index": 3,
+                "left": {
+                  "op_index": 1,
+                  "left": 0,
+                  "right": 1
+                },
+                "right": 2
+              },
+              "right": 3
+            }
+          },
+          {
+            "option_key": "B",
+            "tree": {
+              "op_index": 3,
+              "left": {
+                "op_index": 1,
+                "left": 0,
+                "right": 1
+              },
+              "right": {
+                "op_index": 5,
+                "left": 2,
+                "right": 3
+              }
+            }
+          },
+          {
+            "option_key": "C",
+            "tree": {
+              "op_index": 1,
+              "left": 0,
+              "right": {
+                "op_index": 5,
+                "left": {
+                  "op_index": 3,
+                  "left": 1,
+                  "right": 2
+                },
+                "right": 3
+              }
+            }
+          },
+          {
+            "option_key": "D",
+            "tree": {
+              "op_index": 1,
+              "left": 0,
+              "right": {
+                "op_index": 3,
+                "left": 1,
+                "right": {
+                  "op_index": 5,
+                  "left": 2,
+                  "right": 3
+                }
+              }
+            }
+          }
+        ],
+        "reveal_values": false,
+        "accessibility_text": "Four ways to bracket 10 + 9 × 2 + 9. Choose the one that equals 47."
+      }
+    },
+    {
+      "external_id": "MATH-NUMBER-BIDMAS-MEDIUM-014",
+      "difficulty": "medium",
+      "visual_type": "bid_error_panel",
+      "schema_version": "bidmas_1.0",
+      "diagram_data": {
+        "schema_version": "bidmas_1.0",
+        "visual_type": "bid_error_panel",
+        "operation": "bidmas_error_diagnosis",
+        "expression_tokens": [
+          "6",
+          "+",
+          "6",
+          "×",
+          "4"
+        ],
+        "panels": [
+          {
+            "label": "Working A",
+            "steps": [
+              "6 × 4 = 24",
+              "6 + 24 = 30"
+            ]
+          },
+          {
+            "label": "Working B",
+            "steps": [
+              "6 + 6 = 12",
+              "12 × 4 = 48"
+            ]
+          }
+        ],
+        "highlight_fault_panel": null,
+        "reveal_verdict": false,
+        "accessibility_text": "Two workings for 6 + 6 × 4."
+      }
+    },
+    {
+      "external_id": "MATH-NUMBER-BIDMAS-MEDIUM-015",
+      "difficulty": "medium",
+      "visual_type": "bid_error_panel",
+      "schema_version": "bidmas_1.0",
+      "diagram_data": {
+        "schema_version": "bidmas_1.0",
+        "visual_type": "bid_error_panel",
+        "operation": "bidmas_error_diagnosis",
+        "expression_tokens": [
+          "16",
+          "−",
+          "3",
+          "+",
+          "1"
+        ],
+        "panels": [
+          {
+            "label": "Working A",
+            "steps": [
+              "16 − 3 = 13",
+              "13 + 1 = 14"
+            ]
+          },
+          {
+            "label": "Working B",
+            "steps": [
+              "3 + 1 = 4",
+              "16 − 4 = 12"
+            ]
+          }
+        ],
+        "highlight_fault_panel": null,
+        "reveal_verdict": false,
+        "accessibility_text": "Two workings for 16 − 3 + 1."
+      }
+    },
+    {
+      "external_id": "MATH-NUMBER-BIDMAS-MEDIUM-018",
+      "difficulty": "medium",
+      "visual_type": "bid_group_placements",
+      "schema_version": "bidmas_1.0",
+      "diagram_data": {
+        "schema_version": "bidmas_1.0",
+        "visual_type": "bid_group_placements",
+        "operation": "bidmas_extremal_grouping",
+        "fixed_tokens": [
+          "2",
+          "+",
+          "6",
+          "×",
+          "3",
+          "−",
+          "1"
+        ],
+        "placements": [
+          {
+            "option_key": "A",
+            "tree": {
+              "op_index": 5,
+              "left": {
+                "op_index": 3,
+                "left": {
+                  "op_index": 1,
+                  "left": 0,
+                  "right": 1
+                },
+                "right": 2
+              },
+              "right": 3
+            }
+          },
+          {
+            "option_key": "B",
+            "tree": {
+              "op_index": 3,
+              "left": {
+                "op_index": 1,
+                "left": 0,
+                "right": 1
+              },
+              "right": {
+                "op_index": 5,
+                "left": 2,
+                "right": 3
+              }
+            }
+          },
+          {
+            "option_key": "C",
+            "tree": {
+              "op_index": 1,
+              "left": 0,
+              "right": {
+                "op_index": 5,
+                "left": {
+                  "op_index": 3,
+                  "left": 1,
+                  "right": 2
+                },
+                "right": 3
+              }
+            }
+          },
+          {
+            "option_key": "D",
+            "tree": {
+              "op_index": 1,
+              "left": 0,
+              "right": {
+                "op_index": 3,
+                "left": 1,
+                "right": {
+                  "op_index": 5,
+                  "left": 2,
+                  "right": 3
+                }
+              }
+            }
+          }
+        ],
+        "reveal_values": false,
+        "accessibility_text": "Four groupings of 2 + 6 × 3 − 1. Choose the least."
+      }
+    },
+    {
+      "external_id": "MATH-NUMBER-BIDMAS-MEDIUM-019",
+      "difficulty": "medium",
+      "visual_type": "bid_group_placements",
+      "schema_version": "bidmas_1.0",
+      "diagram_data": {
+        "schema_version": "bidmas_1.0",
+        "visual_type": "bid_group_placements",
+        "operation": "bidmas_extremal_grouping",
+        "fixed_tokens": [
+          "3",
+          "×",
+          "4",
+          "+",
+          "2",
+          "×",
+          "5"
+        ],
+        "placements": [
+          {
+            "option_key": "A",
+            "tree": {
+              "op_index": 5,
+              "left": {
+                "op_index": 3,
+                "left": {
+                  "op_index": 1,
+                  "left": 0,
+                  "right": 1
+                },
+                "right": 2
+              },
+              "right": 3
+            }
+          },
+          {
+            "option_key": "B",
+            "tree": {
+              "op_index": 3,
+              "left": {
+                "op_index": 1,
+                "left": 0,
+                "right": 1
+              },
+              "right": {
+                "op_index": 5,
+                "left": 2,
+                "right": 3
+              }
+            }
+          },
+          {
+            "option_key": "C",
+            "tree": {
+              "op_index": 1,
+              "left": 0,
+              "right": {
+                "op_index": 5,
+                "left": {
+                  "op_index": 3,
+                  "left": 1,
+                  "right": 2
+                },
+                "right": 3
+              }
+            }
+          },
+          {
+            "option_key": "D",
+            "tree": {
+              "op_index": 1,
+              "left": 0,
+              "right": {
+                "op_index": 3,
+                "left": 1,
+                "right": {
+                  "op_index": 5,
+                  "left": 2,
+                  "right": 3
+                }
+              }
+            }
+          }
+        ],
+        "reveal_values": false,
+        "accessibility_text": "Four groupings of 3 × 4 + 2 × 5. Choose the greatest."
+      }
+    },
+    {
+      "external_id": "MATH-NUMBER-BIDMAS-MEDIUM-045",
+      "difficulty": "medium",
+      "visual_type": "bid_group_placements",
+      "schema_version": "bidmas_1.0",
+      "diagram_data": {
+        "schema_version": "bidmas_1.0",
+        "visual_type": "bid_group_placements",
+        "operation": "bidmas_bracket_placement",
+        "fixed_tokens": [
+          "6",
+          "×",
+          "3",
+          "+",
+          "6",
+          "÷",
+          "3"
+        ],
+        "placements": [
+          {
+            "option_key": "A",
+            "tree": {
+              "op_index": 5,
+              "left": {
+                "op_index": 3,
+                "left": {
+                  "op_index": 1,
+                  "left": 0,
+                  "right": 1
+                },
+                "right": 2
+              },
+              "right": 3
+            }
+          },
+          {
+            "option_key": "B",
+            "tree": {
+              "op_index": 3,
+              "left": {
+                "op_index": 1,
+                "left": 0,
+                "right": 1
+              },
+              "right": {
+                "op_index": 5,
+                "left": 2,
+                "right": 3
+              }
+            }
+          },
+          {
+            "option_key": "C",
+            "tree": {
+              "op_index": 1,
+              "left": 0,
+              "right": {
+                "op_index": 5,
+                "left": {
+                  "op_index": 3,
+                  "left": 1,
+                  "right": 2
+                },
+                "right": 3
+              }
+            }
+          },
+          {
+            "option_key": "D",
+            "tree": {
+              "op_index": 1,
+              "left": 0,
+              "right": {
+                "op_index": 3,
+                "left": 1,
+                "right": {
+                  "op_index": 5,
+                  "left": 2,
+                  "right": 3
+                }
+              }
+            }
+          }
+        ],
+        "reveal_values": false,
+        "accessibility_text": "Four expressions based on 6 × 3 + 6 ÷ 3. Choose the one equal to 8."
+      }
+    },
+    {
+      "external_id": "MATH-NUMBER-BIDMAS-MEDIUM-046",
+      "difficulty": "medium",
+      "visual_type": "bid_group_placements",
+      "schema_version": "bidmas_1.0",
+      "diagram_data": {
+        "schema_version": "bidmas_1.0",
+        "visual_type": "bid_group_placements",
+        "operation": "bidmas_bracket_placement",
+        "fixed_tokens": [
+          "12",
+          "−",
+          "9",
+          "−",
+          "3",
+          "÷",
+          "3"
+        ],
+        "placements": [
+          {
+            "option_key": "A",
+            "tree": {
+              "op_index": 5,
+              "left": {
+                "op_index": 3,
+                "left": {
+                  "op_index": 1,
+                  "left": 0,
+                  "right": 1
+                },
+                "right": 2
+              },
+              "right": 3
+            }
+          },
+          {
+            "option_key": "B",
+            "tree": {
+              "op_index": 3,
+              "left": {
+                "op_index": 1,
+                "left": 0,
+                "right": 1
+              },
+              "right": {
+                "op_index": 5,
+                "left": 2,
+                "right": 3
+              }
+            }
+          },
+          {
+            "option_key": "C",
+            "tree": {
+              "op_index": 1,
+              "left": 0,
+              "right": {
+                "op_index": 5,
+                "left": {
+                  "op_index": 3,
+                  "left": 1,
+                  "right": 2
+                },
+                "right": 3
+              }
+            }
+          },
+          {
+            "option_key": "D",
+            "tree": {
+              "op_index": 1,
+              "left": 0,
+              "right": {
+                "op_index": 3,
+                "left": 1,
+                "right": {
+                  "op_index": 5,
+                  "left": 2,
+                  "right": 3
+                }
+              }
+            }
+          }
+        ],
+        "reveal_values": false,
+        "accessibility_text": "Four expressions based on 12 − 9 − 3 ÷ 3. Choose the one equal to 10."
+      }
+    },
+    {
+      "external_id": "MATH-NUMBER-BIDMAS-MEDIUM-047",
+      "difficulty": "medium",
+      "visual_type": "bid_group_placements",
+      "schema_version": "bidmas_1.0",
+      "diagram_data": {
+        "schema_version": "bidmas_1.0",
+        "visual_type": "bid_group_placements",
+        "operation": "bidmas_bracket_placement",
+        "fixed_tokens": [
+          "11",
+          "+",
+          "2",
+          "×",
+          "5",
+          "−",
+          "3"
+        ],
+        "placements": [
+          {
+            "option_key": "A",
+            "tree": {
+              "op_index": 5,
+              "left": {
+                "op_index": 3,
+                "left": {
+                  "op_index": 1,
+                  "left": 0,
+                  "right": 1
+                },
+                "right": 2
+              },
+              "right": 3
+            }
+          },
+          {
+            "option_key": "B",
+            "tree": {
+              "op_index": 3,
+              "left": {
+                "op_index": 1,
+                "left": 0,
+                "right": 1
+              },
+              "right": {
+                "op_index": 5,
+                "left": 2,
+                "right": 3
+              }
+            }
+          },
+          {
+            "option_key": "C",
+            "tree": {
+              "op_index": 1,
+              "left": 0,
+              "right": {
+                "op_index": 5,
+                "left": {
+                  "op_index": 3,
+                  "left": 1,
+                  "right": 2
+                },
+                "right": 3
+              }
+            }
+          },
+          {
+            "option_key": "D",
+            "tree": {
+              "op_index": 1,
+              "left": 0,
+              "right": {
+                "op_index": 3,
+                "left": 1,
+                "right": {
+                  "op_index": 5,
+                  "left": 2,
+                  "right": 3
+                }
+              }
+            }
+          }
+        ],
+        "reveal_values": false,
+        "accessibility_text": "Four expressions based on 11 + 2 × 5 − 3. Choose the one equal to 26."
+      }
+    },
+    {
+      "external_id": "MATH-NUMBER-BIDMAS-MEDIUM-048",
+      "difficulty": "medium",
+      "visual_type": "bid_group_placements",
+      "schema_version": "bidmas_1.0",
+      "diagram_data": {
+        "schema_version": "bidmas_1.0",
+        "visual_type": "bid_group_placements",
+        "operation": "bidmas_bracket_placement",
+        "fixed_tokens": [
+          "3",
+          "×",
+          "10",
+          "−",
+          "4",
+          "×",
+          "2"
+        ],
+        "placements": [
+          {
+            "option_key": "A",
+            "tree": {
+              "op_index": 5,
+              "left": {
+                "op_index": 3,
+                "left": {
+                  "op_index": 1,
+                  "left": 0,
+                  "right": 1
+                },
+                "right": 2
+              },
+              "right": 3
+            }
+          },
+          {
+            "option_key": "B",
+            "tree": {
+              "op_index": 3,
+              "left": {
+                "op_index": 1,
+                "left": 0,
+                "right": 1
+              },
+              "right": {
+                "op_index": 5,
+                "left": 2,
+                "right": 3
+              }
+            }
+          },
+          {
+            "option_key": "C",
+            "tree": {
+              "op_index": 1,
+              "left": 0,
+              "right": {
+                "op_index": 5,
+                "left": {
+                  "op_index": 3,
+                  "left": 1,
+                  "right": 2
+                },
+                "right": 3
+              }
+            }
+          },
+          {
+            "option_key": "D",
+            "tree": {
+              "op_index": 1,
+              "left": 0,
+              "right": {
+                "op_index": 3,
+                "left": 1,
+                "right": {
+                  "op_index": 5,
+                  "left": 2,
+                  "right": 3
+                }
+              }
+            }
+          }
+        ],
+        "reveal_values": false,
+        "accessibility_text": "Four expressions based on 3 × 10 − 4 × 2. Choose the one equal to 52."
+      }
+    },
+    {
+      "external_id": "MATH-NUMBER-BIDMAS-MEDIUM-049",
+      "difficulty": "medium",
+      "visual_type": "bid_group_placements",
+      "schema_version": "bidmas_1.0",
+      "diagram_data": {
+        "schema_version": "bidmas_1.0",
+        "visual_type": "bid_group_placements",
+        "operation": "bidmas_bracket_placement",
+        "fixed_tokens": [
+          "3",
+          "×",
+          "10",
+          "−",
+          "2",
+          "÷",
+          "2"
+        ],
+        "placements": [
+          {
+            "option_key": "A",
+            "tree": {
+              "op_index": 5,
+              "left": {
+                "op_index": 3,
+                "left": {
+                  "op_index": 1,
+                  "left": 0,
+                  "right": 1
+                },
+                "right": 2
+              },
+              "right": 3
+            }
+          },
+          {
+            "option_key": "B",
+            "tree": {
+              "op_index": 3,
+              "left": {
+                "op_index": 1,
+                "left": 0,
+                "right": 1
+              },
+              "right": {
+                "op_index": 5,
+                "left": 2,
+                "right": 3
+              }
+            }
+          },
+          {
+            "option_key": "C",
+            "tree": {
+              "op_index": 1,
+              "left": 0,
+              "right": {
+                "op_index": 5,
+                "left": {
+                  "op_index": 3,
+                  "left": 1,
+                  "right": 2
+                },
+                "right": 3
+              }
+            }
+          },
+          {
+            "option_key": "D",
+            "tree": {
+              "op_index": 1,
+              "left": 0,
+              "right": {
+                "op_index": 3,
+                "left": 1,
+                "right": {
+                  "op_index": 5,
+                  "left": 2,
+                  "right": 3
+                }
+              }
+            }
+          }
+        ],
+        "reveal_values": false,
+        "accessibility_text": "Four expressions based on 3 × 10 − 2 ÷ 2. Choose the one equal to 14."
+      }
+    },
+    {
+      "external_id": "MATH-NUMBER-BIDMAS-MEDIUM-050",
+      "difficulty": "medium",
+      "visual_type": "bid_group_placements",
+      "schema_version": "bidmas_1.0",
+      "diagram_data": {
+        "schema_version": "bidmas_1.0",
+        "visual_type": "bid_group_placements",
+        "operation": "bidmas_bracket_placement",
+        "fixed_tokens": [
+          "2",
+          "×",
+          "4",
+          "+",
+          "12",
+          "÷",
+          "2"
+        ],
+        "placements": [
+          {
+            "option_key": "A",
+            "tree": {
+              "op_index": 5,
+              "left": {
+                "op_index": 3,
+                "left": {
+                  "op_index": 1,
+                  "left": 0,
+                  "right": 1
+                },
+                "right": 2
+              },
+              "right": 3
+            }
+          },
+          {
+            "option_key": "B",
+            "tree": {
+              "op_index": 3,
+              "left": {
+                "op_index": 1,
+                "left": 0,
+                "right": 1
+              },
+              "right": {
+                "op_index": 5,
+                "left": 2,
+                "right": 3
+              }
+            }
+          },
+          {
+            "option_key": "C",
+            "tree": {
+              "op_index": 1,
+              "left": 0,
+              "right": {
+                "op_index": 5,
+                "left": {
+                  "op_index": 3,
+                  "left": 1,
+                  "right": 2
+                },
+                "right": 3
+              }
+            }
+          },
+          {
+            "option_key": "D",
+            "tree": {
+              "op_index": 1,
+              "left": 0,
+              "right": {
+                "op_index": 3,
+                "left": 1,
+                "right": {
+                  "op_index": 5,
+                  "left": 2,
+                  "right": 3
+                }
+              }
+            }
+          }
+        ],
+        "reveal_values": false,
+        "accessibility_text": "Four expressions based on 2 × 4 + 12 ÷ 2. Choose the one equal to 10."
+      }
+    },
+    {
+      "external_id": "MATH-NUMBER-BIDMAS-MEDIUM-051",
+      "difficulty": "medium",
+      "visual_type": "bid_group_placements",
+      "schema_version": "bidmas_1.0",
+      "diagram_data": {
+        "schema_version": "bidmas_1.0",
+        "visual_type": "bid_group_placements",
+        "operation": "bidmas_bracket_placement",
+        "fixed_tokens": [
+          "2",
+          "×",
+          "8",
+          "−",
+          "8",
+          "÷",
+          "8"
+        ],
+        "placements": [
+          {
+            "option_key": "A",
+            "tree": {
+              "op_index": 5,
+              "left": {
+                "op_index": 3,
+                "left": {
+                  "op_index": 1,
+                  "left": 0,
+                  "right": 1
+                },
+                "right": 2
+              },
+              "right": 3
+            }
+          },
+          {
+            "option_key": "B",
+            "tree": {
+              "op_index": 3,
+              "left": {
+                "op_index": 1,
+                "left": 0,
+                "right": 1
+              },
+              "right": {
+                "op_index": 5,
+                "left": 2,
+                "right": 3
+              }
+            }
+          },
+          {
+            "option_key": "C",
+            "tree": {
+              "op_index": 1,
+              "left": 0,
+              "right": {
+                "op_index": 5,
+                "left": {
+                  "op_index": 3,
+                  "left": 1,
+                  "right": 2
+                },
+                "right": 3
+              }
+            }
+          },
+          {
+            "option_key": "D",
+            "tree": {
+              "op_index": 1,
+              "left": 0,
+              "right": {
+                "op_index": 3,
+                "left": 1,
+                "right": {
+                  "op_index": 5,
+                  "left": 2,
+                  "right": 3
+                }
+              }
+            }
+          }
+        ],
+        "reveal_values": false,
+        "accessibility_text": "Four expressions based on 2 × 8 − 8 ÷ 8. Choose the one equal to 14."
+      }
+    },
+    {
+      "external_id": "MATH-NUMBER-BIDMAS-MEDIUM-052",
+      "difficulty": "medium",
+      "visual_type": "bid_group_placements",
+      "schema_version": "bidmas_1.0",
+      "diagram_data": {
+        "schema_version": "bidmas_1.0",
+        "visual_type": "bid_group_placements",
+        "operation": "bidmas_bracket_placement",
+        "fixed_tokens": [
+          "2",
+          "+",
+          "5",
+          "×",
+          "11",
+          "−",
+          "5"
+        ],
+        "placements": [
+          {
+            "option_key": "A",
+            "tree": {
+              "op_index": 5,
+              "left": {
+                "op_index": 3,
+                "left": {
+                  "op_index": 1,
+                  "left": 0,
+                  "right": 1
+                },
+                "right": 2
+              },
+              "right": 3
+            }
+          },
+          {
+            "option_key": "B",
+            "tree": {
+              "op_index": 3,
+              "left": {
+                "op_index": 1,
+                "left": 0,
+                "right": 1
+              },
+              "right": {
+                "op_index": 5,
+                "left": 2,
+                "right": 3
+              }
+            }
+          },
+          {
+            "option_key": "C",
+            "tree": {
+              "op_index": 1,
+              "left": 0,
+              "right": {
+                "op_index": 5,
+                "left": {
+                  "op_index": 3,
+                  "left": 1,
+                  "right": 2
+                },
+                "right": 3
+              }
+            }
+          },
+          {
+            "option_key": "D",
+            "tree": {
+              "op_index": 1,
+              "left": 0,
+              "right": {
+                "op_index": 3,
+                "left": 1,
+                "right": {
+                  "op_index": 5,
+                  "left": 2,
+                  "right": 3
+                }
+              }
+            }
+          }
+        ],
+        "reveal_values": false,
+        "accessibility_text": "Four expressions based on 2 + 5 × 11 − 5. Choose the one equal to 42."
+      }
+    },
+    {
+      "external_id": "MATH-NUMBER-BIDMAS-MEDIUM-053",
+      "difficulty": "medium",
+      "visual_type": "bid_group_placements",
+      "schema_version": "bidmas_1.0",
+      "diagram_data": {
+        "schema_version": "bidmas_1.0",
+        "visual_type": "bid_group_placements",
+        "operation": "bidmas_bracket_placement",
+        "fixed_tokens": [
+          "4",
+          "+",
+          "6",
+          "×",
+          "4",
+          "+",
+          "3"
+        ],
+        "placements": [
+          {
+            "option_key": "A",
+            "tree": {
+              "op_index": 5,
+              "left": {
+                "op_index": 3,
+                "left": {
+                  "op_index": 1,
+                  "left": 0,
+                  "right": 1
+                },
+                "right": 2
+              },
+              "right": 3
+            }
+          },
+          {
+            "option_key": "B",
+            "tree": {
+              "op_index": 3,
+              "left": {
+                "op_index": 1,
+                "left": 0,
+                "right": 1
+              },
+              "right": {
+                "op_index": 5,
+                "left": 2,
+                "right": 3
+              }
+            }
+          },
+          {
+            "option_key": "C",
+            "tree": {
+              "op_index": 1,
+              "left": 0,
+              "right": {
+                "op_index": 5,
+                "left": {
+                  "op_index": 3,
+                  "left": 1,
+                  "right": 2
+                },
+                "right": 3
+              }
+            }
+          },
+          {
+            "option_key": "D",
+            "tree": {
+              "op_index": 1,
+              "left": 0,
+              "right": {
+                "op_index": 3,
+                "left": 1,
+                "right": {
+                  "op_index": 5,
+                  "left": 2,
+                  "right": 3
+                }
+              }
+            }
+          }
+        ],
+        "reveal_values": false,
+        "accessibility_text": "Four expressions based on 4 + 6 × 4 + 3. Choose the one equal to 43."
+      }
+    },
+    {
+      "external_id": "MATH-NUMBER-BIDMAS-MEDIUM-054",
+      "difficulty": "medium",
+      "visual_type": "bid_group_placements",
+      "schema_version": "bidmas_1.0",
+      "diagram_data": {
+        "schema_version": "bidmas_1.0",
+        "visual_type": "bid_group_placements",
+        "operation": "bidmas_bracket_placement",
+        "fixed_tokens": [
+          "5",
+          "+",
+          "3",
+          "×",
+          "9",
+          "−",
+          "4"
+        ],
+        "placements": [
+          {
+            "option_key": "A",
+            "tree": {
+              "op_index": 5,
+              "left": {
+                "op_index": 3,
+                "left": {
+                  "op_index": 1,
+                  "left": 0,
+                  "right": 1
+                },
+                "right": 2
+              },
+              "right": 3
+            }
+          },
+          {
+            "option_key": "B",
+            "tree": {
+              "op_index": 3,
+              "left": {
+                "op_index": 1,
+                "left": 0,
+                "right": 1
+              },
+              "right": {
+                "op_index": 5,
+                "left": 2,
+                "right": 3
+              }
+            }
+          },
+          {
+            "option_key": "C",
+            "tree": {
+              "op_index": 1,
+              "left": 0,
+              "right": {
+                "op_index": 5,
+                "left": {
+                  "op_index": 3,
+                  "left": 1,
+                  "right": 2
+                },
+                "right": 3
+              }
+            }
+          },
+          {
+            "option_key": "D",
+            "tree": {
+              "op_index": 1,
+              "left": 0,
+              "right": {
+                "op_index": 3,
+                "left": 1,
+                "right": {
+                  "op_index": 5,
+                  "left": 2,
+                  "right": 3
+                }
+              }
+            }
+          }
+        ],
+        "reveal_values": false,
+        "accessibility_text": "Four expressions based on 5 + 3 × 9 − 4. Choose the one equal to 40."
+      }
+    },
+    {
+      "external_id": "MATH-NUMBER-BIDMAS-MEDIUM-055",
+      "difficulty": "medium",
+      "visual_type": "bid_group_placements",
+      "schema_version": "bidmas_1.0",
+      "diagram_data": {
+        "schema_version": "bidmas_1.0",
+        "visual_type": "bid_group_placements",
+        "operation": "bidmas_bracket_placement",
+        "fixed_tokens": [
+          "2",
+          "×",
+          "6",
+          "+",
+          "11",
+          "×",
+          "2"
+        ],
+        "placements": [
+          {
+            "option_key": "A",
+            "tree": {
+              "op_index": 5,
+              "left": {
+                "op_index": 3,
+                "left": {
+                  "op_index": 1,
+                  "left": 0,
+                  "right": 1
+                },
+                "right": 2
+              },
+              "right": 3
+            }
+          },
+          {
+            "option_key": "B",
+            "tree": {
+              "op_index": 3,
+              "left": {
+                "op_index": 1,
+                "left": 0,
+                "right": 1
+              },
+              "right": {
+                "op_index": 5,
+                "left": 2,
+                "right": 3
+              }
+            }
+          },
+          {
+            "option_key": "C",
+            "tree": {
+              "op_index": 1,
+              "left": 0,
+              "right": {
+                "op_index": 5,
+                "left": {
+                  "op_index": 3,
+                  "left": 1,
+                  "right": 2
+                },
+                "right": 3
+              }
+            }
+          },
+          {
+            "option_key": "D",
+            "tree": {
+              "op_index": 1,
+              "left": 0,
+              "right": {
+                "op_index": 3,
+                "left": 1,
+                "right": {
+                  "op_index": 5,
+                  "left": 2,
+                  "right": 3
+                }
+              }
+            }
+          }
+        ],
+        "reveal_values": false,
+        "accessibility_text": "Four expressions based on 2 × 6 + 11 × 2. Choose the one equal to 46."
+      }
+    },
+    {
+      "external_id": "MATH-NUMBER-BIDMAS-MEDIUM-056",
+      "difficulty": "medium",
+      "visual_type": "bid_group_placements",
+      "schema_version": "bidmas_1.0",
+      "diagram_data": {
+        "schema_version": "bidmas_1.0",
+        "visual_type": "bid_group_placements",
+        "operation": "bidmas_bracket_placement",
+        "fixed_tokens": [
+          "2",
+          "×",
+          "8",
+          "+",
+          "4",
+          "÷",
+          "2"
+        ],
+        "placements": [
+          {
+            "option_key": "A",
+            "tree": {
+              "op_index": 5,
+              "left": {
+                "op_index": 3,
+                "left": {
+                  "op_index": 1,
+                  "left": 0,
+                  "right": 1
+                },
+                "right": 2
+              },
+              "right": 3
+            }
+          },
+          {
+            "option_key": "B",
+            "tree": {
+              "op_index": 3,
+              "left": {
+                "op_index": 1,
+                "left": 0,
+                "right": 1
+              },
+              "right": {
+                "op_index": 5,
+                "left": 2,
+                "right": 3
+              }
+            }
+          },
+          {
+            "option_key": "C",
+            "tree": {
+              "op_index": 1,
+              "left": 0,
+              "right": {
+                "op_index": 5,
+                "left": {
+                  "op_index": 3,
+                  "left": 1,
+                  "right": 2
+                },
+                "right": 3
+              }
+            }
+          },
+          {
+            "option_key": "D",
+            "tree": {
+              "op_index": 1,
+              "left": 0,
+              "right": {
+                "op_index": 3,
+                "left": 1,
+                "right": {
+                  "op_index": 5,
+                  "left": 2,
+                  "right": 3
+                }
+              }
+            }
+          }
+        ],
+        "reveal_values": false,
+        "accessibility_text": "Four expressions based on 2 × 8 + 4 ÷ 2. Choose the one equal to 10."
+      }
+    },
+    {
+      "external_id": "MATH-NUMBER-BIDMAS-MEDIUM-073",
+      "difficulty": "medium",
+      "visual_type": "bid_error_panel",
+      "schema_version": "bidmas_1.0",
+      "diagram_data": {
+        "schema_version": "bidmas_1.0",
+        "visual_type": "bid_error_panel",
+        "operation": "bidmas_error_diagnosis",
+        "expression_tokens": [
+          "30",
+          "−",
+          "8",
+          "−",
+          "6"
+        ],
+        "panels": [
+          {
+            "label": "Working A",
+            "steps": [
+              "8 − 6 = 2",
+              "30 − 2 = 28"
+            ]
+          },
+          {
+            "label": "Working B",
+            "steps": [
+              "30 − 8 = 22",
+              "22 − 6 = 16"
+            ]
+          }
+        ],
+        "highlight_fault_panel": null,
+        "reveal_verdict": false,
+        "accessibility_text": "Two workings for 30 − 8 − 6."
+      }
+    },
+    {
+      "external_id": "MATH-NUMBER-BIDMAS-MEDIUM-074",
+      "difficulty": "medium",
+      "visual_type": "bid_error_panel",
+      "schema_version": "bidmas_1.0",
+      "diagram_data": {
+        "schema_version": "bidmas_1.0",
+        "visual_type": "bid_error_panel",
+        "operation": "bidmas_error_diagnosis",
+        "expression_tokens": [
+          "42",
+          "÷",
+          "7",
+          "×",
+          "2"
+        ],
+        "panels": [
+          {
+            "label": "Working A",
+            "steps": [
+              "42 ÷ 7 = 6",
+              "6 × 2 = 12"
+            ]
+          },
+          {
+            "label": "Working B",
+            "steps": [
+              "7 × 2 = 14",
+              "42 ÷ 14 = 3"
+            ]
+          }
+        ],
+        "highlight_fault_panel": null,
+        "reveal_verdict": false,
+        "accessibility_text": "Two workings for 42 ÷ 7 × 2."
+      }
+    },
+    {
+      "external_id": "MATH-NUMBER-BIDMAS-MEDIUM-075",
+      "difficulty": "medium",
+      "visual_type": "bid_error_panel",
+      "schema_version": "bidmas_1.0",
+      "diagram_data": {
+        "schema_version": "bidmas_1.0",
+        "visual_type": "bid_error_panel",
+        "operation": "bidmas_error_diagnosis",
+        "expression_tokens": [
+          "18",
+          "−",
+          "12",
+          "÷",
+          "3"
+        ],
+        "panels": [
+          {
+            "label": "Working A",
+            "steps": [
+              "12 ÷ 3 = 4",
+              "18 − 4 = 14"
+            ]
+          },
+          {
+            "label": "Working B",
+            "steps": [
+              "18 − 12 = 6",
+              "6 ÷ 3 = 2"
+            ]
+          }
+        ],
+        "highlight_fault_panel": null,
+        "reveal_verdict": false,
+        "accessibility_text": "Two workings for 18 − 12 ÷ 3."
+      }
+    },
+    {
+      "external_id": "MATH-NUMBER-BIDMAS-MEDIUM-076",
+      "difficulty": "medium",
+      "visual_type": "bid_error_panel",
+      "schema_version": "bidmas_1.0",
+      "diagram_data": {
+        "schema_version": "bidmas_1.0",
+        "visual_type": "bid_error_panel",
+        "operation": "bidmas_error_diagnosis",
+        "expression_tokens": [
+          "3",
+          "+",
+          "4",
+          "×",
+          "(",
+          "5",
+          "+",
+          "1",
+          ")"
+        ],
+        "panels": [
+          {
+            "label": "Working A",
+            "steps": [
+              "5 + 1 = 6",
+              "4 × 6 = 24",
+              "3 + 24 = 27"
+            ]
+          },
+          {
+            "label": "Working B",
+            "steps": [
+              "3 + 4 = 7",
+              "5 + 1 = 6",
+              "7 × 6 = 42"
+            ]
+          }
+        ],
+        "highlight_fault_panel": null,
+        "reveal_verdict": false,
+        "accessibility_text": "Two workings for 3 + 4 × ( 5 + 1 )."
+      }
+    },
+    {
+      "external_id": "MATH-NUMBER-BIDMAS-MEDIUM-077",
+      "difficulty": "medium",
+      "visual_type": "bid_error_panel",
+      "schema_version": "bidmas_1.0",
+      "diagram_data": {
+        "schema_version": "bidmas_1.0",
+        "visual_type": "bid_error_panel",
+        "operation": "bidmas_error_diagnosis",
+        "expression_tokens": [
+          "12",
+          "−",
+          "2",
+          "×",
+          "4"
+        ],
+        "panels": [
+          {
+            "label": "Working A",
+            "steps": [
+              "12 − 2 = 10",
+              "10 × 4 = 40"
+            ]
+          },
+          {
+            "label": "Working B",
+            "steps": [
+              "2 × 4 = 8",
+              "12 − 8 = 4"
+            ]
+          }
+        ],
+        "highlight_fault_panel": null,
+        "reveal_verdict": false,
+        "accessibility_text": "Two workings for 12 − 2 × 4."
+      }
+    },
+    {
+      "external_id": "MATH-NUMBER-BIDMAS-MEDIUM-078",
+      "difficulty": "medium",
+      "visual_type": "bid_error_panel",
+      "schema_version": "bidmas_1.0",
+      "diagram_data": {
+        "schema_version": "bidmas_1.0",
+        "visual_type": "bid_error_panel",
+        "operation": "bidmas_error_diagnosis",
+        "expression_tokens": [
+          "7",
+          "+",
+          "5",
+          "×",
+          "3"
+        ],
+        "panels": [
+          {
+            "label": "Working A",
+            "steps": [
+              "7 + 5 = 12",
+              "12 × 3 = 36"
+            ]
+          },
+          {
+            "label": "Working B",
+            "steps": [
+              "5 × 3 = 15",
+              "7 + 15 = 22"
+            ]
+          }
+        ],
+        "highlight_fault_panel": null,
+        "reveal_verdict": false,
+        "accessibility_text": "Two workings for 7 + 5 × 3."
+      }
+    },
+    {
+      "external_id": "MATH-NUMBER-BIDMAS-MEDIUM-079",
+      "difficulty": "medium",
+      "visual_type": "bid_error_panel",
+      "schema_version": "bidmas_1.0",
+      "diagram_data": {
+        "schema_version": "bidmas_1.0",
+        "visual_type": "bid_error_panel",
+        "operation": "bidmas_error_diagnosis",
+        "expression_tokens": [
+          "6",
+          "+",
+          "8",
+          "÷",
+          "2"
+        ],
+        "panels": [
+          {
+            "label": "Working A",
+            "steps": [
+              "8 ÷ 2 = 4",
+              "6 + 4 = 10"
+            ]
+          },
+          {
+            "label": "Working B",
+            "steps": [
+              "6 + 8 = 14",
+              "14 ÷ 2 = 7"
+            ]
+          }
+        ],
+        "highlight_fault_panel": null,
+        "reveal_verdict": false,
+        "accessibility_text": "Two workings for 6 + 8 ÷ 2."
+      }
+    },
+    {
+      "external_id": "MATH-NUMBER-BIDMAS-MEDIUM-080",
+      "difficulty": "medium",
+      "visual_type": "bid_error_panel",
+      "schema_version": "bidmas_1.0",
+      "diagram_data": {
+        "schema_version": "bidmas_1.0",
+        "visual_type": "bid_error_panel",
+        "operation": "bidmas_error_diagnosis",
+        "expression_tokens": [
+          "20",
+          "−",
+          "3",
+          "×",
+          "(",
+          "2",
+          "+",
+          "2",
+          ")"
+        ],
+        "panels": [
+          {
+            "label": "Working A",
+            "steps": [
+              "2 + 2 = 4",
+              "3 × 4 = 12",
+              "20 − 12 = 8"
+            ]
+          },
+          {
+            "label": "Working B",
+            "steps": [
+              "20 − 3 = 17",
+              "2 + 2 = 4",
+              "17 × 4 = 68"
+            ]
+          }
+        ],
+        "highlight_fault_panel": null,
+        "reveal_verdict": false,
+        "accessibility_text": "Two workings for 20 − 3 × ( 2 + 2 )."
+      }
+    },
+    {
+      "external_id": "MATH-NUMBER-BIDMAS-MEDIUM-089",
+      "difficulty": "medium",
+      "visual_type": "bid_group_placements",
+      "schema_version": "bidmas_1.0",
+      "diagram_data": {
+        "schema_version": "bidmas_1.0",
+        "visual_type": "bid_group_placements",
+        "operation": "bidmas_extremal_grouping",
+        "fixed_tokens": [
+          "5",
+          "×",
+          "4",
+          "+",
+          "6",
+          "÷",
+          "2"
+        ],
+        "placements": [
+          {
+            "option_key": "A",
+            "tree": {
+              "op_index": 5,
+              "left": {
+                "op_index": 3,
+                "left": {
+                  "op_index": 1,
+                  "left": 0,
+                  "right": 1
+                },
+                "right": 2
+              },
+              "right": 3
+            }
+          },
+          {
+            "option_key": "B",
+            "tree": {
+              "op_index": 3,
+              "left": {
+                "op_index": 1,
+                "left": 0,
+                "right": 1
+              },
+              "right": {
+                "op_index": 5,
+                "left": 2,
+                "right": 3
+              }
+            }
+          },
+          {
+            "option_key": "C",
+            "tree": {
+              "op_index": 1,
+              "left": 0,
+              "right": {
+                "op_index": 5,
+                "left": {
+                  "op_index": 3,
+                  "left": 1,
+                  "right": 2
+                },
+                "right": 3
+              }
+            }
+          },
+          {
+            "option_key": "D",
+            "tree": {
+              "op_index": 1,
+              "left": 0,
+              "right": {
+                "op_index": 3,
+                "left": 1,
+                "right": {
+                  "op_index": 5,
+                  "left": 2,
+                  "right": 3
+                }
+              }
+            }
+          }
+        ],
+        "reveal_values": false,
+        "accessibility_text": "Four expressions based on 5 × 4 + 6 ÷ 2. Choose the greatest value."
+      }
+    },
+    {
+      "external_id": "MATH-NUMBER-BIDMAS-MEDIUM-090",
+      "difficulty": "medium",
+      "visual_type": "bid_group_placements",
+      "schema_version": "bidmas_1.0",
+      "diagram_data": {
+        "schema_version": "bidmas_1.0",
+        "visual_type": "bid_group_placements",
+        "operation": "bidmas_extremal_grouping",
+        "fixed_tokens": [
+          "6",
+          "−",
+          "2",
+          "+",
+          "8",
+          "÷",
+          "2"
+        ],
+        "placements": [
+          {
+            "option_key": "A",
+            "tree": {
+              "op_index": 5,
+              "left": {
+                "op_index": 3,
+                "left": {
+                  "op_index": 1,
+                  "left": 0,
+                  "right": 1
+                },
+                "right": 2
+              },
+              "right": 3
+            }
+          },
+          {
+            "option_key": "B",
+            "tree": {
+              "op_index": 3,
+              "left": {
+                "op_index": 1,
+                "left": 0,
+                "right": 1
+              },
+              "right": {
+                "op_index": 5,
+                "left": 2,
+                "right": 3
+              }
+            }
+          },
+          {
+            "option_key": "C",
+            "tree": {
+              "op_index": 1,
+              "left": 0,
+              "right": {
+                "op_index": 5,
+                "left": {
+                  "op_index": 3,
+                  "left": 1,
+                  "right": 2
+                },
+                "right": 3
+              }
+            }
+          },
+          {
+            "option_key": "D",
+            "tree": {
+              "op_index": 1,
+              "left": 0,
+              "right": {
+                "op_index": 3,
+                "left": 1,
+                "right": {
+                  "op_index": 5,
+                  "left": 2,
+                  "right": 3
+                }
+              }
+            }
+          }
+        ],
+        "reveal_values": false,
+        "accessibility_text": "Four expressions based on 6 − 2 + 8 ÷ 2. Choose the least value."
+      }
+    },
+    {
+      "external_id": "MATH-NUMBER-BIDMAS-MEDIUM-091",
+      "difficulty": "medium",
+      "visual_type": "bid_group_placements",
+      "schema_version": "bidmas_1.0",
+      "diagram_data": {
+        "schema_version": "bidmas_1.0",
+        "visual_type": "bid_group_placements",
+        "operation": "bidmas_extremal_grouping",
+        "fixed_tokens": [
+          "8",
+          "+",
+          "12",
+          "÷",
+          "4",
+          "−",
+          "2"
+        ],
+        "placements": [
+          {
+            "option_key": "A",
+            "tree": {
+              "op_index": 5,
+              "left": {
+                "op_index": 3,
+                "left": {
+                  "op_index": 1,
+                  "left": 0,
+                  "right": 1
+                },
+                "right": 2
+              },
+              "right": 3
+            }
+          },
+          {
+            "option_key": "B",
+            "tree": {
+              "op_index": 3,
+              "left": {
+                "op_index": 1,
+                "left": 0,
+                "right": 1
+              },
+              "right": {
+                "op_index": 5,
+                "left": 2,
+                "right": 3
+              }
+            }
+          },
+          {
+            "option_key": "C",
+            "tree": {
+              "op_index": 1,
+              "left": 0,
+              "right": {
+                "op_index": 5,
+                "left": {
+                  "op_index": 3,
+                  "left": 1,
+                  "right": 2
+                },
+                "right": 3
+              }
+            }
+          },
+          {
+            "option_key": "D",
+            "tree": {
+              "op_index": 1,
+              "left": 0,
+              "right": {
+                "op_index": 3,
+                "left": 1,
+                "right": {
+                  "op_index": 5,
+                  "left": 2,
+                  "right": 3
+                }
+              }
+            }
+          }
+        ],
+        "reveal_values": false,
+        "accessibility_text": "Four expressions based on 8 + 12 ÷ 4 − 2. Choose the greatest value."
+      }
+    },
+    {
+      "external_id": "MATH-NUMBER-BIDMAS-MEDIUM-092",
+      "difficulty": "medium",
+      "visual_type": "bid_group_placements",
+      "schema_version": "bidmas_1.0",
+      "diagram_data": {
+        "schema_version": "bidmas_1.0",
+        "visual_type": "bid_group_placements",
+        "operation": "bidmas_extremal_grouping",
+        "fixed_tokens": [
+          "10",
+          "−",
+          "2",
+          "+",
+          "3",
+          "×",
+          "2"
+        ],
+        "placements": [
+          {
+            "option_key": "A",
+            "tree": {
+              "op_index": 5,
+              "left": {
+                "op_index": 3,
+                "left": {
+                  "op_index": 1,
+                  "left": 0,
+                  "right": 1
+                },
+                "right": 2
+              },
+              "right": 3
+            }
+          },
+          {
+            "option_key": "B",
+            "tree": {
+              "op_index": 3,
+              "left": {
+                "op_index": 1,
+                "left": 0,
+                "right": 1
+              },
+              "right": {
+                "op_index": 5,
+                "left": 2,
+                "right": 3
+              }
+            }
+          },
+          {
+            "option_key": "C",
+            "tree": {
+              "op_index": 1,
+              "left": 0,
+              "right": {
+                "op_index": 5,
+                "left": {
+                  "op_index": 3,
+                  "left": 1,
+                  "right": 2
+                },
+                "right": 3
+              }
+            }
+          },
+          {
+            "option_key": "D",
+            "tree": {
+              "op_index": 1,
+              "left": 0,
+              "right": {
+                "op_index": 3,
+                "left": 1,
+                "right": {
+                  "op_index": 5,
+                  "left": 2,
+                  "right": 3
+                }
+              }
+            }
+          }
+        ],
+        "reveal_values": false,
+        "accessibility_text": "Four expressions based on 10 − 2 + 3 × 2. Choose the least value."
+      }
+    },
+    {
+      "external_id": "MATH-NUMBER-BIDMAS-MEDIUM-093",
+      "difficulty": "medium",
+      "visual_type": "bid_group_placements",
+      "schema_version": "bidmas_1.0",
+      "diagram_data": {
+        "schema_version": "bidmas_1.0",
+        "visual_type": "bid_group_placements",
+        "operation": "bidmas_extremal_grouping",
+        "fixed_tokens": [
+          "10",
+          "+",
+          "2",
+          "×",
+          "2",
+          "+",
+          "3"
+        ],
+        "placements": [
+          {
+            "option_key": "A",
+            "tree": {
+              "op_index": 5,
+              "left": {
+                "op_index": 3,
+                "left": {
+                  "op_index": 1,
+                  "left": 0,
+                  "right": 1
+                },
+                "right": 2
+              },
+              "right": 3
+            }
+          },
+          {
+            "option_key": "B",
+            "tree": {
+              "op_index": 3,
+              "left": {
+                "op_index": 1,
+                "left": 0,
+                "right": 1
+              },
+              "right": {
+                "op_index": 5,
+                "left": 2,
+                "right": 3
+              }
+            }
+          },
+          {
+            "option_key": "C",
+            "tree": {
+              "op_index": 1,
+              "left": 0,
+              "right": {
+                "op_index": 5,
+                "left": {
+                  "op_index": 3,
+                  "left": 1,
+                  "right": 2
+                },
+                "right": 3
+              }
+            }
+          },
+          {
+            "option_key": "D",
+            "tree": {
+              "op_index": 1,
+              "left": 0,
+              "right": {
+                "op_index": 3,
+                "left": 1,
+                "right": {
+                  "op_index": 5,
+                  "left": 2,
+                  "right": 3
+                }
+              }
+            }
+          }
+        ],
+        "reveal_values": false,
+        "accessibility_text": "Four expressions based on 10 + 2 × 2 + 3. Choose the greatest value."
+      }
+    },
+    {
+      "external_id": "MATH-NUMBER-BIDMAS-MEDIUM-094",
+      "difficulty": "medium",
+      "visual_type": "bid_group_placements",
+      "schema_version": "bidmas_1.0",
+      "diagram_data": {
+        "schema_version": "bidmas_1.0",
+        "visual_type": "bid_group_placements",
+        "operation": "bidmas_extremal_grouping",
+        "fixed_tokens": [
+          "12",
+          "−",
+          "4",
+          "+",
+          "8",
+          "÷",
+          "2"
+        ],
+        "placements": [
+          {
+            "option_key": "A",
+            "tree": {
+              "op_index": 5,
+              "left": {
+                "op_index": 3,
+                "left": {
+                  "op_index": 1,
+                  "left": 0,
+                  "right": 1
+                },
+                "right": 2
+              },
+              "right": 3
+            }
+          },
+          {
+            "option_key": "B",
+            "tree": {
+              "op_index": 3,
+              "left": {
+                "op_index": 1,
+                "left": 0,
+                "right": 1
+              },
+              "right": {
+                "op_index": 5,
+                "left": 2,
+                "right": 3
+              }
+            }
+          },
+          {
+            "option_key": "C",
+            "tree": {
+              "op_index": 1,
+              "left": 0,
+              "right": {
+                "op_index": 5,
+                "left": {
+                  "op_index": 3,
+                  "left": 1,
+                  "right": 2
+                },
+                "right": 3
+              }
+            }
+          },
+          {
+            "option_key": "D",
+            "tree": {
+              "op_index": 1,
+              "left": 0,
+              "right": {
+                "op_index": 3,
+                "left": 1,
+                "right": {
+                  "op_index": 5,
+                  "left": 2,
+                  "right": 3
+                }
+              }
+            }
+          }
+        ],
+        "reveal_values": false,
+        "accessibility_text": "Four expressions based on 12 − 4 + 8 ÷ 2. Choose the least value."
+      }
+    },
+    {
+      "external_id": "MATH-NUMBER-BIDMAS-MEDIUM-095",
+      "difficulty": "medium",
+      "visual_type": "bid_group_placements",
+      "schema_version": "bidmas_1.0",
+      "diagram_data": {
+        "schema_version": "bidmas_1.0",
+        "visual_type": "bid_group_placements",
+        "operation": "bidmas_extremal_grouping",
+        "fixed_tokens": [
+          "5",
+          "×",
+          "6",
+          "+",
+          "4",
+          "÷",
+          "2"
+        ],
+        "placements": [
+          {
+            "option_key": "A",
+            "tree": {
+              "op_index": 5,
+              "left": {
+                "op_index": 3,
+                "left": {
+                  "op_index": 1,
+                  "left": 0,
+                  "right": 1
+                },
+                "right": 2
+              },
+              "right": 3
+            }
+          },
+          {
+            "option_key": "B",
+            "tree": {
+              "op_index": 3,
+              "left": {
+                "op_index": 1,
+                "left": 0,
+                "right": 1
+              },
+              "right": {
+                "op_index": 5,
+                "left": 2,
+                "right": 3
+              }
+            }
+          },
+          {
+            "option_key": "C",
+            "tree": {
+              "op_index": 1,
+              "left": 0,
+              "right": {
+                "op_index": 5,
+                "left": {
+                  "op_index": 3,
+                  "left": 1,
+                  "right": 2
+                },
+                "right": 3
+              }
+            }
+          },
+          {
+            "option_key": "D",
+            "tree": {
+              "op_index": 1,
+              "left": 0,
+              "right": {
+                "op_index": 3,
+                "left": 1,
+                "right": {
+                  "op_index": 5,
+                  "left": 2,
+                  "right": 3
+                }
+              }
+            }
+          }
+        ],
+        "reveal_values": false,
+        "accessibility_text": "Four expressions based on 5 × 6 + 4 ÷ 2. Choose the greatest value."
+      }
+    },
+    {
+      "external_id": "MATH-NUMBER-BIDMAS-MEDIUM-096",
+      "difficulty": "medium",
+      "visual_type": "bid_group_placements",
+      "schema_version": "bidmas_1.0",
+      "diagram_data": {
+        "schema_version": "bidmas_1.0",
+        "visual_type": "bid_group_placements",
+        "operation": "bidmas_extremal_grouping",
+        "fixed_tokens": [
+          "6",
+          "×",
+          "8",
+          "−",
+          "4",
+          "÷",
+          "4"
+        ],
+        "placements": [
+          {
+            "option_key": "A",
+            "tree": {
+              "op_index": 5,
+              "left": {
+                "op_index": 3,
+                "left": {
+                  "op_index": 1,
+                  "left": 0,
+                  "right": 1
+                },
+                "right": 2
+              },
+              "right": 3
+            }
+          },
+          {
+            "option_key": "B",
+            "tree": {
+              "op_index": 3,
+              "left": {
+                "op_index": 1,
+                "left": 0,
+                "right": 1
+              },
+              "right": {
+                "op_index": 5,
+                "left": 2,
+                "right": 3
+              }
+            }
+          },
+          {
+            "option_key": "C",
+            "tree": {
+              "op_index": 1,
+              "left": 0,
+              "right": {
+                "op_index": 5,
+                "left": {
+                  "op_index": 3,
+                  "left": 1,
+                  "right": 2
+                },
+                "right": 3
+              }
+            }
+          },
+          {
+            "option_key": "D",
+            "tree": {
+              "op_index": 1,
+              "left": 0,
+              "right": {
+                "op_index": 3,
+                "left": 1,
+                "right": {
+                  "op_index": 5,
+                  "left": 2,
+                  "right": 3
+                }
+              }
+            }
+          }
+        ],
+        "reveal_values": false,
+        "accessibility_text": "Four expressions based on 6 × 8 − 4 ÷ 4. Choose the least value."
+      }
+    },
+    {
+      "external_id": "MATH-NUMBER-BIDMAS-HARD-014",
+      "difficulty": "hard",
+      "visual_type": "bid_group_placements",
+      "schema_version": "bidmas_1.0",
+      "diagram_data": {
+        "schema_version": "bidmas_1.0",
+        "visual_type": "bid_group_placements",
+        "operation": "bidmas_extremal_grouping",
+        "fixed_tokens": [
+          "3",
+          "×",
+          "4",
+          "+",
+          "2",
+          "×",
+          "5"
+        ],
+        "placements": [
+          {
+            "option_key": "A",
+            "tree": {
+              "op_index": 5,
+              "left": {
+                "op_index": 3,
+                "left": {
+                  "op_index": 1,
+                  "left": 0,
+                  "right": 1
+                },
+                "right": 2
+              },
+              "right": 3
+            }
+          },
+          {
+            "option_key": "B",
+            "tree": {
+              "op_index": 3,
+              "left": {
+                "op_index": 1,
+                "left": 0,
+                "right": 1
+              },
+              "right": {
+                "op_index": 5,
+                "left": 2,
+                "right": 3
+              }
+            }
+          },
+          {
+            "option_key": "C",
+            "tree": {
+              "op_index": 1,
+              "left": 0,
+              "right": {
+                "op_index": 5,
+                "left": {
+                  "op_index": 3,
+                  "left": 1,
+                  "right": 2
+                },
+                "right": 3
+              }
+            }
+          },
+          {
+            "option_key": "D",
+            "tree": {
+              "op_index": 1,
+              "left": 0,
+              "right": {
+                "op_index": 3,
+                "left": 1,
+                "right": {
+                  "op_index": 5,
+                  "left": 2,
+                  "right": 3
+                }
+              }
+            }
+          }
+        ],
+        "reveal_values": false,
+        "accessibility_text": "Four placements of 3 × 4 + 2 × 5; greatest below 80."
+      }
+    },
+    {
+      "external_id": "MATH-NUMBER-BIDMAS-HARD-015",
+      "difficulty": "hard",
+      "visual_type": "bid_group_placements",
+      "schema_version": "bidmas_1.0",
+      "diagram_data": {
+        "schema_version": "bidmas_1.0",
+        "visual_type": "bid_group_placements",
+        "operation": "bidmas_extremal_grouping",
+        "fixed_tokens": [
+          "4",
+          "×",
+          "5",
+          "+",
+          "2",
+          "×",
+          "3"
+        ],
+        "placements": [
+          {
+            "option_key": "A",
+            "tree": {
+              "op_index": 5,
+              "left": {
+                "op_index": 3,
+                "left": {
+                  "op_index": 1,
+                  "left": 0,
+                  "right": 1
+                },
+                "right": 2
+              },
+              "right": 3
+            }
+          },
+          {
+            "option_key": "B",
+            "tree": {
+              "op_index": 3,
+              "left": {
+                "op_index": 1,
+                "left": 0,
+                "right": 1
+              },
+              "right": {
+                "op_index": 5,
+                "left": 2,
+                "right": 3
+              }
+            }
+          },
+          {
+            "option_key": "C",
+            "tree": {
+              "op_index": 1,
+              "left": 0,
+              "right": {
+                "op_index": 5,
+                "left": {
+                  "op_index": 3,
+                  "left": 1,
+                  "right": 2
+                },
+                "right": 3
+              }
+            }
+          },
+          {
+            "option_key": "D",
+            "tree": {
+              "op_index": 1,
+              "left": 0,
+              "right": {
+                "op_index": 3,
+                "left": 1,
+                "right": {
+                  "op_index": 5,
+                  "left": 2,
+                  "right": 3
+                }
+              }
+            }
+          }
+        ],
+        "reveal_values": false,
+        "accessibility_text": "Four placements of 4 × 5 + 2 × 3; least above ungrouped."
+      }
+    },
+    {
+      "external_id": "MATH-NUMBER-BIDMAS-HARD-016",
+      "difficulty": "hard",
+      "visual_type": "bid_group_placements",
+      "schema_version": "bidmas_1.0",
+      "diagram_data": {
+        "schema_version": "bidmas_1.0",
+        "visual_type": "bid_group_placements",
+        "operation": "bidmas_extremal_grouping",
+        "fixed_tokens": [
+          "2",
+          "+",
+          "2",
+          "×",
+          "12",
+          "+",
+          "2"
+        ],
+        "placements": [
+          {
+            "option_key": "A",
+            "tree": {
+              "op_index": 5,
+              "left": {
+                "op_index": 3,
+                "left": {
+                  "op_index": 1,
+                  "left": 0,
+                  "right": 1
+                },
+                "right": 2
+              },
+              "right": 3
+            }
+          },
+          {
+            "option_key": "B",
+            "tree": {
+              "op_index": 3,
+              "left": {
+                "op_index": 1,
+                "left": 0,
+                "right": 1
+              },
+              "right": {
+                "op_index": 5,
+                "left": 2,
+                "right": 3
+              }
+            }
+          },
+          {
+            "option_key": "C",
+            "tree": {
+              "op_index": 1,
+              "left": 0,
+              "right": {
+                "op_index": 5,
+                "left": {
+                  "op_index": 3,
+                  "left": 1,
+                  "right": 2
+                },
+                "right": 3
+              }
+            }
+          },
+          {
+            "option_key": "D",
+            "tree": {
+              "op_index": 1,
+              "left": 0,
+              "right": {
+                "op_index": 3,
+                "left": 1,
+                "right": {
+                  "op_index": 5,
+                  "left": 2,
+                  "right": 3
+                }
+              }
+            }
+          }
+        ],
+        "reveal_values": false,
+        "accessibility_text": "Four placements of 2 + 2 × 12 + 2; greatest multiple of 10."
+      }
+    },
+    {
+      "external_id": "MATH-NUMBER-BIDMAS-HARD-017",
+      "difficulty": "hard",
+      "visual_type": "bid_group_placements",
+      "schema_version": "bidmas_1.0",
+      "diagram_data": {
+        "schema_version": "bidmas_1.0",
+        "visual_type": "bid_group_placements",
+        "operation": "bidmas_bracket_placement",
+        "fixed_tokens": [
+          "5",
+          "+",
+          "4",
+          "×",
+          "10",
+          "−",
+          "4"
+        ],
+        "placements": [
+          {
+            "option_key": "A",
+            "tree": {
+              "op_index": 5,
+              "left": {
+                "op_index": 3,
+                "left": {
+                  "op_index": 1,
+                  "left": 0,
+                  "right": 1
+                },
+                "right": 2
+              },
+              "right": 3
+            }
+          },
+          {
+            "option_key": "B",
+            "tree": {
+              "op_index": 3,
+              "left": {
+                "op_index": 1,
+                "left": 0,
+                "right": 1
+              },
+              "right": {
+                "op_index": 5,
+                "left": 2,
+                "right": 3
+              }
+            }
+          },
+          {
+            "option_key": "C",
+            "tree": {
+              "op_index": 1,
+              "left": 0,
+              "right": {
+                "op_index": 5,
+                "left": {
+                  "op_index": 3,
+                  "left": 1,
+                  "right": 2
+                },
+                "right": 3
+              }
+            }
+          },
+          {
+            "option_key": "D",
+            "tree": {
+              "op_index": 1,
+              "left": 0,
+              "right": {
+                "op_index": 3,
+                "left": 1,
+                "right": {
+                  "op_index": 5,
+                  "left": 2,
+                  "right": 3
+                }
+              }
+            }
+          }
+        ],
+        "reveal_values": false,
+        "accessibility_text": "Four placements of 5 + 4 × 10 − 4; choose the between-value."
+      }
+    },
+    {
+      "external_id": "MATH-NUMBER-BIDMAS-HARD-018",
+      "difficulty": "hard",
+      "visual_type": "bid_group_placements",
+      "schema_version": "bidmas_1.0",
+      "diagram_data": {
+        "schema_version": "bidmas_1.0",
+        "visual_type": "bid_group_placements",
+        "operation": "bidmas_extremal_grouping",
+        "fixed_tokens": [
+          "6",
+          "+",
+          "8",
+          "×",
+          "9",
+          "−",
+          "3"
+        ],
+        "placements": [
+          {
+            "option_key": "A",
+            "tree": {
+              "op_index": 5,
+              "left": {
+                "op_index": 3,
+                "left": {
+                  "op_index": 1,
+                  "left": 0,
+                  "right": 1
+                },
+                "right": 2
+              },
+              "right": 3
+            }
+          },
+          {
+            "option_key": "B",
+            "tree": {
+              "op_index": 3,
+              "left": {
+                "op_index": 1,
+                "left": 0,
+                "right": 1
+              },
+              "right": {
+                "op_index": 5,
+                "left": 2,
+                "right": 3
+              }
+            }
+          },
+          {
+            "option_key": "C",
+            "tree": {
+              "op_index": 1,
+              "left": 0,
+              "right": {
+                "op_index": 5,
+                "left": {
+                  "op_index": 3,
+                  "left": 1,
+                  "right": 2
+                },
+                "right": 3
+              }
+            }
+          },
+          {
+            "option_key": "D",
+            "tree": {
+              "op_index": 1,
+              "left": 0,
+              "right": {
+                "op_index": 3,
+                "left": 1,
+                "right": {
+                  "op_index": 5,
+                  "left": 2,
+                  "right": 3
+                }
+              }
+            }
+          }
+        ],
+        "reveal_values": false,
+        "accessibility_text": "Four placements of 6 + 8 × 9 − 3; choose second-greatest."
+      }
+    },
+    {
+      "external_id": "MATH-NUMBER-BIDMAS-HARD-020",
+      "difficulty": "hard",
+      "visual_type": "bid_group_placements",
+      "schema_version": "bidmas_1.0",
+      "diagram_data": {
+        "schema_version": "bidmas_1.0",
+        "visual_type": "bid_group_placements",
+        "operation": "bidmas_bracket_placement",
+        "fixed_tokens": [
+          "7",
+          "+",
+          "3",
+          "×",
+          "6",
+          "−",
+          "2"
+        ],
+        "placements": [
+          {
+            "option_key": "A",
+            "tree": {
+              "op_index": 5,
+              "left": {
+                "op_index": 3,
+                "left": {
+                  "op_index": 1,
+                  "left": 0,
+                  "right": 1
+                },
+                "right": 2
+              },
+              "right": 3
+            }
+          },
+          {
+            "option_key": "B",
+            "tree": {
+              "op_index": 3,
+              "left": {
+                "op_index": 1,
+                "left": 0,
+                "right": 1
+              },
+              "right": {
+                "op_index": 5,
+                "left": 2,
+                "right": 3
+              }
+            }
+          },
+          {
+            "option_key": "C",
+            "tree": {
+              "op_index": 1,
+              "left": 0,
+              "right": {
+                "op_index": 5,
+                "left": {
+                  "op_index": 3,
+                  "left": 1,
+                  "right": 2
+                },
+                "right": 3
+              }
+            }
+          },
+          {
+            "option_key": "D",
+            "tree": {
+              "op_index": 1,
+              "left": 0,
+              "right": {
+                "op_index": 3,
+                "left": 1,
+                "right": {
+                  "op_index": 5,
+                  "left": 2,
+                  "right": 3
+                }
+              }
+            }
+          }
+        ],
+        "reveal_values": false,
+        "accessibility_text": "Four placements of 7 + 3 × 6 − 2; choose closest to ungrouped excluding equals."
+      }
+    }
+  ]
+}

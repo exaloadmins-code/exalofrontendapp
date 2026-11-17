@@ -7,7 +7,9 @@ export type DiagramRendererFamily =
   | 'FractionDiagram2'
   | 'NumberDiagram2'
   | 'AreaDiagramV1'
-  | 'AnglesDiagramV1';
+  | 'AnglesDiagramV1'
+  | 'BidmasGroupPlacements'
+  | 'BidmasErrorPanel';
 
 export type DiagramDispatchKey = {
   schemaVersion: string;
@@ -71,6 +73,24 @@ export const IMPLEMENTED_DIAGRAM_KEYS: readonly DiagramDispatchKey[] = [
     schemaVersion: 'angles_diagram_v1',
     visualType: 'angles_missing_angle_semantic_a7',
     family: 'AnglesDiagramV1',
+  },
+  /**
+   * BIDMAS PLACE / OPT public payload (`bid_group_placements`).
+   */
+  {
+    schemaVersion: 'bidmas_1.0',
+    visualType: 'bid_group_placements',
+    family: 'BidmasGroupPlacements',
+    notes: 'BIDMAS PLACE/OPT association trees',
+  },
+  /**
+   * BIDMAS ERR public payload (`bid_error_panel` / bidmas_error_diagnosis).
+   */
+  {
+    schemaVersion: 'bidmas_1.0',
+    visualType: 'bid_error_panel',
+    family: 'BidmasErrorPanel',
+    notes: 'BIDMAS Working A/B error-diagnosis panels',
   },
 ] as const;
 

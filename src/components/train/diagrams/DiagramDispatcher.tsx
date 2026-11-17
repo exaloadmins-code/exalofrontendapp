@@ -3,6 +3,8 @@ import { StyleSheet, Text, View } from 'react-native';
 import { fonts } from '@/theme';
 import { AreaDiagramV1 } from './area/AreaDiagramV1';
 import { AnglesDiagramV1 } from './angles/AnglesDiagramV1';
+import { BidmasErrorPanel } from './bidmas/BidmasErrorPanel';
+import { BidmasGroupPlacements } from './bidmas/BidmasGroupPlacements';
 import {
   isFractionStyleNumberLine,
   isNumberStyleNumberLine,
@@ -89,6 +91,12 @@ export function DiagramDispatcher({
         break;
       case 'AnglesDiagramV1':
         rendered = <AnglesDiagramV1 data={diagramData} width={width} />;
+        break;
+      case 'BidmasGroupPlacements':
+        rendered = <BidmasGroupPlacements data={diagramData} width={width} />;
+        break;
+      case 'BidmasErrorPanel':
+        rendered = <BidmasErrorPanel data={diagramData} width={width} />;
         break;
       default:
         rendered = null;

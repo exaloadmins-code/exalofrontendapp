@@ -48,6 +48,9 @@ const IMPLEMENTED = new Set([
   'area_diagram_v1|outer_inner_nested_rectangles',
   'area_diagram_v1|rectangle_with_rectangular_cutout',
   'angles_diagram_v1|angles_missing_angle_semantic_a7',
+  // BIDMAS frontend diagram families (not all are in production inventory / diagram_keys).
+  'bidmas_1.0|bid_group_placements',
+  'bidmas_1.0|bid_error_panel',
 ]);
 
 const inventoryPath = path.join(__dirname, 'diagram-coverage-inventory.json');
@@ -202,6 +205,22 @@ const seenVt = new Set();
 
 for (const file of fixtures) {
   const payload = JSON.parse(fs.readFileSync(path.join(fixtureDir, file), 'utf8'));
+
+  // BIDMAS multi-question packs (ERR-10 / full-41 inventory): validate each row.
+  if (Array.isArray(payload.questions) && payload.questions[0]?.diagram_data) {
+    for (const q of payload.questions) {
+      const dd = q.diagram_data;
+      assert(dd && typeof dd.schema_version === 'string', `${file}: schema_version`);
+      assert(typeof dd.visual_type === 'string', `${file}: visual_type`);
+      seenVt.add(dd.visual_type);
+      const qKey = `${dd.schema_version}|${dd.visual_type}`;
+      assert(IMPLEMENTED.has(qKey), `${file}: unimplemented key ${qKey}`);
+      assert(dd.schema_version === 'bidmas_1.0', `${file}: expected bidmas_1.0 pack`);
+      validateBidmas(dd, `${file}:${q.external_id || '?'}`, null);
+    }
+    continue;
+  }
+
   const data = payload.diagram_data ?? payload;
   assert(typeof data.schema_version === 'string', `${file}: schema_version`);
   assert(typeof data.visual_type === 'string', `${file}: visual_type`);
@@ -212,6 +231,7 @@ for (const file of fixtures) {
   if (data.schema_version === 'area_diagram_v1') validateArea(data, file);
   else if (data.schema_version === 'angles_diagram_v1') validateAngles(data, file);
   else if (data.schema_version === '2.0') validateSchema2(data, file);
+  else if (data.schema_version === 'bidmas_1.0') validateBidmas(data, file, payload);
 }
 
 for (const vt of requiredVisuals) {
@@ -227,6 +247,80 @@ assert(
 );
 assert(fixtures.some((f) => f.includes('foa_bar')), 'missing FOA bar fixture');
 assert(fixtures.some((f) => f.includes('cutout_no_kind')), 'missing cutout-no-kind fixture');
+assert(
+  fixtures.some((f) => f.includes('bid_group_placements')),
+  'missing BIDMAS PLACE fixture',
+);
+assert(
+  fixtures.some((f) => f.includes('bid_error_panel')),
+  'missing BIDMAS ERR fixture',
+);
+
+function validateBidmasErrorPanel(data, label) {
+  assert(data.visual_type === 'bid_error_panel', `${label}: visual_type`);
+  assert(data.operation === 'bidmas_error_diagnosis', `${label}: operation`);
+  assert(
+    typeof data.accessibility_text === 'string' && data.accessibility_text.trim(),
+    `${label}: accessibility_text`,
+  );
+  assert(
+    Array.isArray(data.expression_tokens) && data.expression_tokens.length >= 3,
+    `${label}: expression_tokens`,
+  );
+  assert(Array.isArray(data.panels) && data.panels.length >= 2, `${label}: panels`);
+  for (const panel of data.panels) {
+    assert(panel && typeof panel.label === 'string' && panel.label.trim(), `${label}: label`);
+    assert(Array.isArray(panel.steps) && panel.steps.length >= 1, `${label}: steps`);
+    for (const step of panel.steps) {
+      assert(typeof step === 'string' && step.trim(), `${label}: step text`);
+    }
+  }
+  assert(!('_audit' in data), `${label}: diagram_data must not embed _audit`);
+  assert(
+    !('correct_option_key' in data) &&
+      !('correct_answer' in data) &&
+      !('option_values' in data),
+    `${label}: no secret fields in diagram_data`,
+  );
+}
+
+function validateBidmas(data, label, payload) {
+  assert(data.schema_version === 'bidmas_1.0', `${label}: schema`);
+  if (data.visual_type === 'bid_error_panel') {
+    validateBidmasErrorPanel(data, label);
+    return;
+  }
+  assert(data.visual_type === 'bid_group_placements', `${label}: visual_type`);
+  assert(
+    data.operation === 'bidmas_bracket_placement' ||
+      data.operation === 'bidmas_extremal_grouping',
+    `${label}: operation`,
+  );
+  assert(data.reveal_values === false, `${label}: reveal_values must be false`);
+  assert(
+    typeof data.accessibility_text === 'string' && data.accessibility_text.trim(),
+    `${label}: accessibility_text`,
+  );
+  assert(Array.isArray(data.fixed_tokens) && data.fixed_tokens.length >= 3, `${label}: tokens`);
+  assert(Array.isArray(data.placements) && data.placements.length === 4, `${label}: placements`);
+  const keys = data.placements.map((p) => p && p.option_key);
+  assert(JSON.stringify(keys) === JSON.stringify(['A', 'B', 'C', 'D']), `${label}: A-D keys`);
+  for (const p of data.placements) {
+    assert(p && p.tree && typeof p.tree === 'object', `${label}: tree`);
+    assert(!('value' in p) && !('result' in p), `${label}: no placement values`);
+  }
+  assert(!('_audit' in data), `${label}: diagram_data must not embed _audit`);
+  assert(
+    !('correct_option_key' in data) && !('target' in data) && !('option_values' in data),
+    `${label}: no secret fields in diagram_data`,
+  );
+  if (payload && typeof payload === 'object') {
+    assert(
+      payload.review_status === 'SYNTHETIC_OFFLINE_REVIEW_ONLY',
+      `${label}: synthetic review marker`,
+    );
+  }
+}
 
 // ---------------------------------------------------------------------------
 // Targeted semantic checks (Area unit_square_grid + Angles bindings)

@@ -1,0 +1,74 @@
+{
+  "review_status": "SYNTHETIC_OFFLINE_REVIEW_ONLY",
+  "fixture_id": "SYNTH_PLACE_01_2x8_minus_4_plus_3",
+  "production_candidate": false,
+  "pilot_only": false,
+  "database_imported": false,
+  "milestone": "BIDMAS-13G",
+  "source": "BIDMAS-13A/13B public PLACE fixture (diagram_data only)",
+  "note": "Public diagram payload only. No _audit, option totals, or correct-option identifiers. MCQ Option_A–D live on the Train question row, not as diagram cards. diagram_prompt must stay null/omitted in Train so Dispatcher does not print accessibility prose.",
+  "stem": "Where must the brackets go so that 2 × 8 − 4 + 3 equals 9?",
+  "options": [
+    "(2 × (8 − 4)) + 3",
+    "(2 × 8) − (4 + 3)",
+    "2 × ((8 − 4) + 3)",
+    "2 × (8 − (4 + 3))"
+  ],
+  "has_diagram": true,
+  "diagram_type": "bid_group_placements",
+  "diagram_prompt": null,
+  "diagram_data": {
+    "schema_version": "bidmas_1.0",
+    "visual_type": "bid_group_placements",
+    "operation": "bidmas_bracket_placement",
+    "fixed_tokens": ["2", "×", "8", "−", "4", "+", "3"],
+    "placements": [
+      {
+        "option_key": "A",
+        "tree": {
+          "op_index": 5,
+          "left": {
+            "op_index": 1,
+            "left": 0,
+            "right": { "op_index": 3, "left": 1, "right": 2 }
+          },
+          "right": 3
+        }
+      },
+      {
+        "option_key": "B",
+        "tree": {
+          "op_index": 3,
+          "left": { "op_index": 1, "left": 0, "right": 1 },
+          "right": { "op_index": 5, "left": 2, "right": 3 }
+        }
+      },
+      {
+        "option_key": "C",
+        "tree": {
+          "op_index": 1,
+          "left": 0,
+          "right": {
+            "op_index": 5,
+            "left": { "op_index": 3, "left": 1, "right": 2 },
+            "right": 3
+          }
+        }
+      },
+      {
+        "option_key": "D",
+        "tree": {
+          "op_index": 1,
+          "left": 0,
+          "right": {
+            "op_index": 3,
+            "left": 1,
+            "right": { "op_index": 5, "left": 2, "right": 3 }
+          }
+        }
+      }
+    ],
+    "reveal_values": false,
+    "accessibility_text": "Four bracket placements on two times eight minus four plus three. Choose the grouping that equals nine."
+  }
+}

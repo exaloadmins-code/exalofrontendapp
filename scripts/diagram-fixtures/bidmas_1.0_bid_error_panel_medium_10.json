@@ -1,0 +1,440 @@
+{
+  "source": "data/generated_questions/bidmas/candidates/bidmas_medium_100_frozen.json",
+  "source_sha256": "f62897c6fe48dbcce2e8b4648ebfcad3cadb95eaa4c597fdfb08f0367ab135e4",
+  "visual_type": "bid_error_panel",
+  "schema_version": "bidmas_1.0",
+  "questions": [
+    {
+      "external_id": "MATH-NUMBER-BIDMAS-MEDIUM-014",
+      "difficulty": "medium",
+      "diagram_data": {
+        "schema_version": "bidmas_1.0",
+        "visual_type": "bid_error_panel",
+        "operation": "bidmas_error_diagnosis",
+        "expression_tokens": [
+          "6",
+          "+",
+          "6",
+          "×",
+          "4"
+        ],
+        "panels": [
+          {
+            "label": "Working A",
+            "steps": [
+              "6 × 4 = 24",
+              "6 + 24 = 30"
+            ]
+          },
+          {
+            "label": "Working B",
+            "steps": [
+              "6 + 6 = 12",
+              "12 × 4 = 48"
+            ]
+          }
+        ],
+        "highlight_fault_panel": null,
+        "reveal_verdict": false,
+        "accessibility_text": "Two workings for 6 + 6 × 4."
+      },
+      "stem": "A pupil worked out 6 + 6 × 4 in two ways. Which working is correct?",
+      "options": [
+        "Working A is correct",
+        "Working B is correct",
+        "Both are correct",
+        "Neither is correct"
+      ]
+    },
+    {
+      "external_id": "MATH-NUMBER-BIDMAS-MEDIUM-015",
+      "difficulty": "medium",
+      "diagram_data": {
+        "schema_version": "bidmas_1.0",
+        "visual_type": "bid_error_panel",
+        "operation": "bidmas_error_diagnosis",
+        "expression_tokens": [
+          "16",
+          "−",
+          "3",
+          "+",
+          "1"
+        ],
+        "panels": [
+          {
+            "label": "Working A",
+            "steps": [
+              "16 − 3 = 13",
+              "13 + 1 = 14"
+            ]
+          },
+          {
+            "label": "Working B",
+            "steps": [
+              "3 + 1 = 4",
+              "16 − 4 = 12"
+            ]
+          }
+        ],
+        "highlight_fault_panel": null,
+        "reveal_verdict": false,
+        "accessibility_text": "Two workings for 16 − 3 + 1."
+      },
+      "stem": "A pupil worked out 16 − 3 + 1 in two ways. Which working is correct?",
+      "options": [
+        "Working A is correct",
+        "Working B is correct",
+        "Both are correct",
+        "Neither is correct"
+      ]
+    },
+    {
+      "external_id": "MATH-NUMBER-BIDMAS-MEDIUM-073",
+      "difficulty": "medium",
+      "diagram_data": {
+        "schema_version": "bidmas_1.0",
+        "visual_type": "bid_error_panel",
+        "operation": "bidmas_error_diagnosis",
+        "expression_tokens": [
+          "30",
+          "−",
+          "8",
+          "−",
+          "6"
+        ],
+        "panels": [
+          {
+            "label": "Working A",
+            "steps": [
+              "8 − 6 = 2",
+              "30 − 2 = 28"
+            ]
+          },
+          {
+            "label": "Working B",
+            "steps": [
+              "30 − 8 = 22",
+              "22 − 6 = 16"
+            ]
+          }
+        ],
+        "highlight_fault_panel": null,
+        "reveal_verdict": false,
+        "accessibility_text": "Two workings for 30 − 8 − 6."
+      },
+      "stem": "A pupil worked out 30 − 8 − 6 in two ways. Which working is correct?",
+      "options": [
+        "Working A is correct",
+        "Working B is correct",
+        "Both are correct",
+        "Neither is correct"
+      ]
+    },
+    {
+      "external_id": "MATH-NUMBER-BIDMAS-MEDIUM-074",
+      "difficulty": "medium",
+      "diagram_data": {
+        "schema_version": "bidmas_1.0",
+        "visual_type": "bid_error_panel",
+        "operation": "bidmas_error_diagnosis",
+        "expression_tokens": [
+          "42",
+          "÷",
+          "7",
+          "×",
+          "2"
+        ],
+        "panels": [
+          {
+            "label": "Working A",
+            "steps": [
+              "42 ÷ 7 = 6",
+              "6 × 2 = 12"
+            ]
+          },
+          {
+            "label": "Working B",
+            "steps": [
+              "7 × 2 = 14",
+              "42 ÷ 14 = 3"
+            ]
+          }
+        ],
+        "highlight_fault_panel": null,
+        "reveal_verdict": false,
+        "accessibility_text": "Two workings for 42 ÷ 7 × 2."
+      },
+      "stem": "A pupil worked out 42 ÷ 7 × 2 in two ways. Which working is correct?",
+      "options": [
+        "Working A is correct",
+        "Working B is correct",
+        "Both are correct",
+        "Neither is correct"
+      ]
+    },
+    {
+      "external_id": "MATH-NUMBER-BIDMAS-MEDIUM-075",
+      "difficulty": "medium",
+      "diagram_data": {
+        "schema_version": "bidmas_1.0",
+        "visual_type": "bid_error_panel",
+        "operation": "bidmas_error_diagnosis",
+        "expression_tokens": [
+          "18",
+          "−",
+          "12",
+          "÷",
+          "3"
+        ],
+        "panels": [
+          {
+            "label": "Working A",
+            "steps": [
+              "12 ÷ 3 = 4",
+              "18 − 4 = 14"
+            ]
+          },
+          {
+            "label": "Working B",
+            "steps": [
+              "18 − 12 = 6",
+              "6 ÷ 3 = 2"
+            ]
+          }
+        ],
+        "highlight_fault_panel": null,
+        "reveal_verdict": false,
+        "accessibility_text": "Two workings for 18 − 12 ÷ 3."
+      },
+      "stem": "A pupil worked out 18 − 12 ÷ 3 in two ways. Which working is correct?",
+      "options": [
+        "Working A is correct",
+        "Working B is correct",
+        "Both are correct",
+        "Neither is correct"
+      ]
+    },
+    {
+      "external_id": "MATH-NUMBER-BIDMAS-MEDIUM-076",
+      "difficulty": "medium",
+      "diagram_data": {
+        "schema_version": "bidmas_1.0",
+        "visual_type": "bid_error_panel",
+        "operation": "bidmas_error_diagnosis",
+        "expression_tokens": [
+          "3",
+          "+",
+          "4",
+          "×",
+          "(",
+          "5",
+          "+",
+          "1",
+          ")"
+        ],
+        "panels": [
+          {
+            "label": "Working A",
+            "steps": [
+              "5 + 1 = 6",
+              "4 × 6 = 24",
+              "3 + 24 = 27"
+            ]
+          },
+          {
+            "label": "Working B",
+            "steps": [
+              "3 + 4 = 7",
+              "5 + 1 = 6",
+              "7 × 6 = 42"
+            ]
+          }
+        ],
+        "highlight_fault_panel": null,
+        "reveal_verdict": false,
+        "accessibility_text": "Two workings for 3 + 4 × ( 5 + 1 )."
+      },
+      "stem": "A pupil worked out 3 + 4 × ( 5 + 1 ) in two ways. Which working is correct?",
+      "options": [
+        "Working A is correct",
+        "Working B is correct",
+        "Both are correct",
+        "Neither is correct"
+      ]
+    },
+    {
+      "external_id": "MATH-NUMBER-BIDMAS-MEDIUM-077",
+      "difficulty": "medium",
+      "diagram_data": {
+        "schema_version": "bidmas_1.0",
+        "visual_type": "bid_error_panel",
+        "operation": "bidmas_error_diagnosis",
+        "expression_tokens": [
+          "12",
+          "−",
+          "2",
+          "×",
+          "4"
+        ],
+        "panels": [
+          {
+            "label": "Working A",
+            "steps": [
+              "12 − 2 = 10",
+              "10 × 4 = 40"
+            ]
+          },
+          {
+            "label": "Working B",
+            "steps": [
+              "2 × 4 = 8",
+              "12 − 8 = 4"
+            ]
+          }
+        ],
+        "highlight_fault_panel": null,
+        "reveal_verdict": false,
+        "accessibility_text": "Two workings for 12 − 2 × 4."
+      },
+      "stem": "A pupil worked out 12 − 2 × 4 in two ways. Which working is correct?",
+      "options": [
+        "Working A is correct",
+        "Working B is correct",
+        "Both are correct",
+        "Neither is correct"
+      ]
+    },
+    {
+      "external_id": "MATH-NUMBER-BIDMAS-MEDIUM-078",
+      "difficulty": "medium",
+      "diagram_data": {
+        "schema_version": "bidmas_1.0",
+        "visual_type": "bid_error_panel",
+        "operation": "bidmas_error_diagnosis",
+        "expression_tokens": [
+          "7",
+          "+",
+          "5",
+          "×",
+          "3"
+        ],
+        "panels": [
+          {
+            "label": "Working A",
+            "steps": [
+              "7 + 5 = 12",
+              "12 × 3 = 36"
+            ]
+          },
+          {
+            "label": "Working B",
+            "steps": [
+              "5 × 3 = 15",
+              "7 + 15 = 22"
+            ]
+          }
+        ],
+        "highlight_fault_panel": null,
+        "reveal_verdict": false,
+        "accessibility_text": "Two workings for 7 + 5 × 3."
+      },
+      "stem": "A pupil worked out 7 + 5 × 3 in two ways. Which working is correct?",
+      "options": [
+        "Working A is correct",
+        "Working B is correct",
+        "Both are correct",
+        "Neither is correct"
+      ]
+    },
+    {
+      "external_id": "MATH-NUMBER-BIDMAS-MEDIUM-079",
+      "difficulty": "medium",
+      "diagram_data": {
+        "schema_version": "bidmas_1.0",
+        "visual_type": "bid_error_panel",
+        "operation": "bidmas_error_diagnosis",
+        "expression_tokens": [
+          "6",
+          "+",
+          "8",
+          "÷",
+          "2"
+        ],
+        "panels": [
+          {
+            "label": "Working A",
+            "steps": [
+              "8 ÷ 2 = 4",
+              "6 + 4 = 10"
+            ]
+          },
+          {
+            "label": "Working B",
+            "steps": [
+              "6 + 8 = 14",
+              "14 ÷ 2 = 7"
+            ]
+          }
+        ],
+        "highlight_fault_panel": null,
+        "reveal_verdict": false,
+        "accessibility_text": "Two workings for 6 + 8 ÷ 2."
+      },
+      "stem": "A pupil worked out 6 + 8 ÷ 2 in two ways. Which working is correct?",
+      "options": [
+        "Working A is correct",
+        "Working B is correct",
+        "Both are correct",
+        "Neither is correct"
+      ]
+    },
+    {
+      "external_id": "MATH-NUMBER-BIDMAS-MEDIUM-080",
+      "difficulty": "medium",
+      "diagram_data": {
+        "schema_version": "bidmas_1.0",
+        "visual_type": "bid_error_panel",
+        "operation": "bidmas_error_diagnosis",
+        "expression_tokens": [
+          "20",
+          "−",
+          "3",
+          "×",
+          "(",
+          "2",
+          "+",
+          "2",
+          ")"
+        ],
+        "panels": [
+          {
+            "label": "Working A",
+            "steps": [
+              "2 + 2 = 4",
+              "3 × 4 = 12",
+              "20 − 12 = 8"
+            ]
+          },
+          {
+            "label": "Working B",
+            "steps": [
+              "20 − 3 = 17",
+              "2 + 2 = 4",
+              "17 × 4 = 68"
+            ]
+          }
+        ],
+        "highlight_fault_panel": null,
+        "reveal_verdict": false,
+        "accessibility_text": "Two workings for 20 − 3 × ( 2 + 2 )."
+      },
+      "stem": "A pupil worked out 20 − 3 × ( 2 + 2 ) in two ways. Which working is correct?",
+      "options": [
+        "Working A is correct",
+        "Working B is correct",
+        "Both are correct",
+        "Neither is correct"
+      ]
+    }
+  ]
+}
